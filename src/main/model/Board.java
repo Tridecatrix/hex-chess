@@ -26,7 +26,7 @@ public class Board {
                 throw new RuntimeException("Position cannot be empty");
             }
 
-            this.file = (int) ((pos.toLowerCase().charAt(0) - 'a'));
+            this.file = ((pos.toLowerCase().charAt(0) - 'a'));
             this.rank = Integer.parseInt(pos.substring(1)) - 1;
         }
 
@@ -303,6 +303,7 @@ public class Board {
         }
 
         ArrayList<Move> possibleMoves;
+        ArrayList<BiFunction<Position, Piece.Color, Position>> movementDirs;
         switch (piece.type) {
             case PAWN:
                 int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
@@ -344,7 +345,7 @@ public class Board {
                 break;
 
             case ROOK:
-                ArrayList<BiFunction<Position, Piece.Color, Position>> movementDirs = new ArrayList<>(List.of(
+                movementDirs = new ArrayList<>(List.of(
                         Board::oneStepBackward,
                         Board::oneStepForward,
                         Board::oneStepLeftAndBackward,
