@@ -16,11 +16,6 @@ public class Piece {
     Type type;
     Color color;
 
-    public Piece() {
-        this.type = null;
-        this.color = null;
-    }
-
     public Piece(Type type, Color color) {
         this.type = type;
         this.color = color;
