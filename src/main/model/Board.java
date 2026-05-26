@@ -1,5 +1,7 @@
 import java.lang.Math;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
 
 public class Board {
     // for 91 space board; there are 11 files going vertically and 11 ranks going skew-horizontally.
@@ -164,19 +166,19 @@ public class Board {
         return Math.abs(pos.file - centerFile);
     }
 
-    public Position oneStepForward(Position pos, Piece.Color playerColor) {
+    public static Position oneStepForward(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         return new Position(pos.file, pos.rank + forwardStep);
     }
 
-    public Position oneStepBackward(Position pos, Piece.Color playerColor) {
+    public static Position oneStepBackward(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         return new Position(pos.file, pos.rank - forwardStep);
     }
 
-    public Position oneStepLeftAndForward(Position pos, Piece.Color playerColor) {
+    public static Position oneStepLeftAndForward(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         if (pos.file < centerFile) {
@@ -186,7 +188,7 @@ public class Board {
         }
     }
 
-    public Position oneStepRightAndForward(Position pos, Piece.Color playerColor) {
+    public static Position oneStepRightAndForward(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         if (pos.file < centerFile) {
@@ -196,7 +198,7 @@ public class Board {
         }
     }
 
-    public Position oneStepLeftAndBackward(Position pos, Piece.Color playerColor) {
+    public static Position oneStepLeftAndBackward(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         if (pos.file < centerFile) {
@@ -205,7 +207,7 @@ public class Board {
             return new Position(pos.file - 1, pos.rank);
         }
     }
-    public Position oneStepRightAndBackward(Position pos, Piece.Color playerColor) {
+    public static Position oneStepRightAndBackward(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         if (pos.file < centerFile) {
@@ -215,7 +217,7 @@ public class Board {
         }
     }
 
-    public Position bishopStepLeft(Position pos, Piece.Color playerColor) {
+    public static Position bishopStepLeft(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         if (pos.file < centerFile) {
@@ -225,7 +227,7 @@ public class Board {
         }
     }
 
-    public Position bishopStepRight(Position pos, Piece.Color playerColor) {
+    public static Position bishopStepRight(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         if (pos.file < centerFile) {
@@ -235,7 +237,7 @@ public class Board {
         }
     }
 
-    public Position bishopStepForwardLeft(Position pos, Piece.Color playerColor) {
+    public static Position bishopStepForwardLeft(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         if (pos.file < centerFile) {
@@ -245,7 +247,7 @@ public class Board {
         }
     }
 
-    public Position bishopStepForwardRight(Position pos, Piece.Color playerColor) {
+    public static Position bishopStepForwardRight(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         if (pos.file < centerFile) {
@@ -255,7 +257,7 @@ public class Board {
         }
     }
 
-    public Position bishopStepBackwardLeft(Position pos, Piece.Color playerColor) {
+    public static Position bishopStepBackwardLeft(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         if (pos.file < centerFile) {
@@ -264,7 +266,7 @@ public class Board {
             return new Position(pos.file - 1, pos.rank - forwardStep);
         }
     }
-    public Position bishopStepBackwardRight(Position pos, Piece.Color playerColor) {
+    public static Position bishopStepBackwardRight(Position pos, Piece.Color playerColor) {
         int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
 
         if (pos.file < centerFile) {
@@ -286,9 +288,9 @@ public class Board {
     /**
      * Main function: get all legal moves for player playerColor for the piece at fromPos
      *
-     * @param fromPos
-     * @param playerColor
-     * @return
+     * @param fromPos position of piece
+     * @param playerColor color that is playing
+     * @return list of legal moves
      */
     public ArrayList<Move> getLegalMoves(Position fromPos, Piece.Color playerColor) {
         Piece piece = this.getPos(fromPos);
@@ -340,12 +342,85 @@ public class Board {
                 // had only moved one space, you still can
                 // TODO: add
                 break;
-            case ROOK:
-                // rook logic: can attack backward and forward up until it reaches a piece or the edge of the board
 
+            case ROOK:
+                ArrayList<BiFunction<Position, Piece.Color, Position>> movementDirs = new ArrayList<>(List.of(
+                        Board::oneStepBackward,
+                        Board::oneStepForward,
+                        Board::oneStepLeftAndBackward,
+                        Board::oneStepLeftAndForward,
+                        Board::oneStepRightAndBackward,
+                        Board::oneStepRightAndForward));
+
+                for (BiFunction<Position, Piece.Color, Position> stepInDir : movementDirs) {
+                    Position nextPos = stepInDir.apply(fromPos, playerColor);
+
+                    while (isInBounds(nextPos) && this.getPos(nextPos) == null) {
+                        moves.add(new Move(fromPos, nextPos));
+                        nextPos = stepInDir.apply(nextPos, playerColor); // continue moving in direction until we
+                                                                         // hit a piece or edge of board
+                    }
+
+                    if (isInBounds(nextPos) && this.getPos(nextPos) != null && this.getPos(nextPos).color != playerColor) {
+                        moves.add(new Move(fromPos, nextPos)); // add the capturing move for opponent piece
+                    }
+                }
                 break;
+
             case BISHOP:
+                movementDirs = new ArrayList<>(List.of(
+                        Board::bishopStepLeft,
+                        Board::bishopStepRight,
+                        Board::bishopStepBackwardLeft,
+                        Board::bishopStepBackwardRight,
+                        Board::bishopStepForwardLeft,
+                        Board::bishopStepForwardRight));
+
+                for (BiFunction<Position, Piece.Color, Position> stepInDir : movementDirs) {
+                    Position nextPos = stepInDir.apply(fromPos, playerColor);
+
+                    while (isInBounds(nextPos) && this.getPos(nextPos) == null) {
+                        moves.add(new Move(fromPos, nextPos));
+                        nextPos = stepInDir.apply(nextPos, playerColor); // continue moving in direction until we
+                                                                         // hit a piece or edge of board
+                    }
+
+                    if (isInBounds(nextPos) && this.getPos(nextPos) != null && this.getPos(nextPos).color != playerColor) {
+                        moves.add(new Move(fromPos, nextPos)); // add the capturing move for opponent piece
+                    }
+                }
+
+            case QUEEN:
+                movementDirs = new ArrayList<>(List.of(
+                        Board::oneStepBackward,
+                        Board::oneStepForward,
+                        Board::oneStepLeftAndBackward,
+                        Board::oneStepLeftAndForward,
+                        Board::oneStepRightAndBackward,
+                        Board::oneStepRightAndForward,
+                        Board::bishopStepLeft,
+                        Board::bishopStepRight,
+                        Board::bishopStepBackwardLeft,
+                        Board::bishopStepBackwardRight,
+                        Board::bishopStepForwardLeft,
+                        Board::bishopStepForwardRight));
+
+                for (BiFunction<Position, Piece.Color, Position> stepInDir : movementDirs) {
+                    Position nextPos = stepInDir.apply(fromPos, playerColor);
+
+                    while (isInBounds(nextPos) && this.getPos(nextPos) == null) {
+                        moves.add(new Move(fromPos, nextPos));
+                        nextPos = stepInDir.apply(nextPos, playerColor); // continue moving in direction until we
+                                                                         // hit a piece or edge of board
+                    }
+
+                    if (isInBounds(nextPos) && this.getPos(nextPos) != null && this.getPos(nextPos).color != playerColor) {
+                        moves.add(new Move(fromPos, nextPos)); // add the capturing move for opponent piece
+                    }
+                }
                 break;
+
+
             case KNIGHT:
                 possibleMoves = new ArrayList<>(12);
 
@@ -391,8 +466,7 @@ public class Board {
                         && (this.getPos(move.toPos) == null
                         || this.getPos(move.toPos).color != playerColor)).toList());
                 return moves;
-            case QUEEN:
-                break;
+
             case KING:
                 possibleMoves = new ArrayList<>(12);
 
