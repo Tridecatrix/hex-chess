@@ -468,20 +468,24 @@ public class Board {
                 return moves;
 
             case KING:
-                possibleMoves = new ArrayList<>(12);
+                movementDirs = new ArrayList<>(List.of(
+                        Board::oneStepBackward,
+                        Board::oneStepForward,
+                        Board::oneStepLeftAndBackward,
+                        Board::oneStepLeftAndForward,
+                        Board::oneStepRightAndBackward,
+                        Board::oneStepRightAndForward,
+                        Board::bishopStepLeft,
+                        Board::bishopStepRight,
+                        Board::bishopStepBackwardLeft,
+                        Board::bishopStepBackwardRight,
+                        Board::bishopStepForwardLeft,
+                        Board::bishopStepForwardRight));
 
-                possibleMoves.add(new Move(fromPos, oneStepForward(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepBackward(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepLeftAndForward(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepLeftAndBackward(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepRightAndForward(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepRightAndBackward(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, bishopStepLeft(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, bishopStepRight(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, bishopStepBackwardLeft(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, bishopStepForwardLeft(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, bishopStepBackwardRight(fromPos, playerColor)));
-                possibleMoves.add(new Move(fromPos, bishopStepForwardRight(fromPos, playerColor)));
+                possibleMoves = new ArrayList<>(12);
+                for (BiFunction<Position, Piece.Color, Position> stepInDir : movementDirs) {
+                    possibleMoves.add(new Move(fromPos, stepInDir.apply(fromPos, playerColor)));
+                }
 
                 return new ArrayList<>(possibleMoves.stream().filter(move -> isInBounds(move.toPos)
                                                                      && (this.getPos(move.toPos) == null
