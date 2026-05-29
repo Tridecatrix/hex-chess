@@ -2222,7 +2222,7 @@ Source/WebCore/style/values/scrollbars
 Source/WebCore/style/values/shapes
 Source/WebCore/style/values/size-adjust
 Source/WebCore/style/values/text-decoration
-Source/WebCore/style/values/view-transitions
+Source/WebCore/style/values/gui-transitions
 Source/WebCore/svg
 Source/WebCore/testing
 Source/WebCore/workers
@@ -3005,7 +3005,7 @@ Source/WebCore/style/values/svg
 Source/WebCore/style/values/text-decoration
 Source/WebCore/style/values/text
 Source/WebCore/style/values/transforms
-Source/WebCore/style/values/view-transitions
+Source/WebCore/style/values/gui-transitions
 
 Copyright (C) 2024-2025 Samuel Weinig <sam@webkit.org>
 Copyright (C) 2003-2025 Apple Inc. All rights reserved.

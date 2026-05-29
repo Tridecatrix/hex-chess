@@ -1,3 +1,6 @@
+package gui;
+
+import model.*;
 import java.util.Scanner;
 
 public class TerminalGUI {
@@ -19,13 +22,13 @@ public class TerminalGUI {
                 String pieceCoord = scanner.nextLine();
                 fromPos = new Board.Position(pieceCoord);
 
-                if (board.getLegalMoves(fromPos, currentPlayer).isEmpty()) {
+                if (board.getLegalMovesFromPos(fromPos, currentPlayer).isEmpty()) {
                     System.out.println("No legal moves; try again");
                     continue;
                 }
 
                 System.out.print("Possible moves: ");
-                for (Board.Move move : board.getLegalMoves(fromPos, currentPlayer)) {
+                for (Board.Move move : board.getLegalMovesFromPos(fromPos, currentPlayer)) {
                     System.out.print(move.toPos);
                     System.out.print(", ");
                 }

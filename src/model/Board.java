@@ -128,21 +128,43 @@ public class Board {
 
         for (int y = 21; y >= 0; y--) {
             for (int x = 0; x < 11*xScale; x++) {
-                if (x % xScale != xScale/2) {
-                    string.append(' ');
-                    continue;
-                }
-
                 int xBoard = x/xScale;
                 float yBoard = ((float) (y - Math.abs(xBoard - centerFile)))/2;
+
+                // if yBoard is off the bounds of the board, print blank
                 if (yBoard < 0 || yBoard >= 11 - Math.abs(xBoard - centerFile)) {
                     string.append(' ');
                     continue;
                 }
+
+                // NOTE THAT THE BELOW ONLY WORKS FOR xScale == 6
+                // get the coordinate within each 2x6 size hexagon cell. how y % 2 corresponds to the bottom/top
+                // of the cell alternates with each cell going horizontally, hence why both y % 2 and xBoard % 2
+                // are involved in the calculation.
+                int xCell = x % xScale;
+                boolean isBottomOfCell = (y % 2 == 1) ^ (xBoard % 2 == 1);
+
+                // for x coordinates in the cell that aren't the left/right walls, print an underscore or overline
+                // to indicate the tops/bottoms of cells
+                if (xCell == 1 || xCell == 2 || xCell == 4 || xCell == 5) {
+                    if (isBottomOfCell) string.append('_');
+                    else string.append('‾');
+                    continue;
+                }
+
+                // for coordinates in the cell that are the left wall, print a / or an \ to indicate the left wall of
+                // the cell. note that non-rightmost cells share their right wall with the left wall of the neighbouring
+                // cell, so this also covers most right walls.
+                if (xCell == 0) {
+                    if (isBottomOfCell) string.append('\\');
+                    else string.append('/');
+                    continue;
+                }
+
                 Piece piece = board[xBoard][(int) yBoard];
 
                 if (piece == null) {
-                    string.append('□');
+                    string.append(' ');
                     continue;
                 }
 
@@ -173,7 +195,27 @@ public class Board {
                 charToAppend = piece.color == Piece.Color.WHITE ? Character.toUpperCase(charToAppend) : charToAppend;
                 string.append(charToAppend);
             }
+
             string.append('\n');
+        }
+
+        // go back through the string and add in the rightmost walls
+        //
+        // (the first for loop does the \ wall on the rightmost cell in the top 5 rows,
+        // the second for loop does the / wall on the rightmost cell in the bottom 5 rows,
+        // and the final for loop does alternating \ and / to make the two rightmost walls
+        // of the middle 6 rows of hexagons. the offset calculations are somewhat bespoke
+        // and are the result of experimentation)
+        for (int y = 1; y < 6; y++) {
+            int x = 6*6 + (y-1)*8 - 1;
+            string.insert(y*11*6 + x, '\\');
+        }
+        for (int y = 23; y > 18; y--) {
+            int x = 4*6 - (y-17)*5 + 1;
+            string.insert(y*11*6 + x, '/');
+        }
+        for (int y = 0; y < 12; y++) {
+            string.insert(6*11+3 + (6*11+1)*6 + y*(6*11+2), y % 2 == 1 ? '/' : '\\');
         }
 
         return string.toString();
@@ -305,7 +347,7 @@ public class Board {
             return false;
         }
 
-        return getLegalMoves(move.fromPos, playerColor).contains(move);
+        return getLegalMovesFromPos(move.fromPos, playerColor).contains(move);
     }
 
     /**
@@ -315,7 +357,7 @@ public class Board {
      * @param playerColor color that is playing
      * @return list of legal moves
      */
-    public ArrayList<Move> getLegalMoves(Position fromPos, Piece.Color playerColor) {
+    public ArrayList<Move> getLegalMovesFromPos(Position fromPos, Piece.Color playerColor) {
         Piece piece = this.getPos(fromPos);
 
         ArrayList<Move> moves = new ArrayList<>();

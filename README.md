@@ -24,6 +24,9 @@ Just 2 player mode
   - Queen
   - King
 - Stalemate
+- Draws:
+  - repetition of moves
+  - last 50 moves have been without a pawn movement or capture and player claims draw (75 for automatic draw)
 - Starting positions
 
 The version of 2 player hex chess I'm making is specifically the Glinski variant https://en.wikipedia.org/wiki/Hexagonal_chess#Gli%C5%84ski's_hexagonal_chess
