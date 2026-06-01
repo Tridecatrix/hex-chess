@@ -22,13 +22,17 @@ public class TerminalGUI {
                 String pieceCoord = scanner.nextLine();
                 fromPos = new Board.Position(pieceCoord);
 
-                if (board.getLegalMovesFromPos(fromPos, currentPlayer).isEmpty()) {
+                if (board.getPos(fromPos).color != currentPlayer) {
+                    System.out.println("Cannot move opponent's pieces");
+                }
+
+                if (board.getLegalMovesFromPos(fromPos).isEmpty()) {
                     System.out.println("No legal moves; try again");
                     continue;
                 }
 
                 System.out.print("Possible moves: ");
-                for (Board.Move move : board.getLegalMovesFromPos(fromPos, currentPlayer)) {
+                for (Board.Move move : board.getLegalMovesFromPos(fromPos)) {
                     System.out.print(move.toPos);
                     System.out.print(", ");
                 }

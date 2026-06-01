@@ -2,7 +2,9 @@ package model;
 
 import java.lang.Math;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 public class Board {
@@ -12,10 +14,10 @@ public class Board {
     Piece[][] board = new Piece[11][11];
 
     // references to all pieces in the game (for check/checkmate detection)
-    List<Piece> whitePieces;
-    List<Piece> blackPieces;
-    List<Piece> whiteCapturedPieces;
-    List<Piece> blackCapturedPieces;
+    List<Piece> whitePieces = new ArrayList<>();
+    List<Piece> blackPieces = new ArrayList<>();
+    List<Piece> whiteCapturedPieces = new ArrayList<>();
+    List<Piece> blackCapturedPieces = new ArrayList<>();
 
     public static final int centerFile = 5;
 
@@ -63,11 +65,20 @@ public class Board {
             this.toPos = toPos;
         }
 
+        public Move(String fromPos, String toPos) {
+            this.fromPos = new Position(fromPos);
+            this.toPos = new Position(toPos);
+        }
+
         @Override
         public boolean equals(Object other) {
             if (other instanceof Move) {
                 return this.fromPos.equals(((Move) other).fromPos) && this.toPos.equals(((Move) other).toPos);
             } else return false;
+        }
+
+        public String toString() {
+            return fromPos.toString() + "->" + toPos.toString();
         }
     }
 
@@ -117,6 +128,27 @@ public class Board {
         Piece bking = new Piece("king", "black"); blackPieces.add(bking); this.setPos(new Position("g10"), bking);
         Piece brknight = new Piece("knight", "black"); blackPieces.add(brknight); this.setPos(new Position("h9"), brknight);
         Piece brrook = new Piece("rook", "black"); blackPieces.add(brrook); this.setPos(new Position("i8"), brrook);
+    }
+
+    // testing constructor; intiialises a board with the pieces given as strings, e.g.:
+    // Nh6 is a white knight at position h6
+    // pc7 is a black pawn at position c7
+    public Board(List<String> pieces) {
+        for (String piece : pieces) {
+            boolean isWhite = Character.isUpperCase(piece.charAt(0));
+            String pieceType = Character.toString(piece.charAt(0));
+            String piecePos = piece.substring(1);
+
+            if (isWhite) {
+                Piece pieceAsObj = new Piece(pieceType, "w");
+                this.setPos(new Position(piecePos), pieceAsObj);
+                whitePieces.add(pieceAsObj);
+            } else {
+                Piece pieceAsObj = new Piece(pieceType, "b");
+                this.setPos(new Position(piecePos), pieceAsObj);
+                blackPieces.add(pieceAsObj);
+            }
+        }
     }
 
     @Override
@@ -347,25 +379,26 @@ public class Board {
             return false;
         }
 
-        return getLegalMovesFromPos(move.fromPos, playerColor).contains(move);
+        return getLegalMovesFromPos(move.fromPos).contains(move);
     }
 
     /**
      * Main function: get all legal moves for player playerColor for the piece at fromPos
      *
      * @param fromPos position of piece
-     * @param playerColor color that is playing
      * @return list of legal moves
      */
-    public ArrayList<Move> getLegalMovesFromPos(Position fromPos, Piece.Color playerColor) {
+    public Set<Move> getLegalMovesFromPos(Position fromPos) {
         Piece piece = this.getPos(fromPos);
 
-        ArrayList<Move> moves = new ArrayList<>();
+        Set<Move> moves = new HashSet<>();
 
-        if (piece == null || piece.color != playerColor) {
+        if (piece == null) {
             // there is no piece there OR the piece is not the player's color
             return moves;
         }
+
+        Piece.Color playerColor = piece.color;
 
         ArrayList<Move> possibleMoves;
         ArrayList<BiFunction<Position, Piece.Color, Position>> movementDirs;
@@ -399,7 +432,7 @@ public class Board {
                 if (((playerColor == Piece.Color.WHITE && fromPos.rank == 4 - distanceFromCenter(fromPos))
                         || (playerColor == Piece.Color.BLACK && fromPos.rank == 6))) {
                     Position doubleForwardPos = new Position(fromPos.file, fromPos.rank + 2 * forwardStep);
-                    if (isInBounds(doubleForwardPos) && this.getPos(doubleForwardPos) == null)
+                    if (isInBounds(doubleForwardPos) && this.getPos(forwardPos) == null && this.getPos(doubleForwardPos) == null)
                         moves.add(new Move(fromPos, doubleForwardPos));
                 }
 
@@ -553,9 +586,10 @@ public class Board {
                     possibleMoves.add(new Move(fromPos, stepInDir.apply(fromPos, playerColor)));
                 }
 
-                return new ArrayList<>(possibleMoves.stream().filter(move -> isInBounds(move.toPos)
-                                                                     && (this.getPos(move.toPos) == null
-                                                                     || this.getPos(move.toPos).color != playerColor)).toList());
+                moves.addAll(possibleMoves.stream().filter(move -> isInBounds(move.toPos)
+                                                           && (this.getPos(move.toPos) == null
+                                                           || this.getPos(move.toPos).color != playerColor)).toList());
+                return moves;
         }
 
         return moves;

@@ -16,7 +16,7 @@ public class Piece {
     }
 
     Type type;
-    Color color;
+    public Color color;
 
     public Piece(Type type, Color color) {
         this.type = type;
@@ -45,6 +45,7 @@ public class Piece {
             case "queen":
                 this.type = Type.QUEEN;
                 break;
+            case "k":
             case "king":
                 this.type = Type.KING;
                 break;
