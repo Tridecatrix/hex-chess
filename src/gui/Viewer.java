@@ -15,6 +15,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import static java.lang.Math.sqrt;
+
 public class Viewer extends Application {
     Stage primaryStage;
     Text moveNumber;
@@ -61,15 +63,23 @@ public class Viewer extends Application {
         int BOARD_SIZE = 900;
         boardSpace.setPrefSize(BOARD_SIZE, BOARD_SIZE);
 
-        BoardTile tile = new BoardTile(100, BoardTile.TileColor.WHITE);
-        AnchorPane.setTopAnchor(tile, 450.0);
-        AnchorPane.setLeftAnchor(tile, 450.0);
-        boardSpace.getChildren().add(tile);
+        BoardTile tile;
+        int TILE_HEIGHT = BOARD_SIZE / (2*6 - 1);
+        double TILE_SIDELENGTH = TILE_HEIGHT / sqrt(3);
+        for (int y = 0; y < 11; y++) {
+            for (int x = 0; x < 11; x++) {
+                if (y >= 11 - Math.abs(x - 5)) continue;
 
-        BoardTile tile2 = new BoardTile(100, BoardTile.TileColor.BLACK);
-        AnchorPane.setTopAnchor(tile2, 450.0);
-        AnchorPane.setLeftAnchor(tile2, 350.0);
-        boardSpace.getChildren().add(tile2);
+                double tileX = x * BOARD_SIZE / 11;
+                double tileY = y * BOARD_SIZE / 11;
+
+                tile = new BoardTile(TILE_SIDELENGTH, BoardTile.TileColor.WHITE);
+
+                AnchorPane.setTopAnchor(tile, tileY);
+                AnchorPane.setLeftAnchor(tile, tileX);
+                boardSpace.getChildren().add(tile);
+            }
+        }
 
         root.getChildren().add(boardSpace);
 
