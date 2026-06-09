@@ -58,15 +58,15 @@ class LegalMovesTest {
     }
 
     @Test
-    void pawnPartialBlockedWhite() {
+    void pawnNoSelfCaptureWhite() {
         Board board = new Board(List.of("Pf5", "Rg5"));
-        assertMovesEqual(Set.of("f6", "f7", "e5"), board, "f5");
+        assertMovesEqual(Set.of("f6", "f7"), board, "f5");
     }
 
     @Test
-    void pawnPartialBlockedBlack() {
+    void pawnNoSelfCaptureBlack() {
         Board board = new Board(List.of("pf7", "rg6"));
-        assertMovesEqual(Set.of("f6", "f5", "e6"), board, "f7");
+        assertMovesEqual(Set.of("f6", "f5"), board, "f7");
     }
 
     @Test
@@ -132,14 +132,14 @@ class LegalMovesTest {
     void rookSimple1() {
         // rook in corner of board and blocked in most directions
         Board board = new Board(List.of("Ra1", "Pb1", "Pb2"));
-        assertMovesEqual(Set.of("a2", "a3", "a4", "a5", "a6", "a7"), board, "a1");
+        assertMovesEqual(Set.of("a2", "a3", "a4", "a5", "a6"), board, "a1");
     }
 
     @Test
     void rookSimple2() {
         // rook on corner of board v2 (including some captures)
-        Board board = new Board(List.of("Ra1", "pa2", "pe2", "Pd1"));
-        assertMovesEqual(Set.of("a2", "b2", "c2", "d2", "e2", "b1", "c1"), board, "a1");
+        Board board = new Board(List.of("Ra1", "Pa2", "pe2", "Pd1"));
+        assertMovesEqual(Set.of("b2", "c3", "d4", "e5", "f6", "g6", "h6", "i6", "j6", "k6", "b1", "c1"), board, "a1");
     }
 
     @Test
@@ -150,7 +150,7 @@ class LegalMovesTest {
                             "g5", "h4", "i3", "j2", "k1",
                             "f5", "f4", "f3",
                             "e5", "d4", "c3",
-                            "e6", "d6", "c6"),
+                            "e6"),
                      board, "f6");
     }
 
@@ -159,8 +159,8 @@ class LegalMovesTest {
         // three bishops on each color of square in bottom corner of board (starting position), partially blocked by pawn walls
         Board board = new Board(List.of("Bf1", "Bf2", "Bf3", "Pc4", "Pc5", "Pc6", "Pi4", "Pi5", "Pi6"));
         assertMovesEqual(Set.of("e2", "d3", "g2", "h3"), board, "f1");
-        assertMovesEqual(Set.of("e3", "d4", "g3", "h4"), board, "f2");
-        assertMovesEqual(Set.of("e4", "d5", "g4", "h5"), board, "f3");
+        assertMovesEqual(Set.of("e3", "d4", "g3", "h4", "d1", "h1"), board, "f2");
+        assertMovesEqual(Set.of("e4", "d5", "g4", "h5", "d2", "b1", "h2", "j1", "e1", "g1"), board, "f3");
     }
 
     @Test
@@ -181,7 +181,7 @@ class LegalMovesTest {
     void bishop3() {
         // checking that a black bishop also works correctly
         Board board = new Board(List.of("ba6"));
-        assertMovesEqual(Set.of("c7", "e8", "g8", "i8",
+        assertMovesEqual(Set.of("c7", "e8", "g8", "i7", "k6",
                                 "b5", "c4", "d3", "e2", "f1"), board, "a6");
     }
 
