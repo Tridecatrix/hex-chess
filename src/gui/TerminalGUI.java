@@ -1,6 +1,8 @@
 package gui;
 
 import model.*;
+import model.piece.Piece;
+
 import java.util.Scanner;
 
 public class TerminalGUI {
@@ -15,12 +17,12 @@ public class TerminalGUI {
             System.out.println(board);
             System.out.println("Current player: " + (currentPlayer.equals(Piece.Color.WHITE) ? "White" : "Black"));
 
-            Board.Position fromPos;
-            Board.Position toPos;
+            Position fromPos;
+            Position toPos;
             while (true) {
                 System.out.print("Input a piece coordinate to move: ");
                 String pieceCoord = scanner.nextLine();
-                fromPos = new Board.Position(pieceCoord);
+                fromPos = new Position(pieceCoord);
 
                 if (board.getPos(fromPos).color != currentPlayer) {
                     System.out.println("Cannot move opponent's pieces");
@@ -32,7 +34,7 @@ public class TerminalGUI {
                 }
 
                 System.out.print("Possible moves: ");
-                for (Board.Move move : board.getLegalMovesFromPos(fromPos)) {
+                for (Move move : board.getLegalMovesFromPos(fromPos)) {
                     System.out.print(move.toPos);
                     System.out.print(", ");
                 }
@@ -41,11 +43,11 @@ public class TerminalGUI {
                 System.out.print("Choose a move:");
 
                 String move = scanner.nextLine();
-                toPos = new Board.Position(move);
+                toPos = new Position(move);
                 break;
             }
 
-            board.applyMove(new Board.Move(fromPos, toPos), currentPlayer);
+            board.applyMove(new Move(fromPos, toPos), currentPlayer);
 
             currentPlayer = currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
         }

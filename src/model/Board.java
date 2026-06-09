@@ -1,5 +1,7 @@
 package model;
 
+import model.piece.Piece;
+
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,79 +10,18 @@ import java.util.Set;
 import java.util.function.BiFunction;
 
 public class Board {
+    public final int boarddim = 11;
+
     // for 91 space board; there are 11 files going vertically and 11 ranks going skew-horizontally.
     // for files on the outer edges of the board, some of the ranks don't exist, e.g. only a1-6 exist
     // f, or file 6, is the middle of the board
-    Piece[][] board = new Piece[11][11];
+    Piece[][] board = new Piece[boarddim][boarddim];
 
     // references to all pieces in the game (for check/checkmate detection)
     List<Piece> whitePieces = new ArrayList<>();
     List<Piece> blackPieces = new ArrayList<>();
-    List<Piece> whiteCapturedPieces = new ArrayList<>();
-    List<Piece> blackCapturedPieces = new ArrayList<>();
 
     public static final int centerFile = 5;
-
-    public static class Position {
-        // these are values from 0 to 10 inclusive
-        public int file;
-        public int rank;
-
-        public Position(int file, int rank) {
-            this.file = file;
-            this.rank = rank;
-        }
-
-        public Position(String pos) {
-            if (pos.isEmpty()) {
-                throw new RuntimeException("Position cannot be empty");
-            }
-
-            this.file = ((pos.toLowerCase().charAt(0) - 'a'));
-            this.rank = Integer.parseInt(pos.substring(1)) - 1;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (other instanceof Position) {
-                return this.file == ((Position) other).file && this.rank == ((Position) other).rank;
-            } else return false;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder string = new StringBuilder();
-            string.append((char)('a' + this.file));
-            string.append(this.rank + 1);
-            return string.toString();
-        }
-    }
-
-    public static class Move {
-        public Position fromPos;
-        public Position toPos;
-
-        public Move(Position fromPos, Position toPos) {
-            this.fromPos = fromPos;
-            this.toPos = toPos;
-        }
-
-        public Move(String fromPos, String toPos) {
-            this.fromPos = new Position(fromPos);
-            this.toPos = new Position(toPos);
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (other instanceof Move) {
-                return this.fromPos.equals(((Move) other).fromPos) && this.toPos.equals(((Move) other).toPos);
-            } else return false;
-        }
-
-        public String toString() {
-            return fromPos.toString() + "->" + toPos.toString();
-        }
-    }
 
     public Piece getPos(Position pos) {
         return this.board[pos.file][pos.rank];
@@ -94,40 +35,40 @@ public class Board {
     public Board() {
         whitePieces = new ArrayList<>();
         blackPieces = new ArrayList<>();
-        whiteCapturedPieces = new ArrayList<>();
-        blackCapturedPieces = new ArrayList<>();
 
         for (String pos : List.of("b1", "c2", "d3", "e4", "f5", "g4", "h3", "i2", "j1")) {
-            Piece pawn = new Piece("pawn", "white");
+            Piece pawn = PieceFactory.createPiece("pawn", "white");
             whitePieces.add(pawn);
             this.setPos(new Position(pos), pawn);
         }
 
         for (String pos : List.of("b7", "c7", "d7", "e7", "f7", "g7", "h7", "i7", "j7")) {
-            Piece pawn = new Piece("pawn", "black");
+            Piece pawn = PieceFactory.createPiece("pawn", "black");
             blackPieces.add(pawn);
             this.setPos(new Position(pos), pawn);
         }
 
-        Piece lrook = new Piece("rook", "white"); whitePieces.add(lrook); this.setPos(new Position("c1"), lrook);
-        Piece lknight = new Piece("knight", "white"); whitePieces.add(lknight); this.setPos(new Position("d1"), lknight);
-        Piece queen = new Piece("queen", "white"); whitePieces.add(queen); this.setPos(new Position("e1"), queen);
-        Piece bishop1 = new Piece("bishop", "white"); whitePieces.add(bishop1); this.setPos(new Position("f1"), bishop1);
-        Piece bishop2 = new Piece("bishop", "white"); whitePieces.add(bishop2); this.setPos(new Position("f2"), bishop2);
-        Piece bishop3 = new Piece("bishop", "white"); whitePieces.add(bishop3); this.setPos(new Position("f3"), bishop3);
-        Piece king = new Piece("king", "white"); whitePieces.add(king); this.setPos(new Position("g1"), king);
-        Piece rknight = new Piece("knight", "white"); whitePieces.add(rknight); this.setPos(new Position("h1"), rknight);
-        Piece rrook = new Piece("rook", "white"); whitePieces.add(rrook); this.setPos(new Position("i1"), rrook);
+        Piece lrook = PieceFactory.createPiece("rook", "white"); this.setPos(new Position("c1"), lrook);
+        Piece lknight = PieceFactory.createPiece("knight", "white"); this.setPos(new Position("d1"), lknight);
+        Piece queen = PieceFactory.createPiece("queen", "white"); this.setPos(new Position("e1"), queen);
+        Piece bishop1 = PieceFactory.createPiece("bishop", "white"); this.setPos(new Position("f1"), bishop1);
+        Piece bishop2 = PieceFactory.createPiece("bishop", "white"); this.setPos(new Position("f2"), bishop2);
+        Piece bishop3 = PieceFactory.createPiece("bishop", "white"); this.setPos(new Position("f3"), bishop3);
+        Piece king = PieceFactory.createPiece("king", "white"); this.setPos(new Position("g1"), king);
+        Piece rknight = PieceFactory.createPiece("knight", "white"); this.setPos(new Position("h1"), rknight);
+        Piece rrook = PieceFactory.createPiece("rook", "white"); this.setPos(new Position("i1"), rrook);
+        whitePieces.addAll(List.of(lrook, lknight, queen, bishop1, bishop2, bishop3, king, rknight, rrook));
 
-        Piece blrook = new Piece("rook", "black"); blackPieces.add(blrook); this.setPos(new Position("c8"), blrook);
-        Piece blknight = new Piece("knight", "black"); blackPieces.add(blknight); this.setPos(new Position("d9"), blknight);
-        Piece bqueen = new Piece("queen", "black"); blackPieces.add(bqueen); this.setPos(new Position("e10"), bqueen);
-        Piece bbishop1 = new Piece("bishop", "black"); blackPieces.add(bbishop1); this.setPos(new Position("f11"), bbishop1);
-        Piece bbishop2 = new Piece("bishop", "black"); blackPieces.add(bbishop2); this.setPos(new Position("f10"), bbishop2);
-        Piece bbishop3 = new Piece("bishop", "black"); blackPieces.add(bbishop3); this.setPos(new Position("f9"), bbishop3);
-        Piece bking = new Piece("king", "black"); blackPieces.add(bking); this.setPos(new Position("g10"), bking);
-        Piece brknight = new Piece("knight", "black"); blackPieces.add(brknight); this.setPos(new Position("h9"), brknight);
-        Piece brrook = new Piece("rook", "black"); blackPieces.add(brrook); this.setPos(new Position("i8"), brrook);
+        Piece blrook = PieceFactory.createPiece("rook", "black"); this.setPos(new Position("c8"), blrook);
+        Piece blknight = PieceFactory.createPiece("knight", "black"); this.setPos(new Position("d9"), blknight);
+        Piece bqueen = PieceFactory.createPiece("queen", "black"); this.setPos(new Position("e10"), bqueen);
+        Piece bbishop1 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f11"), bbishop1);
+        Piece bbishop2 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f10"), bbishop2);
+        Piece bbishop3 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f9"), bbishop3);
+        Piece bking = PieceFactory.createPiece("king", "black"); this.setPos(new Position("g10"), bking);
+        Piece brknight = PieceFactory.createPiece("knight", "black"); this.setPos(new Position("h9"), brknight);
+        Piece brrook = PieceFactory.createPiece("rook", "black"); this.setPos(new Position("i8"), brrook);
+        blackPieces.addAll(List.of(blrook, blknight, bqueen, bbishop1, bbishop2, bbishop3, bking, brknight, brrook));
     }
 
     // testing constructor; intiialises a board with the pieces given as strings, e.g.:
@@ -140,11 +81,11 @@ public class Board {
             String piecePos = piece.substring(1);
 
             if (isWhite) {
-                Piece pieceAsObj = new Piece(pieceType, "w");
+                Piece pieceAsObj = PieceFactory.createPiece(pieceType, "w");
                 this.setPos(new Position(piecePos), pieceAsObj);
                 whitePieces.add(pieceAsObj);
             } else {
-                Piece pieceAsObj = new Piece(pieceType, "b");
+                Piece pieceAsObj = PieceFactory.createPiece(pieceType, "b");
                 this.setPos(new Position(piecePos), pieceAsObj);
                 blackPieces.add(pieceAsObj);
             }
@@ -158,6 +99,9 @@ public class Board {
 
         string.append("   a     b     c     d     e     f     g     h     i     j     k\n");
 
+        // TODO:
+        // - make the cell walls logic work for any xScale
+        // - add vertical coordinates to the left and right side
         for (int y = 21; y >= 0; y--) {
             for (int x = 0; x < 11*xScale; x++) {
                 int xBoard = x/xScale;
@@ -200,30 +144,7 @@ public class Board {
                     continue;
                 }
 
-                char charToAppend;
-                switch(piece.type) {
-                    case PAWN:
-                        charToAppend = 'p';
-                        break;
-                    case ROOK:
-                        charToAppend = 'r';
-                        break;
-                    case BISHOP:
-                        charToAppend = 'b';
-                        break;
-                    case KNIGHT:
-                        charToAppend = 'n';
-                        break;
-                    case QUEEN:
-                        charToAppend = 'q';
-                        break;
-                    case KING:
-                        charToAppend = 'k';
-                        break;
-                    default:
-                        charToAppend = ' ';
-                        break;
-                }
+                char charToAppend = piece.getChar();
                 charToAppend = piece.color == Piece.Color.WHITE ? Character.toUpperCase(charToAppend) : charToAppend;
                 string.append(charToAppend);
             }
@@ -259,120 +180,6 @@ public class Board {
         return isFileInBounds && isRankInBounds;
     }
 
-    public static int distanceFromCenter(Position pos) {
-        return Math.abs(pos.file - centerFile);
-    }
-
-    public static Position oneStepForward(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        return new Position(pos.file, pos.rank + forwardStep);
-    }
-
-    public static Position oneStepBackward(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        return new Position(pos.file, pos.rank - forwardStep);
-    }
-
-    public static Position oneStepLeftAndForward(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        if (pos.file < centerFile) {
-            return new Position(pos.file - 1, pos.rank);
-        } else {
-            return new Position(pos.file - 1, pos.rank + forwardStep);
-        }
-    }
-
-    public static Position oneStepRightAndForward(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        if (pos.file < centerFile) {
-            return new Position(pos.file + 1, pos.rank + forwardStep);
-        } else {
-            return new Position(pos.file + 1, pos.rank);
-        }
-    }
-
-    public static Position oneStepLeftAndBackward(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        if (pos.file < centerFile) {
-            return new Position(pos.file - 1, pos.rank - forwardStep);
-        } else {
-            return new Position(pos.file - 1, pos.rank);
-        }
-    }
-    public static Position oneStepRightAndBackward(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        if (pos.file < centerFile) {
-            return new Position(pos.file - 1, pos.rank);
-        } else {
-            return new Position(pos.file - 1, pos.rank - forwardStep);
-        }
-    }
-
-    public static Position bishopStepLeft(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        if (pos.file < centerFile) {
-            return new Position(pos.file - 2, pos.rank - forwardStep);
-        } else {
-            return new Position(pos.file - 2, pos.rank + forwardStep);
-        }
-    }
-
-    public static Position bishopStepRight(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        if (pos.file < centerFile) {
-            return new Position(pos.file + 2, pos.rank + forwardStep);
-        } else {
-            return new Position(pos.file + 2, pos.rank - forwardStep);
-        }
-    }
-
-    public static Position bishopStepForwardLeft(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        if (pos.file < centerFile) {
-            return new Position(pos.file - 1, pos.rank + forwardStep);
-        } else {
-            return new Position(pos.file - 1, pos.rank + 2 * forwardStep);
-        }
-    }
-
-    public static Position bishopStepForwardRight(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        if (pos.file < centerFile) {
-            return new Position(pos.file + 1, pos.rank + 2 * forwardStep);
-        } else {
-            return new Position(pos.file + 1, pos.rank + forwardStep);
-        }
-    }
-
-    public static Position bishopStepBackwardLeft(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        if (pos.file < centerFile) {
-            return new Position(pos.file - 1, pos.rank - 2 * forwardStep);
-        } else {
-            return new Position(pos.file - 1, pos.rank - forwardStep);
-        }
-    }
-    public static Position bishopStepBackwardRight(Position pos, Piece.Color playerColor) {
-        int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-        if (pos.file < centerFile) {
-            return new Position(pos.file + 1, pos.rank - forwardStep);
-        } else {
-            return new Position(pos.file + 1, pos.rank - 2 * forwardStep);
-        }
-    }
-
 
     public boolean isLegalMove(Move move, Piece.Color playerColor) {
         if (!isInBounds(move.fromPos) || !isInBounds(move.toPos)) {
@@ -398,208 +205,18 @@ public class Board {
             return moves;
         }
 
-        Piece.Color playerColor = piece.color;
-
-        ArrayList<Move> possibleMoves;
-        ArrayList<BiFunction<Position, Piece.Color, Position>> movementDirs;
-        switch (piece.type) {
-            case PAWN:
-                int forwardStep = playerColor == Piece.Color.WHITE ? 1 : -1;
-
-                // Pawn basic logic: able to move one space ahead into an empty square
-                Position forwardPos = oneStepForward(fromPos, playerColor);
-                if (isInBounds(forwardPos) && this.getPos(forwardPos) == null)
-                    moves.add(new Move(fromPos, forwardPos));
-
-                // Pawn basic logic: able to capture to the side
-                // Note: on hex chess, capturing inwards moves the piece up a rank
-                // and capturing outwards keeps the piece in the same rank
-                Position leftCapturePos = oneStepLeftAndForward(fromPos, playerColor);
-                if (isInBounds(leftCapturePos)
-                        && this.getPos(leftCapturePos) != null
-                        && this.getPos(leftCapturePos).color != playerColor)
-                    moves.add(new Move(fromPos, leftCapturePos));
-
-                Position rightCapturePos = oneStepRightAndForward(fromPos, playerColor);
-                if (isInBounds(rightCapturePos)
-                        && this.getPos(rightCapturePos) != null
-                        && this.getPos(rightCapturePos).color != playerColor)
-                    moves.add(new Move(fromPos, rightCapturePos));
-
-
-                // Pawn logic: if the piece is on a starting position, it can jump two steps forward
-                // Note this is true also if the pawn moves into the starting position of another pawn
-                if (((playerColor == Piece.Color.WHITE && fromPos.rank == 4 - distanceFromCenter(fromPos))
-                        || (playerColor == Piece.Color.BLACK && fromPos.rank == 6))) {
-                    Position doubleForwardPos = new Position(fromPos.file, fromPos.rank + 2 * forwardStep);
-                    if (isInBounds(doubleForwardPos) && this.getPos(forwardPos) == null && this.getPos(doubleForwardPos) == null)
-                        moves.add(new Move(fromPos, doubleForwardPos));
-                }
-
-                // Pawn logic: en passant
-                // If the enemy pawn has moved 2 spaces in the last turn, and you could have captured it if it
-                // had only moved one space, you still can
-                // TODO: add
-                break;
-
-            case ROOK:
-                movementDirs = new ArrayList<>(List.of(
-                        Board::oneStepBackward,
-                        Board::oneStepForward,
-                        Board::oneStepLeftAndBackward,
-                        Board::oneStepLeftAndForward,
-                        Board::oneStepRightAndBackward,
-                        Board::oneStepRightAndForward));
-
-                for (BiFunction<Position, Piece.Color, Position> stepInDir : movementDirs) {
-                    Position nextPos = stepInDir.apply(fromPos, playerColor);
-
-                    while (isInBounds(nextPos) && this.getPos(nextPos) == null) {
-                        moves.add(new Move(fromPos, nextPos));
-                        nextPos = stepInDir.apply(nextPos, playerColor); // continue moving in direction until we
-                                                                         // hit a piece or edge of board
-                    }
-
-                    if (isInBounds(nextPos) && this.getPos(nextPos) != null && this.getPos(nextPos).color != playerColor) {
-                        moves.add(new Move(fromPos, nextPos)); // add the capturing move for opponent piece
-                    }
-                }
-                break;
-
-            case BISHOP:
-                movementDirs = new ArrayList<>(List.of(
-                        Board::bishopStepLeft,
-                        Board::bishopStepRight,
-                        Board::bishopStepBackwardLeft,
-                        Board::bishopStepBackwardRight,
-                        Board::bishopStepForwardLeft,
-                        Board::bishopStepForwardRight));
-
-                for (BiFunction<Position, Piece.Color, Position> stepInDir : movementDirs) {
-                    Position nextPos = stepInDir.apply(fromPos, playerColor);
-
-                    while (isInBounds(nextPos) && this.getPos(nextPos) == null) {
-                        moves.add(new Move(fromPos, nextPos));
-                        nextPos = stepInDir.apply(nextPos, playerColor); // continue moving in direction until we
-                                                                         // hit a piece or edge of board
-                    }
-
-                    if (isInBounds(nextPos) && this.getPos(nextPos) != null && this.getPos(nextPos).color != playerColor) {
-                        moves.add(new Move(fromPos, nextPos)); // add the capturing move for opponent piece
-                    }
-                }
-
-            case QUEEN:
-                movementDirs = new ArrayList<>(List.of(
-                        Board::oneStepBackward,
-                        Board::oneStepForward,
-                        Board::oneStepLeftAndBackward,
-                        Board::oneStepLeftAndForward,
-                        Board::oneStepRightAndBackward,
-                        Board::oneStepRightAndForward,
-                        Board::bishopStepLeft,
-                        Board::bishopStepRight,
-                        Board::bishopStepBackwardLeft,
-                        Board::bishopStepBackwardRight,
-                        Board::bishopStepForwardLeft,
-                        Board::bishopStepForwardRight));
-
-                for (BiFunction<Position, Piece.Color, Position> stepInDir : movementDirs) {
-                    Position nextPos = stepInDir.apply(fromPos, playerColor);
-
-                    while (isInBounds(nextPos) && this.getPos(nextPos) == null) {
-                        moves.add(new Move(fromPos, nextPos));
-                        nextPos = stepInDir.apply(nextPos, playerColor); // continue moving in direction until we
-                                                                         // hit a piece or edge of board
-                    }
-
-                    if (isInBounds(nextPos) && this.getPos(nextPos) != null && this.getPos(nextPos).color != playerColor) {
-                        moves.add(new Move(fromPos, nextPos)); // add the capturing move for opponent piece
-                    }
-                }
-                break;
-
-
-            case KNIGHT:
-                possibleMoves = new ArrayList<>(12);
-
-                possibleMoves.add(new Move(fromPos, oneStepLeftAndForward(
-                                                    oneStepForward(
-                                                    oneStepForward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepRightAndForward(
-                                                    oneStepForward(
-                                                    oneStepForward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepLeftAndBackward(
-                                                    oneStepLeftAndForward(
-                                                    oneStepLeftAndForward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepForward(
-                                                    oneStepLeftAndForward(
-                                                    oneStepLeftAndForward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepRightAndBackward(
-                                                    oneStepRightAndForward(
-                                                    oneStepRightAndForward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepForward(
-                                                    oneStepRightAndForward(
-                                                    oneStepRightAndForward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepLeftAndForward(
-                                                    oneStepLeftAndBackward(
-                                                    oneStepLeftAndBackward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepBackward(
-                                                    oneStepLeftAndBackward(
-                                                    oneStepLeftAndBackward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepRightAndForward(
-                                                    oneStepRightAndBackward(
-                                                    oneStepRightAndBackward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepBackward(
-                                                    oneStepRightAndBackward(
-                                                    oneStepRightAndBackward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepLeftAndBackward(
-                                                    oneStepBackward(
-                                                    oneStepBackward(fromPos, playerColor), playerColor), playerColor)));
-                possibleMoves.add(new Move(fromPos, oneStepRightAndBackward(
-                                                    oneStepBackward(
-                                                    oneStepBackward(fromPos, playerColor), playerColor), playerColor)));
-
-
-                moves.addAll(possibleMoves.stream().filter(move -> isInBounds(move.toPos)
-                        && (this.getPos(move.toPos) == null
-                        || this.getPos(move.toPos).color != playerColor)).toList());
-                return moves;
-
-            case KING:
-                movementDirs = new ArrayList<>(List.of(
-                        Board::oneStepBackward,
-                        Board::oneStepForward,
-                        Board::oneStepLeftAndBackward,
-                        Board::oneStepLeftAndForward,
-                        Board::oneStepRightAndBackward,
-                        Board::oneStepRightAndForward,
-                        Board::bishopStepLeft,
-                        Board::bishopStepRight,
-                        Board::bishopStepBackwardLeft,
-                        Board::bishopStepBackwardRight,
-                        Board::bishopStepForwardLeft,
-                        Board::bishopStepForwardRight));
-
-                possibleMoves = new ArrayList<>(12);
-                for (BiFunction<Position, Piece.Color, Position> stepInDir : movementDirs) {
-                    possibleMoves.add(new Move(fromPos, stepInDir.apply(fromPos, playerColor)));
-                }
-
-                moves.addAll(possibleMoves.stream().filter(move -> isInBounds(move.toPos)
-                                                           && (this.getPos(move.toPos) == null
-                                                           || this.getPos(move.toPos).color != playerColor)).toList());
-                return moves;
-        }
-
-        return moves;
+        return piece.getMovesFromPos(this, fromPos);
     }
 
+
+    // TODO: have this method return a result object (basically a struct), with options:
+    // - does the move result in a check, checkmate or stalemate (RESULT_CHECK, RESULT_CHECKMATE, etc.)
+    // - does the move result in a pawn promotion
+    // - does the move result in a draw due to repetition and/or insufficient material
     public void applyMove(Move move, Piece.Color playerColor) {
         if (!isLegalMove(move, playerColor)) return; // TODO: maybe change this to an assert
 
         List<Piece> enemyPiecesList = playerColor == Piece.Color.BLACK ? whitePieces : blackPieces;
-        List<Piece> enemyCapturedPiecesList = playerColor == Piece.Color.BLACK ? whiteCapturedPieces : blackCapturedPieces;
 
         Piece movedPiece = this.getPos(move.fromPos);
         this.setPos(move.fromPos, null);
@@ -608,7 +225,6 @@ public class Board {
         if (capturedPiece != null) {
             assert capturedPiece.color != playerColor;
             enemyPiecesList.remove(capturedPiece);
-            enemyCapturedPiecesList.add(capturedPiece);
         }
         this.setPos(move.toPos, movedPiece);
     }
