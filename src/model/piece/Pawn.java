@@ -18,7 +18,6 @@ public class Pawn extends Piece {
         return 'p';
     }
 
-    // TODO: FIX, as the Position helpers don't actually take color into account anymore
     @Override
     public Set<Move> getMovesFromPos(Board board, Position fromPos) {
         Set<Move> moves = new HashSet<>();

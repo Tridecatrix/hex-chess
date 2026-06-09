@@ -15,6 +15,7 @@ public class King extends Piece {
         super(color);
     }
 
+    // TODO: moves that move the king into check are illegal
     @Override
     public Set<Move> getMovesFromPos(Board board, Position fromPos) {
         ArrayList<BiFunction<Position, Integer, Position>> movementDirs = new ArrayList<>(List.of(

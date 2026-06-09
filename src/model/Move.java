@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Move {
     public Position fromPos;
     public Position toPos;
@@ -19,6 +21,11 @@ public class Move {
         if (other instanceof Move) {
             return this.fromPos.equals(((Move) other).fromPos) && this.toPos.equals(((Move) other).toPos);
         } else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fromPos, toPos);
     }
 
     public String toString() {

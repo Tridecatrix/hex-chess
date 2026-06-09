@@ -22,36 +22,62 @@ public class TerminalGUI {
 
             Position fromPos;
             Position toPos;
+            MoveResult moveResult;
+
             while (true) {
                 System.out.print("Input a piece coordinate to move: ");
                 String pieceCoord = scanner.nextLine();
-                fromPos = new Position(pieceCoord);
-
-                if (board.getPos(fromPos).color != currentPlayer) {
-                    System.out.println("Cannot move opponent's pieces");
-                }
-
-                if (board.getLegalMovesFromPos(fromPos).isEmpty()) {
-                    System.out.println("No legal moves; try again");
+                try {
+                    fromPos = new Position(pieceCoord);
+                } catch (Exception e) {
+                    System.out.println("Illegal position coordinate; try again");
                     continue;
                 }
 
-                System.out.print("Possible moves: ");
-                List<Move> moves = new ArrayList<>(board.getLegalMovesFromPos(fromPos));
+                if (board.getPos(fromPos) == null) {
+                    System.out.println("No piece at location");
+                    continue;
+                }
+
+                if (board.getPos(fromPos).color != currentPlayer) {
+                    System.out.println("Cannot move opponent's pieces");
+                    continue;
+                }
+
+                System.out.print("Valid moves: ");
+                List<String> moves = new ArrayList<>(board.getLegalMovesFromPos(fromPos)).stream().map(m -> m.toPos.toString()).sorted().toList();
                 for (int i = 0; i < moves.size(); i++) {
                     if (i != 0) System.out.print(", ");
-                    System.out.print(moves.get(i).toPos);
+                    System.out.print(moves.get(i));
+                }
+
+                if (moves.isEmpty()) {
+                    System.out.println("No possible moves; choose another piece");
+                    continue;
                 }
 
                 System.out.println();
-                System.out.print("Choose a move: ");
+                System.out.print("Choose a position to move to: ");
 
-                String move = scanner.nextLine();
-                toPos = new Position(move);
+                try {
+                    String move = scanner.nextLine();
+                    toPos = new Position(move);
+                } catch (Exception e) {
+                    System.out.println("Illegal position coordinate; try again");
+                    continue;
+                }
+
+                moveResult = board.applyMove(new Move(fromPos, toPos), currentPlayer);
+
+                if (!moveResult.validMove) {
+                    System.out.println("Move was not valid; try again");
+                    continue;
+                }
+
                 break;
             }
 
-            board.applyMove(new Move(fromPos, toPos), currentPlayer);
+
 
             currentPlayer = currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
         }

@@ -2,6 +2,8 @@ package model;
 
 import model.piece.Piece;
 
+import java.util.Objects;
+
 public class Position {
     // these are values from 0 to 10 inclusive
     public int file;
@@ -26,6 +28,11 @@ public class Position {
         if (other instanceof Position) {
             return this.file == ((Position) other).file && this.rank == ((Position) other).rank;
         } else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(file, rank);
     }
 
     @Override

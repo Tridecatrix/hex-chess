@@ -185,16 +185,14 @@ public class Board {
         if (!isInBounds(move.fromPos) || !isInBounds(move.toPos)) {
             return false;
         }
+        if (this.getPos(move.fromPos) == null || this.getPos(move.fromPos).color != playerColor) {
+            return false;
+        }
 
-        return getLegalMovesFromPos(move.fromPos).contains(move);
+        Set<Move> legalMoves = getLegalMovesFromPos(move.fromPos);
+        return legalMoves.contains(move);
     }
 
-    /**
-     * Main function: get all legal moves for player playerColor for the piece at fromPos
-     *
-     * @param fromPos position of piece
-     * @return list of legal moves
-     */
     public Set<Move> getLegalMovesFromPos(Position fromPos) {
         Piece piece = this.getPos(fromPos);
 
@@ -205,16 +203,13 @@ public class Board {
             return moves;
         }
 
+        // delegate calculation of legal moves to the specific class which the Piece belongs to
         return piece.getMovesFromPos(this, fromPos);
     }
 
-
-    // TODO: have this method return a result object (basically a struct), with options:
-    // - does the move result in a check, checkmate or stalemate (RESULT_CHECK, RESULT_CHECKMATE, etc.)
-    // - does the move result in a pawn promotion
-    // - does the move result in a draw due to repetition and/or insufficient material
-    public void applyMove(Move move, Piece.Color playerColor) {
-        if (!isLegalMove(move, playerColor)) return; // TODO: maybe change this to an assert
+    public MoveResult applyMove(Move move, Piece.Color playerColor) {
+        if (!isLegalMove(move, playerColor))
+            return new MoveResult(false);
 
         List<Piece> enemyPiecesList = playerColor == Piece.Color.BLACK ? whitePieces : blackPieces;
 
@@ -227,5 +222,8 @@ public class Board {
             enemyPiecesList.remove(capturedPiece);
         }
         this.setPos(move.toPos, movedPiece);
+
+        // TODO: include checks for promoted pawn and check/checkmate/stalemate
+        return new MoveResult(true);
     }
 }
