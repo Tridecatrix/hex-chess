@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import static model.Position.*;
 
@@ -20,42 +21,30 @@ public class Knight extends Piece {
     public Set<Move> getMovesFromPos(Board board, Position fromPos) {
         List<Move> possibleMoves = new ArrayList<>(12);
 
-        possibleMoves.add(new Move(fromPos, oneStepLeftAndForward(
-                        oneStepForward(
-                        oneStepForward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepRightAndForward(
-                        oneStepForward(
-                        oneStepForward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepLeftAndBackward(
-                        oneStepLeftAndForward(
-                        oneStepLeftAndForward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepForward(
-                        oneStepLeftAndForward(
-                        oneStepLeftAndForward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepRightAndBackward(
-                        oneStepRightAndForward(
-                        oneStepRightAndForward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepForward(
-                        oneStepRightAndForward(
-                        oneStepRightAndForward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepLeftAndForward(
-                        oneStepLeftAndBackward(
-                        oneStepLeftAndBackward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepBackward(
-                        oneStepLeftAndBackward(
-                        oneStepLeftAndBackward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepRightAndForward(
-                        oneStepRightAndBackward(
-                        oneStepRightAndBackward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepBackward(
-                        oneStepRightAndBackward(
-                        oneStepRightAndBackward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepLeftAndBackward(
-                        oneStepBackward(
-                        oneStepBackward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
-        possibleMoves.add(new Move(fromPos, oneStepRightAndBackward(
-                        oneStepBackward(
-                        oneStepBackward(fromPos, board.boarddim), board.boarddim), board.boarddim)));
+        // list of all possible L shaped step sequences, i.e. step twice in one of 6 directions, then step once in
+        // one of two adjacent directions
+        List<List<BiFunction<Position, Integer, Position>>> stepsAll = List.of(
+                List.of(Position::oneStepForward, Position::oneStepForward, Position::oneStepLeftAndForward),
+                List.of(Position::oneStepForward, Position::oneStepForward, Position::oneStepRightAndForward),
+                List.of(Position::oneStepLeftAndForward, Position::oneStepLeftAndForward, Position::oneStepLeftAndBackward),
+                List.of(Position::oneStepLeftAndForward, Position::oneStepLeftAndForward, Position::oneStepForward),
+                List.of(Position::oneStepRightAndForward, Position::oneStepRightAndForward, Position::oneStepRightAndBackward),
+                List.of(Position::oneStepRightAndForward, Position::oneStepRightAndForward, Position::oneStepForward),
+                List.of(Position::oneStepLeftAndBackward, Position::oneStepLeftAndBackward, Position::oneStepLeftAndForward),
+                List.of(Position::oneStepLeftAndBackward, Position::oneStepLeftAndBackward, Position::oneStepBackward),
+                List.of(Position::oneStepRightAndBackward, Position::oneStepRightAndBackward, Position::oneStepRightAndForward),
+                List.of(Position::oneStepRightAndBackward, Position::oneStepRightAndBackward, Position::oneStepBackward),
+                List.of(Position::oneStepBackward, Position::oneStepBackward, Position::oneStepLeftAndBackward),
+                List.of(Position::oneStepBackward, Position::oneStepBackward, Position::oneStepRightAndBackward)
+        );
+
+        for (List<BiFunction<Position, Integer, Position>> steps : stepsAll) {
+            Position toPos = fromPos;
+            for (BiFunction<Position, Integer, Position> step : steps) {
+                toPos = step.apply(toPos, board.boarddim);
+            }
+            possibleMoves.add(new Move(fromPos, toPos));
+        }
 
         Set<Move> moves = new HashSet<>();
         moves.addAll(possibleMoves.stream().filter(move -> board.isInBounds(move.toPos)

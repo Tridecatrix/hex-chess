@@ -3,7 +3,10 @@ package gui;
 import model.*;
 import model.piece.Piece;
 
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.List;
+import java.util.Set;
 
 public class TerminalGUI {
     public static void main(String[] args) {
@@ -34,13 +37,14 @@ public class TerminalGUI {
                 }
 
                 System.out.print("Possible moves: ");
-                for (Move move : board.getLegalMovesFromPos(fromPos)) {
-                    System.out.print(move.toPos);
-                    System.out.print(", ");
+                List<Move> moves = new ArrayList<>(board.getLegalMovesFromPos(fromPos));
+                for (int i = 0; i < moves.size(); i++) {
+                    if (i != 0) System.out.print(", ");
+                    System.out.print(moves.get(i).toPos);
                 }
 
                 System.out.println();
-                System.out.print("Choose a move:");
+                System.out.print("Choose a move: ");
 
                 String move = scanner.nextLine();
                 toPos = new Position(move);
