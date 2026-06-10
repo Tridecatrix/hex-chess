@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 /**
  * Class for tracking the board and the pieces on the board
@@ -22,8 +22,8 @@ public class Board {
     Piece[][] board = new Piece[boarddim][boarddim];
 
     // references to all pieces in the game (for check/checkmate detection)
-    List<Piece> whitePieces = new ArrayList<>();
-    List<Piece> blackPieces = new ArrayList<>();
+    List<Position> whitePiecePositions = new ArrayList<>();
+    List<Position> blackPiecePositions = new ArrayList<>();
 
     public static final int centerFile = 5;
 
@@ -37,18 +37,20 @@ public class Board {
 
     // default constructor; initialise board in starting position
     public Board() {
-        whitePieces = new ArrayList<>();
-        blackPieces = new ArrayList<>();
+        whitePiecePositions = new ArrayList<>();
+        blackPiecePositions = new ArrayList<>();
 
         for (String pos : List.of("b1", "c2", "d3", "e4", "f5", "g4", "h3", "i2", "j1")) {
             Piece pawn = PieceFactory.createPiece("pawn", "white");
-            whitePieces.add(pawn);
-            this.setPos(new Position(pos), pawn);
+            Position posAsObj = new Position(pos);
+            whitePiecePositions.add(posAsObj);
+            this.setPos(posAsObj, pawn);
         }
 
         for (String pos : List.of("b7", "c7", "d7", "e7", "f7", "g7", "h7", "i7", "j7")) {
             Piece pawn = PieceFactory.createPiece("pawn", "black");
-            blackPieces.add(pawn);
+            Position posAsObj = new Position(pos);
+            blackPiecePositions.add(posAsObj);
             this.setPos(new Position(pos), pawn);
         }
 
@@ -61,7 +63,7 @@ public class Board {
         Piece king = PieceFactory.createPiece("king", "white"); this.setPos(new Position("g1"), king);
         Piece rknight = PieceFactory.createPiece("knight", "white"); this.setPos(new Position("h1"), rknight);
         Piece rrook = PieceFactory.createPiece("rook", "white"); this.setPos(new Position("i1"), rrook);
-        whitePieces.addAll(List.of(lrook, lknight, queen, bishop1, bishop2, bishop3, king, rknight, rrook));
+        whitePiecePositions.addAll(Stream.of("c1", "d1", "e1", "f1", "f2", "f3", "g1", "h1", "i1").map(Position::new).toList());
 
         Piece blrook = PieceFactory.createPiece("rook", "black"); this.setPos(new Position("c8"), blrook);
         Piece blknight = PieceFactory.createPiece("knight", "black"); this.setPos(new Position("d9"), blknight);
@@ -72,7 +74,7 @@ public class Board {
         Piece bking = PieceFactory.createPiece("king", "black"); this.setPos(new Position("g10"), bking);
         Piece brknight = PieceFactory.createPiece("knight", "black"); this.setPos(new Position("h9"), brknight);
         Piece brrook = PieceFactory.createPiece("rook", "black"); this.setPos(new Position("i8"), brrook);
-        blackPieces.addAll(List.of(blrook, blknight, bqueen, bbishop1, bbishop2, bbishop3, bking, brknight, brrook));
+        blackPiecePositions.addAll(Stream.of("c8", "d9", "e10", "f11", "f10", "f9", "g10", "h9", "i8").map(Position::new).toList());
     }
 
     // testing constructor; intiialises a board with the pieces given as strings, e.g.:
@@ -86,12 +88,14 @@ public class Board {
 
             if (isWhite) {
                 Piece pieceAsObj = PieceFactory.createPiece(pieceType, "w");
-                this.setPos(new Position(piecePos), pieceAsObj);
-                whitePieces.add(pieceAsObj);
+                Position posAsObj = new Position(piecePos);
+                this.setPos(posAsObj, pieceAsObj);
+                whitePiecePositions.add(posAsObj);
             } else {
                 Piece pieceAsObj = PieceFactory.createPiece(pieceType, "b");
-                this.setPos(new Position(piecePos), pieceAsObj);
-                blackPieces.add(pieceAsObj);
+                Position posAsObj = new Position(piecePos);
+                this.setPos(posAsObj, pieceAsObj);
+                blackPiecePositions.add(posAsObj);
             }
         }
     }
@@ -215,17 +219,19 @@ public class Board {
         if (!isLegalMove(move, playerColor))
             return new MoveResult(false);
 
-        List<Piece> enemyPiecesList = playerColor == Piece.Color.BLACK ? whitePieces : blackPieces;
+        List<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
+        List<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
 
         Piece movedPiece = this.getPos(move.fromPos);
         this.setPos(move.fromPos, null);
+        playerPositionsList.remove(move.fromPos);
 
         Piece capturedPiece = this.getPos(move.toPos);
         if (capturedPiece != null) {
-            assert capturedPiece.color != playerColor;
-            enemyPiecesList.remove(capturedPiece);
+            enemyPositionsList.remove(move.toPos);
         }
         this.setPos(move.toPos, movedPiece);
+        playerPositionsList.add(move.toPos);
 
         MoveResult.CheckStatus checkStatus = MoveResult.CheckStatus.NONE;
         Position promotedPawn = null;
@@ -247,11 +253,7 @@ public class Board {
         Piece originalPiece = this.getPos(promotionPos);
         assert originalPiece instanceof Pawn;
 
-        List<Piece> piecesList = originalPiece.color == Piece.Color.WHITE ? whitePieces : blackPieces;
-        piecesList.remove(originalPiece);
-
         Piece promotedPiece = PieceFactory.createPiece(promotionType, originalPiece.color);
-        piecesList.add(promotedPiece);
         this.setPos(promotionPos, promotedPiece);
     }
 }
