@@ -35,7 +35,7 @@ public class Board {
         return this.board[pos.file][pos.rank];
     }
 
-    public void setPos(Position pos, Piece piece) {
+    void setPos(Position pos, Piece piece) {
         this.board[pos.file][pos.rank] = piece;
     }
 
@@ -248,15 +248,18 @@ public class Board {
         // delegate calculation of legal moves to the specific class which the Piece belongs to
         Set<Move> potentialMoves = piece.getMovesFromPos(this, fromPos);
 
+        Position playerKingPos = piece.color == Piece.Color.WHITE ? this.whiteKingPos : this.blackKingPos;
+
+        // if there is no king, do not need the below
+        if (playerKingPos == null) return potentialMoves;
+
         // need one more condition: a move is not allowed if it causes the king to be in check,
-        // which is true both if it is and isn't already in check
         Set<Move> moves = new HashSet<>();
         for (Move move : potentialMoves) {
             Board boardcopy = new Board(this);
             boardcopy.applyMoveTentatively(move);
 
             // apply the move tentatively and check if the king is in check afterwards, then revert the move
-            Position playerKingPos = piece.color == Piece.Color.WHITE ? this.whiteKingPos : this.blackKingPos;
             if (!boardcopy.isKingInCheck(piece.color)) {
                 moves.add(move);
             }
