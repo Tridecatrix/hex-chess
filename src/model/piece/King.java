@@ -2,6 +2,7 @@ package model.piece;
 
 import model.Board;
 import model.Move;
+import model.PieceType;
 import model.Position;
 
 import java.util.ArrayList;
@@ -87,5 +88,10 @@ public class King extends Piece {
     @Override
     public char getChar() {
         return 'k';
+    }
+
+    @Override
+    public PieceType getPieceType() {
+        return PieceType.KING;
     }
 }

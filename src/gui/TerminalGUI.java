@@ -6,7 +6,6 @@ import model.piece.Piece;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.List;
-import java.util.Set;
 
 public class TerminalGUI {
     public static void main(String[] args) {
@@ -20,6 +19,15 @@ public class TerminalGUI {
             System.out.println(board);
             System.out.println("Current player: " + (currentPlayer.equals(Piece.Color.WHITE) ? "White" : "Black"));
 
+            boolean isKingInCheck = board.isKingInCheck(currentPlayer);
+            boolean isStalemate = board.isInStalemate(currentPlayer);
+            if (isKingInCheck && isStalemate) {
+                System.out.println("Checkmate; " + (currentPlayer.equals(Piece.Color.WHITE) ? "black" : "white") + " wins!");
+            } else if (isStalemate) {
+                System.out.println("Stalemate; " + (currentPlayer.equals(Piece.Color.WHITE) ? "black" : "white") + " wins!");
+            } else if (isKingInCheck) {
+                System.out.println("King is in check! Move to avoid checkmate!");
+            }
             Position fromPos;
             Position toPos;
             MoveResult moveResult;
@@ -67,7 +75,7 @@ public class TerminalGUI {
                     continue;
                 }
 
-                moveResult = board.applyMove(new Move(fromPos, toPos), currentPlayer);
+                moveResult = board.applyMoveWithLegalityCheck(new Move(fromPos, toPos), currentPlayer);
 
                 if (!moveResult.validMove) {
                     System.out.println("Move was not valid; try again");
@@ -78,12 +86,12 @@ public class TerminalGUI {
                     while (true) {
                         System.out.println("Choose type to promote pawn at " + moveResult.promoteablePawn + " to (n/b/r/q): ");
                         String promotedType = scanner.nextLine();
-                        PromotionChoices promotionChoice;
+                        PieceType promotionChoice;
                         switch (promotedType.strip().toLowerCase()) {
-                            case "n", "knight" -> promotionChoice = PromotionChoices.KNIGHT;
-                            case "b", "bishop" -> promotionChoice = PromotionChoices.BISHOP;
-                            case "r", "rook" -> promotionChoice = PromotionChoices.ROOK;
-                            case "q", "queen" -> promotionChoice = PromotionChoices.QUEEN;
+                            case "n", "knight" -> promotionChoice = PieceType.KNIGHT;
+                            case "b", "bishop" -> promotionChoice = PieceType.BISHOP;
+                            case "r", "rook" -> promotionChoice = PieceType.ROOK;
+                            case "q", "queen" -> promotionChoice = PieceType.QUEEN;
                             default -> {
                                 System.out.println("Illegal promotion choice; try again");
                                 continue;
@@ -94,6 +102,7 @@ public class TerminalGUI {
                     }
                 }
 
+                System.out.println();
                 break;
             }
 

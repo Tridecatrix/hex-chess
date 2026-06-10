@@ -1,5 +1,6 @@
 package model;
 
+import model.piece.King;
 import model.piece.Pawn;
 import model.piece.Piece;
 
@@ -17,13 +18,16 @@ public class Board {
     public final int boarddim = 11;
 
     // for 91 space board; there are 11 files going vertically and 11 ranks going skew-horizontally.
-    // for files on the outer edges of the board, some of the ranks don't exist, e.g. only a1-6 exist
-    // f, or file 6, is the middle of the board
+    // for files on the outer edges of the board, some of the ranks don't exist, e.g. only a1-7 exist
+    // file f, or file 6, is the middle of the board
     Piece[][] board = new Piece[boarddim][boarddim];
 
     // references to all pieces in the game (for check/checkmate detection)
     List<Position> whitePiecePositions = new ArrayList<>();
     List<Position> blackPiecePositions = new ArrayList<>();
+
+    Position whiteKingPos;
+    Position blackKingPos;
 
     public static final int centerFile = 5;
 
@@ -67,14 +71,17 @@ public class Board {
 
         Piece blrook = PieceFactory.createPiece("rook", "black"); this.setPos(new Position("c8"), blrook);
         Piece blknight = PieceFactory.createPiece("knight", "black"); this.setPos(new Position("d9"), blknight);
-        Piece bqueen = PieceFactory.createPiece("queen", "black"); this.setPos(new Position("e10"), bqueen);
+        Piece bking = PieceFactory.createPiece("king", "black"); this.setPos(new Position("e10"), bking);
         Piece bbishop1 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f11"), bbishop1);
         Piece bbishop2 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f10"), bbishop2);
         Piece bbishop3 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f9"), bbishop3);
-        Piece bking = PieceFactory.createPiece("king", "black"); this.setPos(new Position("g10"), bking);
+        Piece bqueen = PieceFactory.createPiece("queen", "black"); this.setPos(new Position("g10"), bqueen);
         Piece brknight = PieceFactory.createPiece("knight", "black"); this.setPos(new Position("h9"), brknight);
         Piece brrook = PieceFactory.createPiece("rook", "black"); this.setPos(new Position("i8"), brrook);
         blackPiecePositions.addAll(Stream.of("c8", "d9", "e10", "f11", "f10", "f9", "g10", "h9", "i8").map(Position::new).toList());
+
+        whiteKingPos = new Position("g1");
+        blackKingPos = new Position("e10");
     }
 
     // testing constructor; intiialises a board with the pieces given as strings, e.g.:
@@ -91,13 +98,42 @@ public class Board {
                 Position posAsObj = new Position(piecePos);
                 this.setPos(posAsObj, pieceAsObj);
                 whitePiecePositions.add(posAsObj);
+                if (pieceAsObj instanceof King)
+                    whiteKingPos = posAsObj;
             } else {
                 Piece pieceAsObj = PieceFactory.createPiece(pieceType, "b");
                 Position posAsObj = new Position(piecePos);
                 this.setPos(posAsObj, pieceAsObj);
                 blackPiecePositions.add(posAsObj);
+                if (pieceAsObj instanceof King)
+                    blackKingPos = posAsObj;
             }
         }
+    }
+
+    // deep copy constructor; given a board, create a copy
+    public Board(Board boardOriginal) {
+        for (int x = 0; x < this.boarddim; x++) {
+            for (int y = 0; y < this.boarddim; y++) {
+                Position pos = new Position(x, y);
+                Piece originalPiece = boardOriginal.getPos(pos);
+
+                if (originalPiece != null) {
+                    Piece copyPiece = PieceFactory.createPiece(originalPiece.getPieceType(), originalPiece.color);
+                    this.setPos(pos, copyPiece);
+                }
+            }
+        }
+
+        for (Position pos : boardOriginal.whitePiecePositions) {
+            this.whitePiecePositions.add(new Position(pos.file, pos.rank));
+        }
+        for (Position pos : boardOriginal.blackPiecePositions) {
+            this.blackPiecePositions.add(new Position(pos.file, pos.rank));
+        }
+
+        this.whiteKingPos = new Position(boardOriginal.whiteKingPos.file, boardOriginal.whiteKingPos.rank);
+        this.blackKingPos = new Position(boardOriginal.blackKingPos.file, boardOriginal.blackKingPos.rank);
     }
 
     @Override
@@ -204,18 +240,70 @@ public class Board {
     public Set<Move> getLegalMovesFromPos(Position fromPos) {
         Piece piece = this.getPos(fromPos);
 
-        Set<Move> moves = new HashSet<>();
-
         if (piece == null) {
             // there is no piece there, so no moves
-            return moves;
+            return new HashSet<>();
         }
 
         // delegate calculation of legal moves to the specific class which the Piece belongs to
-        return piece.getMovesFromPos(this, fromPos);
+        Set<Move> potentialMoves = piece.getMovesFromPos(this, fromPos);
+
+        // need one more condition: a move is not allowed if it causes the king to be in check,
+        // which is true both if it is and isn't already in check
+        Set<Move> moves = new HashSet<>();
+        for (Move move : potentialMoves) {
+            Board boardcopy = new Board(this);
+            boardcopy.applyMoveTentatively(move);
+
+            // apply the move tentatively and check if the king is in check afterwards, then revert the move
+            Position playerKingPos = piece.color == Piece.Color.WHITE ? this.whiteKingPos : this.blackKingPos;
+            if (!boardcopy.isKingInCheck(piece.color)) {
+                moves.add(move);
+            }
+        }
+
+        return moves;
     }
 
-    public MoveResult applyMove(Move move, Piece.Color playerColor) {
+    // helper for getLegalMoves, used to check that the king is not in check after a move is done
+    // returns captured piece, so that it isn't lost
+    Piece applyMoveTentatively(Move move) {
+        Piece movedPiece = this.getPos(move.fromPos);
+        Piece.Color playerColor = movedPiece.color;
+
+        List<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
+        List<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
+
+        this.setPos(move.fromPos, null);
+        playerPositionsList.remove(move.fromPos);
+
+        Piece capturedPiece = this.getPos(move.toPos);
+        this.setPos(move.toPos, movedPiece);
+        playerPositionsList.add(move.toPos);
+
+        if (capturedPiece != null)
+            enemyPositionsList.remove(move.toPos);
+
+        return capturedPiece;
+    }
+
+    void revertTentativeMove(Move move, Piece capturedPiece) {
+        Piece movedPiece = this.getPos(move.toPos);
+        Piece.Color playerColor = movedPiece.color;
+
+        List<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
+        List<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
+
+        this.setPos(move.toPos, capturedPiece);
+        if (capturedPiece != null)
+            enemyPositionsList.add(move.toPos);
+        playerPositionsList.remove(move.toPos);
+
+        this.setPos(move.fromPos, movedPiece);
+        playerPositionsList.add(move.fromPos);
+    }
+
+    public MoveResult applyMoveWithLegalityCheck(Move move, Piece.Color playerColor) {
         if (!isLegalMove(move, playerColor))
             return new MoveResult(false);
 
@@ -224,7 +312,7 @@ public class Board {
 
         Piece movedPiece = this.getPos(move.fromPos);
         this.setPos(move.fromPos, null);
-        playerPositionsList.remove(move.fromPos);
+        playerPositionsList.remove(move.fromPos); // note: need to do this because the piece's position changed
 
         Piece capturedPiece = this.getPos(move.toPos);
         if (capturedPiece != null) {
@@ -233,7 +321,6 @@ public class Board {
         this.setPos(move.toPos, movedPiece);
         playerPositionsList.add(move.toPos);
 
-        MoveResult.CheckStatus checkStatus = MoveResult.CheckStatus.NONE;
         Position promotedPawn = null;
 
         // Promotion check; the promotion action is handled in handlePromotion
@@ -245,11 +332,21 @@ public class Board {
             }
         }
 
-        // TODO: include checks for check/checkmate/stalemate
-        return new MoveResult(true, checkStatus, promotedPawn);
+        // Update the king position if the moved piece is a king
+        if (movedPiece instanceof King) {
+            if (playerColor == Piece.Color.WHITE)
+                whiteKingPos = move.toPos;
+            else {
+                blackKingPos = move.toPos;
+            }
+        }
+
+        return new MoveResult(true, promotedPawn);
     }
 
-    public void handlePromotion(Position promotionPos, PromotionChoices promotionType) {
+    public void handlePromotion(Position promotionPos, PieceType promotionType) {
+        assert promotionType != PieceType.KING && promotionType != PieceType.PAWN;
+
         Piece originalPiece = this.getPos(promotionPos);
         assert originalPiece instanceof Pawn;
 
@@ -262,7 +359,8 @@ public class Board {
      */
     public boolean[][] getSpacesUnderThreat(Piece.Color playerColor) {
         List<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
-        boolean[][] underAttack = new boolean[boarddim][boarddim]; // note: this could easily be a bit vector instead, but will avoid premature optimisation
+        boolean[][] underAttack = new boolean[boarddim][boarddim];
+        // note: the above could easily be a bit vector instead, but will avoid premature optimisation
 
         // initially set all entries to false
         for (int x = 0; x < boarddim; x++) {
@@ -302,5 +400,24 @@ public class Board {
             res.add(spacesUnderThreat[pos.file][pos.rank]);
         }
         return res;
+    }
+
+    /**
+     * Checks stalemate (player has no legal moves)
+     */
+    public boolean isInStalemate(Piece.Color playerColor) {
+        List<Position> playerPiecePositions = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
+        for (Position pos : playerPiecePositions) {
+            if (!this.getLegalMovesFromPos(pos).isEmpty()) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the king is in check
+     */
+    public boolean isKingInCheck(Piece.Color playerColor) {
+        Position kingPos = playerColor == Piece.Color.WHITE ? whiteKingPos : blackKingPos;
+        return isSpaceUnderThreat(playerColor, kingPos);
     }
 }

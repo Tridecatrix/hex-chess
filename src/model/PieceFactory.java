@@ -55,14 +55,15 @@ public class PieceFactory {
         return piece;
     }
 
-    // factory method for promotion specifically
-    public static Piece createPiece(PromotionChoices type, Piece.Color color) {
+    public static Piece createPiece(PieceType type, Piece.Color color) {
         Piece piece;
         switch (type) {
             case BISHOP -> piece = new Bishop(color);
             case ROOK -> piece = new Rook(color);
             case KNIGHT -> piece = new Knight(color);
             case QUEEN -> piece = new Queen(color);
+            case KING -> piece = new King(color);
+            case PAWN -> piece = new Pawn(color);
             default -> throw new GameException("Illegal piece creation");
         }
         return piece;

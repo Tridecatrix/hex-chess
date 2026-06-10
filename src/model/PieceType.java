@@ -1,8 +1,10 @@
 package model;
 
-public enum PromotionChoices {
+public enum PieceType {
     KNIGHT,
     BISHOP,
     ROOK,
     QUEEN,
+    PAWN,
+    KING
 }

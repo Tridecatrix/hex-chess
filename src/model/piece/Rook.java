@@ -2,6 +2,7 @@ package model.piece;
 
 import model.Board;
 import model.Move;
+import model.PieceType;
 import model.Position;
 
 import java.util.ArrayList;
@@ -47,5 +48,10 @@ public class Rook extends Piece {
     @Override
     public char getChar() {
         return 'r';
+    }
+
+    @Override
+    public PieceType getPieceType() {
+        return PieceType.ROOK;
     }
 }

@@ -2,6 +2,7 @@ package model.piece;
 
 import model.Board;
 import model.Move;
+import model.PieceType;
 import model.Position;
 
 import java.util.HashSet;
@@ -92,5 +93,10 @@ public class Pawn extends Piece {
             moves.add(new Move(fromPos, rightCapturePos));
 
         return moves;
+    }
+
+    @Override
+    public PieceType getPieceType() {
+        return PieceType.PAWN;
     }
 }

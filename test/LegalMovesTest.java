@@ -208,9 +208,30 @@ class LegalMovesTest {
     }
 
     @Test
-    void king() {
-        Board board = new Board(List.of("Kf6", "Pg6", "Pe7", "pe6"));
+    void kingSimple() {
+        Board board = new Board(List.of("Kf6", "Pg6", "Pe7", "Pe6"));
 
-        assertMovesEqual(Set.of("f5", "e4", "e5", "d5", "e6", "f7", "g7", "h5", "g5", "g4"), board, "f6");
+        assertMovesEqual(Set.of("f5", "e4", "e5", "d5", "f7", "g7", "h5", "g5", "g4"), board, "f6");
+    }
+
+    @Test
+    void kingNoMovesIntoCheck1() {
+        Board board = new Board(List.of("Ke5", "qc6"));
+
+        assertMovesEqual(Set.of("f7", "f5", "f4", "d4", "d3"), board, "e5");
+    }
+
+    @Test
+    void kingNoMovesIntoCheck2() {
+        Board board = new Board(List.of("ke5", "Pe6", "Pg4", "Ph4", "Pd4"));
+
+        assertMovesEqual(Set.of("d3", "d5", "f4", "f6", "e4", "d4", "e6"), board, "e5");
+    }
+
+    @Test
+    void kingNoMovesIntoCheck3() {
+        Board board = new Board(List.of("Ke5", "ke3", "nf8"));
+
+        assertMovesEqual(Set.of("c4", "d6", "e6", "f6", "f7"), board, "e5");
     }
 }

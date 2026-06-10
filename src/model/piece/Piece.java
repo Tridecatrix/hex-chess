@@ -2,6 +2,7 @@ package model.piece;
 
 import model.Board;
 import model.Move;
+import model.PieceType;
 import model.Position;
 
 import java.util.HashSet;
@@ -28,4 +29,6 @@ public abstract class Piece {
     }
 
     abstract public char getChar();
+
+    abstract public PieceType getPieceType();
 }
