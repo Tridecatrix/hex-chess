@@ -420,4 +420,11 @@ public class Board {
         Position kingPos = playerColor == Piece.Color.WHITE ? whiteKingPos : blackKingPos;
         return isSpaceUnderThreat(playerColor, kingPos);
     }
+
+    /**
+     * Checks for checkmate
+     */
+    public boolean isInCheckmate(Piece.Color playerColor) {
+        return isInStalemate(playerColor) && isKingInCheck(playerColor);
+    }
 }
