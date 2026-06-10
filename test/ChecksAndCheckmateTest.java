@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ChecksAndCheckmate {
+public class ChecksAndCheckmateTest {
     Set<String> movesToString(Set<Move> moves) {
         Set<String> strs = new HashSet<>(moves.size());
         for (Move move : moves) {
