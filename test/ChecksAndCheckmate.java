@@ -68,4 +68,32 @@ public class ChecksAndCheckmate {
         System.out.println(board);
         assertFalse(board.isKingInCheck(Piece.Color.BLACK));
     }
+
+    @Test
+    void checkmate1() {
+        Board board = new Board(List.of("kf11", "pe10", "Rd8", "Ne7", "Rk6"));
+        System.out.println(board);
+        assertTrue(board.isInCheckmate(Piece.Color.BLACK));
+    }
+
+    @Test
+    void checkmate2() {
+        Board board = new Board(List.of("Kf6", "Bd5", "re3", "qh4", "ph7", "ni6"));
+        System.out.println(board);
+        assertTrue(board.isInCheckmate(Piece.Color.WHITE));
+    }
+
+    @Test
+    void nonCheckmate1() {
+        Board board = new Board(List.of("Kf6", "Bd5", "re3", "qh4", "ph7"));
+        System.out.println(board);
+        assertFalse(board.isInCheckmate(Piece.Color.WHITE));
+    }
+
+    @Test
+    void nonCheckmate2() {
+        Board board = new Board(List.of("Kf6", "Bd5", "re3", "qh4", "ni6"));
+        System.out.println(board);
+        assertFalse(board.isInCheckmate(Piece.Color.WHITE));
+    }
 }
