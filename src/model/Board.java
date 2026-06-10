@@ -71,17 +71,17 @@ public class Board {
 
         Piece blrook = PieceFactory.createPiece("rook", "black"); this.setPos(new Position("c8"), blrook);
         Piece blknight = PieceFactory.createPiece("knight", "black"); this.setPos(new Position("d9"), blknight);
-        Piece bking = PieceFactory.createPiece("king", "black"); this.setPos(new Position("e10"), bking);
+        Piece bqueen = PieceFactory.createPiece("queen", "black"); this.setPos(new Position("e10"), bqueen);
         Piece bbishop1 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f11"), bbishop1);
         Piece bbishop2 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f10"), bbishop2);
         Piece bbishop3 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f9"), bbishop3);
-        Piece bqueen = PieceFactory.createPiece("queen", "black"); this.setPos(new Position("g10"), bqueen);
+        Piece bking = PieceFactory.createPiece("king", "black"); this.setPos(new Position("g10"), bking);
         Piece brknight = PieceFactory.createPiece("knight", "black"); this.setPos(new Position("h9"), brknight);
         Piece brrook = PieceFactory.createPiece("rook", "black"); this.setPos(new Position("i8"), brrook);
         blackPiecePositions.addAll(Stream.of("c8", "d9", "e10", "f11", "f10", "f9", "g10", "h9", "i8").map(Position::new).toList());
 
         whiteKingPos = new Position("g1");
-        blackKingPos = new Position("e10");
+        blackKingPos = new Position("g10");
     }
 
     // testing constructor; intiialises a board with the pieces given as strings, e.g.:
@@ -132,8 +132,15 @@ public class Board {
             this.blackPiecePositions.add(new Position(pos.file, pos.rank));
         }
 
-        this.whiteKingPos = new Position(boardOriginal.whiteKingPos.file, boardOriginal.whiteKingPos.rank);
-        this.blackKingPos = new Position(boardOriginal.blackKingPos.file, boardOriginal.blackKingPos.rank);
+        if (boardOriginal.whiteKingPos == null)
+            this.whiteKingPos = null;
+        else
+            this.whiteKingPos = new Position(boardOriginal.whiteKingPos.file, boardOriginal.whiteKingPos.rank);
+
+        if (boardOriginal.blackKingPos == null)
+            this.blackKingPos = null;
+        else
+            this.blackKingPos = new Position(boardOriginal.blackKingPos.file, boardOriginal.blackKingPos.rank);
     }
 
     @Override
