@@ -15,7 +15,6 @@ public class King extends Piece {
         super(color);
     }
 
-    // TODO: moves that move the king into check are illegal
     @Override
     public Set<Move> getMovesFromPos(Board board, Position fromPos) {
         ArrayList<BiFunction<Position, Integer, Position>> movementDirs = new ArrayList<>(List.of(
@@ -32,16 +31,57 @@ public class King extends Piece {
                 Position::bishopStepForwardLeft,
                 Position::bishopStepForwardRight));
 
-        List<Move> possibleMoves = new ArrayList<>(12);
+        List<Position> possibleDestinations = new ArrayList<>(12);
         for (BiFunction<Position, Integer, Position> stepInDir : movementDirs) {
-            possibleMoves.add(new Move(fromPos, stepInDir.apply(fromPos, board.boarddim)));
+            possibleDestinations.add(stepInDir.apply(fromPos, board.boarddim));
         }
 
+        List<Position> destinationsWithChecks = new ArrayList<>(12);
+        destinationsWithChecks.addAll(possibleDestinations.stream().filter(pos -> board.isInBounds(pos)
+                && (board.getPos(pos) == null
+                || board.getPos(pos).color != this.color)).toList());
+
+        // additionally filter out positions under threat (cannot move the king into check)
         Set<Move> moves = new HashSet<>();
-        moves.addAll(possibleMoves.stream().filter(move -> board.isInBounds(move.toPos)
-                && (board.getPos(move.toPos) == null
-                || board.getPos(move.toPos).color != this.color)).toList());
+        List<Boolean> isSpaceUnderCheck = board.areSpacesUnderThreat(this.color, destinationsWithChecks);
+        for (int i = 0; i < destinationsWithChecks.size(); i++) {
+            if (!isSpaceUnderCheck.get(i)) {
+                moves.add(new Move(fromPos, destinationsWithChecks.get(i)));
+            }
+        }
+
         return moves;
+    }
+
+    @Override
+    public Set<Move> getPotentialCapturingMovesFromPos(Board board, Position fromPos) {
+        ArrayList<BiFunction<Position, Integer, Position>> movementDirs = new ArrayList<>(List.of(
+                Position::oneStepBackward,
+                Position::oneStepForward,
+                Position::oneStepLeftAndBackward,
+                Position::oneStepLeftAndForward,
+                Position::oneStepRightAndBackward,
+                Position::oneStepRightAndForward,
+                Position::bishopStepLeft,
+                Position::bishopStepRight,
+                Position::bishopStepBackwardLeft,
+                Position::bishopStepBackwardRight,
+                Position::bishopStepForwardLeft,
+                Position::bishopStepForwardRight));
+
+        List<Position> possibleDestinations = new ArrayList<>(12);
+        for (BiFunction<Position, Integer, Position> stepInDir : movementDirs) {
+            possibleDestinations.add(stepInDir.apply(fromPos, board.boarddim));
+        }
+
+        List<Position> destinationsWithChecks = new ArrayList<>(12);
+        destinationsWithChecks.addAll(possibleDestinations.stream().filter(pos -> board.isInBounds(pos)
+                && (board.getPos(pos) == null
+                || board.getPos(pos).color != this.color)).toList());
+
+        // skip removing locations that are in check
+
+        return new HashSet<>(destinationsWithChecks.stream().map(p -> new Move(fromPos, p)).toList());
     }
 
     @Override

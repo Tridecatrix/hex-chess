@@ -256,4 +256,51 @@ public class Board {
         Piece promotedPiece = PieceFactory.createPiece(promotionType, originalPiece.color);
         this.setPos(promotionPos, promotedPiece);
     }
+
+    /**
+     * Helper for checking checks/checkmates: calculate the set of positions which are under attack
+     */
+    public boolean[][] getSpacesUnderThreat(Piece.Color playerColor) {
+        List<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
+        boolean[][] underAttack = new boolean[boarddim][boarddim]; // note: this could easily be a bit vector instead, but will avoid premature optimisation
+
+        // initially set all entries to false
+        for (int x = 0; x < boarddim; x++) {
+            for (int y = 0; y < boarddim; y++) {
+                underAttack[x][y] = false;
+            }
+        }
+
+        for (Position pos : enemyPositionsList) {
+            assert this.getPos(pos) != null && this.getPos(pos).color != playerColor;
+
+            for (Move move : this.getPos(pos).getPotentialCapturingMovesFromPos(this, pos)) {
+                // any space which the opponent can move to is under attack
+                underAttack[move.toPos.file][move.toPos.rank] = true;
+            }
+        }
+
+        return underAttack;
+    }
+
+    /**
+     * Helper for checks: given a position, return true if it is under threat
+     */
+    public boolean isSpaceUnderThreat(Piece.Color playerColor, Position pos) {
+        return this.getSpacesUnderThreat(playerColor)[pos.file][pos.rank];
+    }
+
+    /**
+     * Helper for checking checkmates: given a list of positions, returns a list where index i
+     * is true if position i is under threat. More efficient than calling isSpaceUnderThreat n times
+     * since the call to getSpacesUnderThreat is amortised.
+     */
+    public List<Boolean> areSpacesUnderThreat(Piece.Color playerColor, List<Position> poss) {
+        boolean[][] spacesUnderThreat = this.getSpacesUnderThreat(playerColor);
+        List<Boolean> res = new ArrayList<>(poss.size());
+        for (Position pos : poss) {
+            res.add(spacesUnderThreat[pos.file][pos.rank]);
+        }
+        return res;
+    }
 }

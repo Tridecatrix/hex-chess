@@ -71,4 +71,26 @@ public class Pawn extends Piece {
         
         return moves;
     }
+
+    @Override
+    public Set<Move> getPotentialCapturingMovesFromPos(Board board, Position fromPos) {
+        Set<Move> moves = new HashSet<>();
+
+        Position leftCapturePos, rightCapturePos;
+        if (this.color == Color.WHITE) {
+            leftCapturePos = Position.oneStepLeftAndForward(fromPos, board.boarddim);
+            rightCapturePos = Position.oneStepRightAndForward(fromPos, board.boarddim);
+        } else {
+            leftCapturePos = Position.oneStepLeftAndBackward(fromPos, board.boarddim);
+            rightCapturePos = Position.oneStepRightAndBackward(fromPos, board.boarddim);
+        }
+
+        if (board.isInBounds(leftCapturePos))
+            moves.add(new Move(fromPos, leftCapturePos));
+
+        if (board.isInBounds(rightCapturePos))
+            moves.add(new Move(fromPos, rightCapturePos));
+
+        return moves;
+    }
 }
