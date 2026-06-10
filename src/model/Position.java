@@ -16,7 +16,7 @@ public class Position {
 
     public Position(String pos) {
         if (pos.isEmpty()) {
-            throw new RuntimeException("Position cannot be empty");
+            throw new GameException("Position cannot be empty");
         }
 
         this.file = ((pos.toLowerCase().charAt(0) - 'a'));

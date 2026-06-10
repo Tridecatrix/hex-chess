@@ -1,5 +1,6 @@
 package model;
 
+import model.piece.Pawn;
 import model.piece.Piece;
 
 import java.lang.Math;
@@ -9,6 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 
+/**
+ * Class for tracking the board and the pieces on the board
+ */
 public class Board {
     public final int boarddim = 11;
 
@@ -186,7 +190,7 @@ public class Board {
             return false;
         }
         if (this.getPos(move.fromPos) == null || this.getPos(move.fromPos).color != playerColor) {
-            return false;
+            return false; // no piece there OR piece is not player's color
         }
 
         Set<Move> legalMoves = getLegalMovesFromPos(move.fromPos);
@@ -199,7 +203,7 @@ public class Board {
         Set<Move> moves = new HashSet<>();
 
         if (piece == null) {
-            // there is no piece there OR the piece is not the player's color
+            // there is no piece there, so no moves
             return moves;
         }
 
@@ -223,7 +227,31 @@ public class Board {
         }
         this.setPos(move.toPos, movedPiece);
 
-        // TODO: include checks for promoted pawn and check/checkmate/stalemate
-        return new MoveResult(true);
+        MoveResult.CheckStatus checkStatus = MoveResult.CheckStatus.NONE;
+        Position promotedPawn = null;
+
+        // Promotion check; the promotion action is handled in handlePromotion
+        if (movedPiece instanceof Pawn) {
+            if (movedPiece.color == Piece.Color.WHITE
+                    && move.toPos.rank == boarddim - Position.distanceFromCenter(move.toPos, boarddim)
+               || movedPiece.color == Piece.Color.BLACK && move.toPos.rank == 0) {
+                promotedPawn = move.toPos;
+            }
+        }
+
+        // TODO: include checks for check/checkmate/stalemate
+        return new MoveResult(true, checkStatus, promotedPawn);
+    }
+
+    public void handlePromotion(Position promotionPos, PromotionChoices promotionType) {
+        Piece originalPiece = this.getPos(promotionPos);
+        assert originalPiece instanceof Pawn;
+
+        List<Piece> piecesList = originalPiece.color == Piece.Color.WHITE ? whitePieces : blackPieces;
+        piecesList.remove(originalPiece);
+
+        Piece promotedPiece = PieceFactory.createPiece(promotionType, originalPiece.color);
+        piecesList.add(promotedPiece);
+        this.setPos(promotionPos, promotedPiece);
     }
 }

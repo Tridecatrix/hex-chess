@@ -1,6 +1,9 @@
 package model;
 
 import model.piece.*;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+
+import java.text.ParseException;
 
 public class PieceFactory {
     public static Piece createPiece(String type, String color) {
@@ -46,9 +49,22 @@ public class PieceFactory {
                 piece = new King(colorAsObj);
                 break;
             default:
-                throw new RuntimeException("Invalid piece type");
+                throw new GameException("Invalid piece type");
         }
 
+        return piece;
+    }
+
+    // factory method for promotion specifically
+    public static Piece createPiece(PromotionChoices type, Piece.Color color) {
+        Piece piece;
+        switch (type) {
+            case BISHOP -> piece = new Bishop(color);
+            case ROOK -> piece = new Rook(color);
+            case KNIGHT -> piece = new Knight(color);
+            case QUEEN -> piece = new Queen(color);
+            default -> throw new GameException("Illegal piece creation");
+        }
         return piece;
     }
 }

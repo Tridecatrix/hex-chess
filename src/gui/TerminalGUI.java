@@ -74,10 +74,28 @@ public class TerminalGUI {
                     continue;
                 }
 
+                if (moveResult.promoteablePawn != null) {
+                    while (true) {
+                        System.out.println("Choose type to promote pawn at " + moveResult.promoteablePawn + " to (n/b/r/q): ");
+                        String promotedType = scanner.nextLine();
+                        PromotionChoices promotionChoice;
+                        switch (promotedType.strip().toLowerCase()) {
+                            case "n", "knight" -> promotionChoice = PromotionChoices.KNIGHT;
+                            case "b", "bishop" -> promotionChoice = PromotionChoices.BISHOP;
+                            case "r", "rook" -> promotionChoice = PromotionChoices.ROOK;
+                            case "q", "queen" -> promotionChoice = PromotionChoices.QUEEN;
+                            default -> {
+                                System.out.println("Illegal promotion choice; try again");
+                                continue;
+                            }
+                        }
+
+                        board.handlePromotion(moveResult.promoteablePawn, promotionChoice);
+                    }
+                }
+
                 break;
             }
-
-
 
             currentPlayer = currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
         }
