@@ -9,25 +9,14 @@ import java.util.List;
 
 public class TerminalGUI {
     public static void main(String[] args) {
-        Board board = new Board();
-        Piece.Color currentPlayer = Piece.Color.WHITE;
+        GameState game = new GameState();
 
+        // Game loop
         while (true) {
             Scanner scanner = new Scanner(System.in);
 
-            System.out.println("Current board:");
-            System.out.println(board);
-            System.out.println("Current player: " + (currentPlayer.equals(Piece.Color.WHITE) ? "White" : "Black"));
+            System.out.println(game);
 
-            boolean isKingInCheck = board.isKingInCheck(currentPlayer);
-            boolean isStalemate = board.isInStalemate(currentPlayer);
-            if (isKingInCheck && isStalemate) {
-                System.out.println("Checkmate; " + (currentPlayer.equals(Piece.Color.WHITE) ? "black" : "white") + " wins!");
-            } else if (isStalemate) {
-                System.out.println("Stalemate; " + (currentPlayer.equals(Piece.Color.WHITE) ? "black" : "white") + " wins!");
-            } else if (isKingInCheck) {
-                System.out.println("King is in check! Move to avoid checkmate!");
-            }
             Position fromPos;
             Position toPos;
             MoveResult moveResult;
@@ -42,18 +31,18 @@ public class TerminalGUI {
                     continue;
                 }
 
-                if (board.getPos(fromPos) == null) {
+                if (game.getBoard().getPos(fromPos) == null) {
                     System.out.println("No piece at location");
                     continue;
                 }
 
-                if (board.getPos(fromPos).color != currentPlayer) {
+                if (game.getBoard().getPos(fromPos).color != game.getCurrentPlayer()) {
                     System.out.println("Cannot move opponent's pieces");
                     continue;
                 }
 
                 System.out.print("Valid moves: ");
-                List<String> moves = new ArrayList<>(board.getLegalMovesFromPos(fromPos)).stream().map(m -> m.toPos.toString()).sorted().toList();
+                List<String> moves = new ArrayList<>(game.getLegalMovesFromPos(fromPos)).stream().map(m -> m.toPos.toString()).sorted().toList();
                 for (int i = 0; i < moves.size(); i++) {
                     if (i != 0) System.out.print(", ");
                     System.out.print(moves.get(i));
@@ -75,7 +64,7 @@ public class TerminalGUI {
                     continue;
                 }
 
-                moveResult = board.applyMoveWithLegalityCheck(new Move(fromPos, toPos), currentPlayer);
+                moveResult = game.applyMove(new Move(fromPos, toPos));
 
                 if (!moveResult.validMove) {
                     System.out.println("Move was not valid; try again");
@@ -98,15 +87,13 @@ public class TerminalGUI {
                             }
                         }
 
-                        board.handlePromotion(moveResult.promoteablePawn, promotionChoice);
+                        game.handlePromotion(moveResult.promoteablePawn, promotionChoice);
                     }
                 }
 
                 System.out.println();
                 break;
             }
-
-            currentPlayer = currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
         }
     }
 }
