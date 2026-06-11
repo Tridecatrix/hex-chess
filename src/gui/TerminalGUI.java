@@ -10,90 +10,118 @@ import java.util.List;
 public class TerminalGUI {
     public static void main(String[] args) {
         GameState game = new GameState();
+        Scanner scanner = new Scanner(System.in);
 
-        // Game loop
+        // game series loop
         while (true) {
-            Scanner scanner = new Scanner(System.in);
-
-            System.out.println(game);
-
-            Position fromPos;
-            Position toPos;
-            MoveResult moveResult;
-
+            // Game loop
+            gameLoop:
             while (true) {
-                System.out.print("Input a piece coordinate to move: ");
-                String pieceCoord = scanner.nextLine();
-                try {
-                    fromPos = new Position(pieceCoord);
-                } catch (Exception e) {
-                    System.out.println("Illegal position coordinate; try again");
-                    continue;
-                }
 
-                if (game.getBoard().getPos(fromPos) == null) {
-                    System.out.println("No piece at location");
-                    continue;
-                }
+                System.out.println(game);
 
-                if (game.getBoard().getPos(fromPos).color != game.getCurrentPlayer()) {
-                    System.out.println("Cannot move opponent's pieces");
-                    continue;
-                }
+                Position fromPos;
+                Position toPos;
+                MoveResult moveResult;
 
-                System.out.print("Valid moves: ");
-                List<String> moves = new ArrayList<>(game.getLegalMovesFromPos(fromPos)).stream().map(m -> m.toPos.toString()).sorted().toList();
-                for (int i = 0; i < moves.size(); i++) {
-                    if (i != 0) System.out.print(", ");
-                    System.out.print(moves.get(i));
-                }
+                inputMoveLoop:
+                while (true) {
+                    System.out.print("Input a piece coordinate to move: ");
+                    String pieceCoord = scanner.nextLine();
+                    try {
+                        fromPos = new Position(pieceCoord);
+                    } catch (Exception e) {
+                        System.out.println("Illegal position coordinate; try again");
+                        continue;
+                    }
 
-                if (moves.isEmpty()) {
-                    System.out.println("No possible moves; choose another piece");
-                    continue;
-                }
+                    if (game.getBoard().getPos(fromPos) == null) {
+                        System.out.println("No piece at location");
+                        continue;
+                    }
 
-                System.out.println();
-                System.out.print("Choose a position to move to: ");
+                    if (game.getBoard().getPos(fromPos).color != game.getCurrentPlayer()) {
+                        System.out.println("Cannot move opponent's pieces");
+                        continue;
+                    }
 
-                try {
-                    String move = scanner.nextLine();
-                    toPos = new Position(move);
-                } catch (Exception e) {
-                    System.out.println("Illegal position coordinate; try again");
-                    continue;
-                }
+                    System.out.print("Valid moves: ");
+                    List<String> moves = new ArrayList<>(game.getLegalMovesFromPos(fromPos)).stream().map(m -> m.toPos.toString()).sorted().toList();
+                    for (int i = 0; i < moves.size(); i++) {
+                        if (i != 0) System.out.print(", ");
+                        System.out.print(moves.get(i));
+                    }
 
-                moveResult = game.applyMove(new Move(fromPos, toPos));
+                    if (moves.isEmpty()) {
+                        System.out.println("No possible moves; choose another piece");
+                        continue;
+                    }
 
-                if (!moveResult.validMove) {
-                    System.out.println("Move was not valid; try again");
-                    continue;
-                }
+                    System.out.println();
+                    System.out.print("Choose a position to move to: ");
 
-                if (moveResult.promoteablePawn != null) {
-                    while (true) {
-                        System.out.println("Choose type to promote pawn at " + moveResult.promoteablePawn + " to (n/b/r/q): ");
-                        String promotedType = scanner.nextLine();
-                        PieceType promotionChoice;
-                        switch (promotedType.strip().toLowerCase()) {
-                            case "n", "knight" -> promotionChoice = PieceType.KNIGHT;
-                            case "b", "bishop" -> promotionChoice = PieceType.BISHOP;
-                            case "r", "rook" -> promotionChoice = PieceType.ROOK;
-                            case "q", "queen" -> promotionChoice = PieceType.QUEEN;
-                            default -> {
-                                System.out.println("Illegal promotion choice; try again");
-                                continue;
+                    try {
+                        String move = scanner.nextLine();
+                        toPos = new Position(move);
+                    } catch (Exception e) {
+                        System.out.println("Illegal position coordinate; try again");
+                        continue;
+                    }
+
+                    moveResult = game.applyMove(new Move(fromPos, toPos));
+
+                    if (!moveResult.validMove) {
+                        System.out.println("Move was not valid; try again");
+                        continue;
+                    }
+
+                    if (moveResult.promoteablePawn != null) {
+                        while (true) {
+                            System.out.println("Choose type to promote pawn at " + moveResult.promoteablePawn + " to (n/b/r/q): ");
+                            String promotedType = scanner.nextLine();
+                            PieceType promotionChoice;
+                            switch (promotedType.strip().toLowerCase()) {
+                                case "n", "knight" -> promotionChoice = PieceType.KNIGHT;
+                                case "b", "bishop" -> promotionChoice = PieceType.BISHOP;
+                                case "r", "rook" -> promotionChoice = PieceType.ROOK;
+                                case "q", "queen" -> promotionChoice = PieceType.QUEEN;
+                                default -> {
+                                    System.out.println("Illegal promotion choice; try again");
+                                    continue;
+                                }
                             }
-                        }
 
-                        game.handlePromotion(moveResult.promoteablePawn, promotionChoice);
+                            game.handlePromotion(moveResult.promoteablePawn, promotionChoice);
+                        }
+                    }
+
+                    System.out.println();
+                    break;
+                }
+
+                GameState.GameResult gameResult = game.checkIfGameEnd();
+
+                switch (gameResult) {
+                    case CONTINUING -> {
+                    }
+                    case CHECKMATE -> {
+                        System.out.println("Checkmate; " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "white" : "black") + " wins!");
+                        break gameLoop;
+                    }
+                    case STALEMATE -> {
+                        System.out.println("Stalemate; " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "white" : "black") + " partially wins!");
+                        break gameLoop;
+                    }
+                    case DRAW -> {
+                        System.out.println("Game drawn");
+                        break gameLoop;
                     }
                 }
-
-                System.out.println();
-                break;
             }
+
+            System.out.println("Press enter to restart game");
+            scanner.nextLine();
+            game.restartGame();
         }
     }
 }
