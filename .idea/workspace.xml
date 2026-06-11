@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="renamed GameState to Game">
+      <change afterPath="$PROJECT_DIR$/lib/error_prone_annotations-2.47.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/failureaccess-1.0.3.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/guava-33.6.0-jre.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/j2objc-annotations-3.1.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/other/Debug.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HexChess.iml" beforeDir="false" afterPath="$PROJECT_DIR$/HexChess.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3ECUjOxX8HqyrliDbvs7zU7WNch" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Application.Debug.executor": "Run",
+    "Application.HelloFX.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.TerminalGUI.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "true",
+    "JUnit.ChecksAndCheckmate.executor": "Run",
+    "JUnit.ChecksAndCheckmateTest and 1 more.executor": "Run",
+    "JUnit.ChecksAndCheckmateTest.executor": "Run",
+    "JUnit.LegalMovesTest.executor": "Debug",
+    "JUnit.LegalMovesTest.pawnStartingBlack.executor": "Debug",
+    "JUnit.MyFirstJUnitJupiterTests.executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/adnan/Desktop/Side-projects/HexChess/lib/javafx-sdk-25.0.3/lib",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.43970895",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\lib" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Debug">
+    <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="other.Debug" />
+      <module name="HexChess" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TerminalGUI" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="gui.TerminalGUI" />
+      <module name="HexChess" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ChecksAndCheckmateTest and 1 more" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="HexChess" />
+      <option name="TEST_OBJECT" value="pattern" />
+      <patterns>
+        <pattern testClass="ChecksAndCheckmateTest" />
+        <pattern testClass="LegalMovesTest" />
+      </patterns>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ChecksAndCheckmateTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="HexChess" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="ChecksAndCheckmateTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LegalMovesTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="HexChess" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="LegalMovesTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Debug" />
+      <item itemvalue="Application.TerminalGUI" />
+      <item itemvalue="JUnit.ChecksAndCheckmateTest and 1 more" />
+      <item itemvalue="JUnit.ChecksAndCheckmateTest" />
+      <item itemvalue="JUnit.LegalMovesTest" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Debug" />
+        <item itemvalue="JUnit.ChecksAndCheckmateTest and 1 more" />
+        <item itemvalue="Application.TerminalGUI" />
+        <item itemvalue="JUnit.LegalMovesTest" />
+        <item itemvalue="JUnit.ChecksAndCheckmateTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="" />
+      <created>1779682179881</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1779682179881</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Knight and King logic">
+      <option name="closed" value="true" />
+      <created>1779760652917</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1779760652917</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Rook, Bishop and Queen logic">
+      <option name="closed" value="true" />
+      <created>1779762107503</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779762107503</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Refactored king logic">
+      <option name="closed" value="true" />
+      <created>1779762335852</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1779762335852</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Minor refactors">
+      <option name="closed" value="true" />
+      <created>1779762378795</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1779762378795</updated>
+    </task>
+    <task id="LOCAL-00005" summary="sync (revamped terminal GUI and started work on javaFX board visuals)">
+      <option name="closed" value="true" />
+      <created>1780029412644</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1780029412644</updated>
+    </task>
+    <task id="LOCAL-00006" summary="installed junit 6 as dependency">
+      <option name="closed" value="true" />
+      <created>1780288501039</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1780288501039</updated>
+    </task>
+    <task id="LOCAL-00007" summary="began working on tests">
+      <option name="closed" value="true" />
+      <created>1780296388457</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1780296388457</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Refactored the switch statements to have each piece as a separate class">
+      <option name="closed" value="true" />
+      <created>1780986036124</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1780986036124</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Fixed up all tests and piece movement logic; passing all tests!">
+      <option name="closed" value="true" />
+      <created>1780988600347</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1780988600347</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Minor change (refactored logic for Knight + fixed commas in terminal GUI moves list)">
+      <option name="closed" value="true" />
+      <created>1780991301480</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1780991301480</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Improved terminal GUI + fixed minor hashset bug with Set&lt;Move&gt;">
+      <option name="closed" value="true" />
+      <created>1781005671690</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1781005671690</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Added logic for pawn promotions">
+      <option name="closed" value="true" />
+      <created>1781052652642</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1781052652642</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Refactored pieces lists to instead be piece position lists">
+      <option name="closed" value="true" />
+      <created>1781053817275</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1781053817275</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Excluded positions under threat from king legal moves">
+      <option name="closed" value="true" />
+      <created>1781057460239</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1781057460239</updated>
+    </task>
+    <task id="LOCAL-00015" summary="completed update to account for checks when calculating legal moves and detect when king is in check">
+      <option name="closed" value="true" />
+      <created>1781071195531</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1781071195531</updated>
+    </task>
+    <task id="LOCAL-00016" summary="minor addition: check for checkmate">
+      <option name="closed" value="true" />
+      <created>1781071281475</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1781071281475</updated>
+    </task>
+    <task id="LOCAL-00017" summary="began working on checks/checkmate tests">
+      <option name="closed" value="true" />
+      <created>1781074900752</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1781074900752</updated>
+    </task>
+    <task id="LOCAL-00018" summary="flipped the black queen/king again">
+      <option name="closed" value="true" />
+      <created>1781078140340</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1781078140340</updated>
+    </task>
+    <task id="LOCAL-00019" summary="added checkmate tests">
+      <option name="closed" value="true" />
+      <created>1781078152294</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1781078152294</updated>
+    </task>
+    <task id="LOCAL-00020" summary="renamed checkmate tests">
+      <option name="closed" value="true" />
+      <created>1781078548368</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1781078548368</updated>
+    </task>
+    <task id="LOCAL-00021" summary="checkmate and check logic complete">
+      <option name="closed" value="true" />
+      <created>1781142285024</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1781142285032</updated>
+    </task>
+    <task id="LOCAL-00022" summary="en passant logic">
+      <option name="closed" value="true" />
+      <created>1781144098251</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1781144098251</updated>
+    </task>
+    <task id="LOCAL-00023" summary="added gamestate class">
+      <option name="closed" value="true" />
+      <created>1781146507285</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1781146507285</updated>
+    </task>
+    <task id="LOCAL-00024" summary="changed terminal GUI to query game result">
+      <option name="closed" value="true" />
+      <created>1781146986813</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1781146986813</updated>
+    </task>
+    <task id="LOCAL-00025" summary="renamed GameState to Game">
+      <option name="closed" value="true" />
+      <created>1781147015171</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1781147015171</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Rook, Bishop and Queen logic" />
+    <MESSAGE value="Refactored king logic" />
+    <MESSAGE value="Minor refactors" />
+    <MESSAGE value="sync (revamped terminal GUI and started work on javaFX board visuals)" />
+    <MESSAGE value="installed junit 6 as dependency" />
+    <MESSAGE value="began working on tests" />
+    <MESSAGE value="Refactored the switch statements to have each piece as a separate class" />
+    <MESSAGE value="Fixed up all tests and piece movement logic; passing all tests!" />
+    <MESSAGE value="Minor change (refactored logic for Knight + fixed commas in terminal GUI moves list)" />
+    <MESSAGE value="Improved terminal GUI + fixed minor hashset bug with Set&lt;Move&gt;" />
+    <MESSAGE value="Added logic for pawn promotions" />
+    <MESSAGE value="Refactored pieces lists to instead be piece position lists" />
+    <MESSAGE value="Excluded positions under threat from king legal moves" />
+    <MESSAGE value="Wrote tests to verify new king movement logic works" />
+    <MESSAGE value="completed update to account for checks when calculating legal moves and detect when king is in check" />
+    <MESSAGE value="minor addition: check for checkmate" />
+    <MESSAGE value="began working on checks/checkmate tests" />
+    <MESSAGE value="flipped the black queen/king again" />
+    <MESSAGE value="added checkmate tests" />
+    <MESSAGE value="renamed checkmate tests" />
+    <MESSAGE value="checkmate and check logic complete" />
+    <MESSAGE value="en passant logic" />
+    <MESSAGE value="added gamestate class" />
+    <MESSAGE value="changed terminal GUI to query game result" />
+    <MESSAGE value="renamed GameState to Game" />
+    <option name="LAST_COMMIT_MESSAGE" value="renamed GameState to Game" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/ChecksAndCheckmateTest.java</url>
+          <line>128</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/HexChess$LegalMovesTest.ic" NAME="LegalMovesTest Coverage Results" MODIFIED="1780988662453" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+  </component>
+</project>
