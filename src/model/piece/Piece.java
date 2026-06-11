@@ -6,9 +6,22 @@ import model.PieceType;
 import model.Position;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public abstract class Piece {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Piece piece)) return false;
+        return color == piece.color && this.getPieceType() == ((Piece) o).getPieceType();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, this.getPieceType());
+    }
+
     public enum Color {
         WHITE,
         BLACK

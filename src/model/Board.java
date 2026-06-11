@@ -5,10 +5,7 @@ import model.piece.Pawn;
 import model.piece.Piece;
 
 import java.lang.Math;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -23,8 +20,8 @@ public class Board {
     Piece[][] board = new Piece[boarddim][boarddim];
 
     // references to all pieces in the game (for check/checkmate detection)
-    List<Position> whitePiecePositions = new ArrayList<>();
-    List<Position> blackPiecePositions = new ArrayList<>();
+    Set<Position> whitePiecePositions = new HashSet<>();
+    Set<Position> blackPiecePositions = new HashSet<>();
 
     Position whiteKingPos;
     Position blackKingPos;
@@ -44,8 +41,8 @@ public class Board {
 
     // default constructor; initialise board in starting position
     public Board() {
-        whitePiecePositions = new ArrayList<>();
-        blackPiecePositions = new ArrayList<>();
+        whitePiecePositions = new HashSet<>();
+        blackPiecePositions = new HashSet<>();
 
         for (String pos : List.of("b1", "c2", "d3", "e4", "f5", "g4", "h3", "i2", "j1")) {
             Piece pawn = PieceFactory.createPiece("pawn", "white");
@@ -285,8 +282,8 @@ public class Board {
         Piece movedPiece = this.getPos(move.fromPos);
         Piece.Color playerColor = movedPiece.color;
 
-        List<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
-        List<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
+        Set<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
+        Set<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
 
         this.setPos(move.fromPos, null);
         playerPositionsList.remove(move.fromPos);
@@ -314,8 +311,8 @@ public class Board {
         Piece movedPiece = this.getPos(move.toPos);
         Piece.Color playerColor = movedPiece.color;
 
-        List<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
-        List<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
+        Set<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
+        Set<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
 
         this.setPos(move.toPos, capturedPiece);
         if (capturedPiece != null)
@@ -338,8 +335,8 @@ public class Board {
         if (!isLegalMove(move, playerColor))
             return new MoveResult(false);
 
-        List<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
-        List<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
+        Set<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
+        Set<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
 
         Piece movedPiece = this.getPos(move.fromPos);
         this.setPos(move.fromPos, null);
@@ -407,7 +404,7 @@ public class Board {
      * Helper for checking checks/checkmates: calculate the set of positions which are under attack
      */
     public boolean[][] getSpacesUnderThreat(Piece.Color playerColor) {
-        List<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
+        Set<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
         boolean[][] underAttack = new boolean[boarddim][boarddim];
         // note: the above could easily be a bit vector instead, but will avoid premature optimisation
 
@@ -455,7 +452,7 @@ public class Board {
      * Checks stalemate (player has no legal moves)
      */
     public boolean isInStalemate(Piece.Color playerColor) {
-        List<Position> playerPiecePositions = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
+        Set<Position> playerPiecePositions = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
         for (Position pos : playerPiecePositions) {
             if (!this.getLegalMovesFromPos(pos).isEmpty()) return false;
         }
@@ -475,5 +472,17 @@ public class Board {
      */
     public boolean isInCheckmate(Piece.Color playerColor) {
         return isInStalemate(playerColor) && isKingInCheck(playerColor);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Board board1)) return false;
+        return boarddim == board1.boarddim && Objects.deepEquals(board, board1.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(boarddim, Arrays.deepHashCode(board));
     }
 }

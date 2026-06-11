@@ -1,12 +1,20 @@
 package model;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
+import model.piece.Pawn;
 import model.piece.Piece;
+import model.piece.Queen;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Game {
+    // points for each player, tracked across several matches
     double whitePoints = 0;
     double blackPoints = 0;
+    int movesSinceCaptureOrPawnMovement = 0;
 
     Board board;
 
@@ -62,15 +70,24 @@ public class Game {
     }
 
     public MoveResult applyMove(Move move) {
+        boolean pawnMovementOrCapture = board.getPos(move.fromPos) instanceof Pawn || board.getPos(move.toPos) != null;
+
         MoveResult result = board.applyMoveWithLegalityCheck(move, currentPlayer);
-        if (result.promoteablePawn == null && result.validMove) // if pawn needs to be promoted, player change is deferred
+
+        if (result.validMove) {
+            // update time since last pawn movement/capture
+            if (pawnMovementOrCapture) movesSinceCaptureOrPawnMovement = 0;
+            else movesSinceCaptureOrPawnMovement++;
+
+            // update current player
             currentPlayer = currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
+        }
+
         return result;
     }
 
     public void handlePromotion(Position promotetablePawn, PieceType promotionChoice) {
         this.board.handlePromotion(promotetablePawn, promotionChoice);
-        currentPlayer = currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
     }
 
     public GameResult checkIfGameEnd() {
@@ -83,7 +100,7 @@ public class Game {
         } else if (board.isInStalemate(currentPlayer)) {
             winPoints = 0.75;
             result = GameResult.STALEMATE;
-        } else if (this.checkIfDraw()) {
+        } else if (this.checkIfForcedDraw()) {
             winPoints = 0.5;
             result = GameResult.DRAW;
         } else {
@@ -124,8 +141,61 @@ public class Game {
         // note: restartGame has to be called seperately
     }
 
-    // TODO
-    public boolean checkIfDraw() {
+    // forced draws include:
+    // - draw by repetition (repeat 5 times)
+    // - draw by 75 moves without captures or pawn movements
+    // - draw by insufficient material
+    public boolean checkIfForcedDraw() {
+        if (movesSinceCaptureOrPawnMovement >= 75) {
+            return true;
+        }
+
+        // insufficient material: build sets of all types of pieces for white and black
+        Multiset<PieceType> whitePieceTypes = HashMultiset.create();
+        Multiset<PieceType> blackPieceTypes = HashMultiset.create();
+        for (Position pos : this.board.whitePiecePositions) {
+            whitePieceTypes.add(this.board.getPos(pos).getPieceType());
+        }
+        for (Position pos : this.board.blackPiecePositions) {
+            blackPieceTypes.add(this.board.getPos(pos).getPieceType());
+        }
+
+        // insufficient material: king vs king
+        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
+                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))) {
+            return true;
+        }
+
+        // insufficient material: king & knight vs king
+        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.KNIGHT)))
+                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
+           || whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
+                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.KNIGHT)))) {
+            return true;
+        }
+
+        // insufficient material: king and bishop v king
+        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.BISHOP)))
+                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
+                || whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
+                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.BISHOP)))) {
+            return true;
+        }
+
+        // TODO: figure out and add more insufficient material checks here
+
+        return false;
+    }
+
+    // method to be called when a player wants to claim draw (as opposed to forced draw)
+    // returns true if claim is successful
+    // claimable draws include:
+    // - draw by repetition (repeat 3 times)
+    // - draw by 50 moves without captures or pawn movements
+    public boolean claimDraw() {
+        if (movesSinceCaptureOrPawnMovement >= 50) {
+            return true;
+        }
         return false;
     }
 
