@@ -66,9 +66,24 @@ public class Pawn extends Piece {
         }
 
         // Pawn logic: en passant
-        // If the enemy pawn has moved 2 spaces in the last turn, and you could have captured it if it
-        // had only moved one space, you still can
-        // TODO: add
+        // If the enemy pawn has moved 2 spaces in the immediate last turn, and you are attacking the space that it
+        // would have moved to if it moved 1 space, then you can still capture it
+        if (board.passantablePawn != null) {
+            Position leftPassantPosition, rightPassantPosition;
+            if (this.color == Color.WHITE) {
+                leftPassantPosition = Position.oneStepLeftAndBackward(fromPos, board.boarddim);
+                rightPassantPosition = Position.oneStepRightAndBackward(fromPos, board.boarddim);
+            } else {
+                leftPassantPosition = Position.oneStepLeftAndForward(fromPos, board.boarddim);
+                rightPassantPosition = Position.oneStepRightAndForward(fromPos, board.boarddim);
+            }
+
+            if (board.passantablePawn.equals(leftPassantPosition)) {
+                moves.add(new Move(fromPos, leftCapturePos));
+            } else if (board.passantablePawn.equals(rightPassantPosition)) {
+                moves.add(new Move(fromPos, rightCapturePos));
+            }
+        }
         
         return moves;
     }

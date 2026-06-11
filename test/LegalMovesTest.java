@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import model.Board;
 import model.Position;
 import model.Move;
+import model.piece.Piece;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -233,5 +234,21 @@ class LegalMovesTest {
         Board board = new Board(List.of("Ke5", "ke3", "nf8"));
 
         assertMovesEqual(Set.of("c4", "d6", "e6", "f6", "f7"), board, "e5");
+    }
+
+    @Test
+    void enPassant() {
+        Board board = new Board(List.of("Pd3", "pe5"));
+        board.applyMoveWithLegalityCheck(new Move("d3", "d5"), Piece.Color.WHITE);
+        assertMovesEqual(Set.of("e4", "d4"), board, "e5");
+    }
+
+    @Test
+    void enPassantNotPossibleAfter2Moves() {
+        Board board = new Board(List.of("Pd3", "pe5", "pf7", "Pg4"));
+        board.applyMoveWithLegalityCheck(new Move("d3", "d5"), Piece.Color.WHITE);
+        board.applyMoveWithLegalityCheck(new Move("f7", "f6"), Piece.Color.BLACK);
+        board.applyMoveWithLegalityCheck(new Move("g4", "g5"), Piece.Color.WHITE);
+        assertMovesEqual(Set.of("e4"), board, "e5");
     }
 }

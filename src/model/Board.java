@@ -29,6 +29,9 @@ public class Board {
     Position whiteKingPos;
     Position blackKingPos;
 
+    // for tracking en passant
+    public Position passantablePawn;
+
     public static final int centerFile = 5;
 
     public Piece getPos(Position pos) {
@@ -368,6 +371,24 @@ public class Board {
                 blackKingPos = move.toPos;
             }
         }
+
+        // If this is a pawn capturing another pawn with en passant, remove the passantable pawn
+        int forwardStep = movedPiece.color == Piece.Color.WHITE ? 1 : -1;
+        if (passantablePawn != null && movedPiece instanceof Pawn
+                && move.fromPos.file != move.toPos.file // this is a capturing move
+                && move.toPos.file == passantablePawn.file && move.toPos.rank == passantablePawn.rank + forwardStep) {
+                // the passantable pawn is in the capture position
+            enemyPositionsList.remove(passantablePawn);
+            this.setPos(passantablePawn, null);
+        }
+
+        // If this is a pawn making its starting move, update passantable pawn; else, clear passantable pawn
+        if (movedPiece instanceof Pawn && Math.abs(move.toPos.rank - move.fromPos.rank) == 2) {
+            passantablePawn = move.toPos;
+        } else {
+            passantablePawn = null;
+        }
+
 
         return new MoveResult(true, promotedPawn);
     }
