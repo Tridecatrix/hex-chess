@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="finished implementing draw logic; begun writing draw tests">
-      <change afterPath="$PROJECT_DIR$/planning/rook tour.png" afterDir="false" />
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="finished writing draw test">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/DrawTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/DrawTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/TerminalGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/TerminalGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +44,7 @@
     "Downloaded.Files.Path.Enabled": "true",
     "JUnit.ChecksAndCheckmate.executor": "Run",
     "JUnit.ChecksAndCheckmateTest and 1 more.executor": "Run",
+    "JUnit.ChecksAndCheckmateTest and 2 more.executor": "Run",
     "JUnit.ChecksAndCheckmateTest.executor": "Run",
     "JUnit.DrawTest.executor": "Run",
     "JUnit.LegalMovesTest.executor": "Debug",
@@ -69,7 +68,7 @@
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\lib" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.ChecksAndCheckmateTest and 2 more">
+  <component name="RunManager" selected="Application.TerminalGUI">
     <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="other.Debug" />
       <module name="HexChess" />
@@ -125,11 +124,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.TerminalGUI" />
         <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
         <item itemvalue="JUnit.DrawTest" />
         <item itemvalue="Application.Debug" />
         <item itemvalue="JUnit.ChecksAndCheckmateTest and 1 more" />
-        <item itemvalue="Application.TerminalGUI" />
       </list>
     </recent_temporary>
   </component>
@@ -366,12 +365,19 @@
       <option name="project" value="LOCAL" />
       <updated>1781158061251</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="finished writing draw test">
+      <option name="closed" value="true" />
+      <created>1781164767865</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1781164767865</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="installed junit 6 as dependency" />
     <MESSAGE value="began working on tests" />
     <MESSAGE value="Refactored the switch statements to have each piece as a separate class" />
     <MESSAGE value="Fixed up all tests and piece movement logic; passing all tests!" />
@@ -396,7 +402,8 @@
     <MESSAGE value="add intellij info to repo" />
     <MESSAGE value="working on draw logic" />
     <MESSAGE value="finished implementing draw logic; begun writing draw tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished implementing draw logic; begun writing draw tests" />
+    <MESSAGE value="finished writing draw test" />
+    <option name="LAST_COMMIT_MESSAGE" value="finished writing draw test" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

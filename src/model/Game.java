@@ -48,8 +48,11 @@ public class Game {
 
         string.append("Current board:\n");
         string.append(board);
-        string.append("Current player: " + (currentPlayer.equals(Piece.Color.WHITE) ? "White" : "Black"));
+        string.append("Current player: " + (currentPlayer.equals(Piece.Color.WHITE) ? "White" : "Black\n"));
         //string.append("Points are white: " + whitePoints + " and Black: " + blackPoints);
+        if (this.board.isKingInCheck(currentPlayer)) {
+            string.append("You are in check!\n");
+        }
 
         return string.toString();
     }

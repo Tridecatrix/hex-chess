@@ -30,18 +30,18 @@ public class TerminalGUI {
                     String pieceCoord = scanner.nextLine();
                     try {
                         fromPos = new Position(pieceCoord);
+
+                        if (game.getBoard().getPos(fromPos) == null) {
+                            System.out.println("No piece at location");
+                            continue;
+                        }
+
+                        if (game.getBoard().getPos(fromPos).color != game.getCurrentPlayer()) {
+                            System.out.println("Cannot move opponent's pieces");
+                            continue;
+                        }
                     } catch (Exception e) {
                         System.out.println("Illegal position coordinate; try again");
-                        continue;
-                    }
-
-                    if (game.getBoard().getPos(fromPos) == null) {
-                        System.out.println("No piece at location");
-                        continue;
-                    }
-
-                    if (game.getBoard().getPos(fromPos).color != game.getCurrentPlayer()) {
-                        System.out.println("Cannot move opponent's pieces");
                         continue;
                     }
 
