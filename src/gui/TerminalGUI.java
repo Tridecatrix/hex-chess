@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TerminalGUI {
     public static void main(String[] args) {
-        GameState game = new GameState();
+        Game game = new Game();
         Scanner scanner = new Scanner(System.in);
 
         // game series loop
@@ -99,7 +99,7 @@ public class TerminalGUI {
                     break;
                 }
 
-                GameState.GameResult gameResult = game.checkIfGameEnd();
+                Game.GameResult gameResult = game.checkIfGameEnd();
 
                 switch (gameResult) {
                     case CONTINUING -> {

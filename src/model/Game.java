@@ -2,10 +2,9 @@ package model;
 
 import model.piece.Piece;
 
-import java.util.List;
 import java.util.Set;
 
-public class GameState {
+public class Game {
     double whitePoints = 0;
     double blackPoints = 0;
 
@@ -22,7 +21,7 @@ public class GameState {
         CONTINUING
     }
 
-    public GameState() {
+    public Game() {
         board = new Board();
         currentGameState = GameResult.CONTINUING;
     }
