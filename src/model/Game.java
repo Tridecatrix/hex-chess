@@ -6,10 +6,7 @@ import model.piece.Pawn;
 import model.piece.Piece;
 import model.piece.Queen;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 public class Game {
     // points for each player, tracked across several matches
@@ -20,7 +17,7 @@ public class Game {
     Board board;
 
     // for checking repetition
-    Queue<Board> previousBoards;
+    Queue<Board> previousBoards = new ArrayDeque<>();
     static final int repetitionCheckMaxWindow = 20;
 
     Piece.Color currentPlayer = Piece.Color.WHITE;
@@ -36,6 +33,12 @@ public class Game {
 
     public Game() {
         board = new Board();
+        currentGameState = GameResult.CONTINUING;
+    }
+
+    // testing constructor
+    public Game(List<String> pieces) {
+        board = new Board(pieces);
         currentGameState = GameResult.CONTINUING;
     }
 
@@ -141,6 +144,10 @@ public class Game {
     public void restartGame() {
         currentPlayer = Piece.Color.WHITE;
         board = new Board();
+        movesSinceCaptureOrPawnMovement = 0;
+        while (!previousBoards.isEmpty()) {
+            previousBoards.remove();
+        }
     }
 
     public void resign() {
@@ -160,7 +167,7 @@ public class Game {
     // - draw by 75 moves without captures or pawn movements
     // - draw by insufficient material
     public boolean checkIfForcedDraw() {
-        if (movesSinceCaptureOrPawnMovement >= 75) {
+        if (movesSinceCaptureOrPawnMovement >= 2*75) {
             return true;
         }
 
@@ -213,7 +220,7 @@ public class Game {
     // - draw by repetition (repeat 3 times)
     // - draw by 50 moves without captures or pawn movements
     public boolean claimDraw() {
-        if (movesSinceCaptureOrPawnMovement >= 50) {
+        if (movesSinceCaptureOrPawnMovement >= 2*50) {
             return true;
         }
 

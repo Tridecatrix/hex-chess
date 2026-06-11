@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="working on draw logic">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="finished implementing draw logic; begun writing draw tests">
+      <change afterPath="$PROJECT_DIR$/planning/rook tour.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/DrawTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/DrawTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +47,7 @@
     "JUnit.ChecksAndCheckmate.executor": "Run",
     "JUnit.ChecksAndCheckmateTest and 1 more.executor": "Run",
     "JUnit.ChecksAndCheckmateTest.executor": "Run",
+    "JUnit.DrawTest.executor": "Run",
     "JUnit.LegalMovesTest.executor": "Debug",
     "JUnit.LegalMovesTest.pawnStartingBlack.executor": "Debug",
     "JUnit.MyFirstJUnitJupiterTests.executor": "Run",
@@ -66,7 +69,7 @@
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\lib" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Debug">
+  <component name="RunManager" selected="JUnit.ChecksAndCheckmateTest and 2 more">
     <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="other.Debug" />
       <module name="HexChess" />
@@ -92,19 +95,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ChecksAndCheckmateTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ChecksAndCheckmateTest and 2 more" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="HexChess" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="ChecksAndCheckmateTest" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="pattern" />
+      <patterns>
+        <pattern testClass="ChecksAndCheckmateTest" />
+        <pattern testClass="DrawTest" />
+        <pattern testClass="LegalMovesTest" />
+      </patterns>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="LegalMovesTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="DrawTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="HexChess" />
       <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="LegalMovesTest" />
+      <option name="MAIN_CLASS_NAME" value="DrawTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -113,17 +119,17 @@
     <list>
       <item itemvalue="Application.Debug" />
       <item itemvalue="Application.TerminalGUI" />
+      <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
+      <item itemvalue="JUnit.DrawTest" />
       <item itemvalue="JUnit.ChecksAndCheckmateTest and 1 more" />
-      <item itemvalue="JUnit.ChecksAndCheckmateTest" />
-      <item itemvalue="JUnit.LegalMovesTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
+        <item itemvalue="JUnit.DrawTest" />
         <item itemvalue="Application.Debug" />
         <item itemvalue="JUnit.ChecksAndCheckmateTest and 1 more" />
         <item itemvalue="Application.TerminalGUI" />
-        <item itemvalue="JUnit.LegalMovesTest" />
-        <item itemvalue="JUnit.ChecksAndCheckmateTest" />
       </list>
     </recent_temporary>
   </component>
@@ -352,12 +358,19 @@
       <option name="project" value="LOCAL" />
       <updated>1781156993875</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="finished implementing draw logic; begun writing draw tests">
+      <option name="closed" value="true" />
+      <created>1781158061251</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1781158061251</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="sync (revamped terminal GUI and started work on javaFX board visuals)" />
     <MESSAGE value="installed junit 6 as dependency" />
     <MESSAGE value="began working on tests" />
     <MESSAGE value="Refactored the switch statements to have each piece as a separate class" />
@@ -382,7 +395,8 @@
     <MESSAGE value="began working on draw by insufficient material" />
     <MESSAGE value="add intellij info to repo" />
     <MESSAGE value="working on draw logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on draw logic" />
+    <MESSAGE value="finished implementing draw logic; begun writing draw tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="finished implementing draw logic; begun writing draw tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -391,6 +405,16 @@
           <url>file://$PROJECT_DIR$/test/ChecksAndCheckmateTest.java</url>
           <line>128</line>
           <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/DrawTest.java</url>
+          <line>181</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/DrawTest.java</url>
+          <line>155</line>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
