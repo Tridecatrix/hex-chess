@@ -8,6 +8,7 @@ import model.piece.Queen;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 public class Game {
@@ -17,6 +18,10 @@ public class Game {
     int movesSinceCaptureOrPawnMovement = 0;
 
     Board board;
+
+    // for checking repetition
+    Queue<Board> previousBoards;
+    static final int repetitionCheckMaxWindow = 20;
 
     Piece.Color currentPlayer = Piece.Color.WHITE;
     GameResult currentGameState;
@@ -72,6 +77,9 @@ public class Game {
     public MoveResult applyMove(Move move) {
         boolean pawnMovementOrCapture = board.getPos(move.fromPos) instanceof Pawn || board.getPos(move.toPos) != null;
 
+        // before applying the move, save the board state
+        Board boardStateCopy = new Board(this.board);
+
         MoveResult result = board.applyMoveWithLegalityCheck(move, currentPlayer);
 
         if (result.validMove) {
@@ -81,6 +89,12 @@ public class Game {
 
             // update current player
             currentPlayer = currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
+
+            // update list of previous boards
+            previousBoards.add(boardStateCopy);
+            if (previousBoards.size() > repetitionCheckMaxWindow) {
+                previousBoards.remove(); // throw away any boards which are older than 40 moves to limit memory usage
+            }
         }
 
         return result;
@@ -150,6 +164,14 @@ public class Game {
             return true;
         }
 
+        // check for fivefold repetition
+        int repTimes = 0;
+        for (Board previousBoard : previousBoards) {
+            if (this.board.equals(previousBoard)) repTimes++;
+        }
+
+        if (repTimes >= 4) return true;
+
         // insufficient material: build sets of all types of pieces for white and black
         Multiset<PieceType> whitePieceTypes = HashMultiset.create();
         Multiset<PieceType> blackPieceTypes = HashMultiset.create();
@@ -182,8 +204,6 @@ public class Game {
             return true;
         }
 
-        // TODO: figure out and add more insufficient material checks here
-
         return false;
     }
 
@@ -196,6 +216,15 @@ public class Game {
         if (movesSinceCaptureOrPawnMovement >= 50) {
             return true;
         }
+
+        // check for threefold repetition of the current position
+        int repTimes = 0;
+        for (Board previousBoard : previousBoards) {
+            if (this.board.equals(previousBoard)) repTimes++;
+        }
+
+        if (repTimes >= 2) return true;
+
         return false;
     }
 

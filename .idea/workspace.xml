@@ -4,15 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="renamed GameState to Game">
-      <change afterPath="$PROJECT_DIR$/lib/error_prone_annotations-2.47.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/failureaccess-1.0.3.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/guava-33.6.0-jre.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/j2objc-annotations-3.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/other/Debug.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HexChess.iml" beforeDir="false" afterPath="$PROJECT_DIR$/HexChess.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="working on draw logic">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -343,14 +336,27 @@
       <option name="project" value="LOCAL" />
       <updated>1781147015171</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="add intellij info to repo">
+      <option name="closed" value="true" />
+      <created>1781156980656</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1781156980656</updated>
+    </task>
+    <task id="LOCAL-00027" summary="working on draw logic">
+      <option name="closed" value="true" />
+      <created>1781156993874</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1781156993875</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Rook, Bishop and Queen logic" />
-    <MESSAGE value="Refactored king logic" />
-    <MESSAGE value="Minor refactors" />
     <MESSAGE value="sync (revamped terminal GUI and started work on javaFX board visuals)" />
     <MESSAGE value="installed junit 6 as dependency" />
     <MESSAGE value="began working on tests" />
@@ -373,7 +379,10 @@
     <MESSAGE value="added gamestate class" />
     <MESSAGE value="changed terminal GUI to query game result" />
     <MESSAGE value="renamed GameState to Game" />
-    <option name="LAST_COMMIT_MESSAGE" value="renamed GameState to Game" />
+    <MESSAGE value="began working on draw by insufficient material" />
+    <MESSAGE value="add intellij info to repo" />
+    <MESSAGE value="working on draw logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on draw logic" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
