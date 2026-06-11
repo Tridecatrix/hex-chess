@@ -91,9 +91,48 @@ public class ChecksAndCheckmateTest {
     }
 
     @Test
-    void nonCheckmate2() {
+     void nonCheckmate2() {
         Board board = new Board(List.of("Kf6", "Bd5", "re3", "qh4", "ni6"));
         System.out.println(board);
         assertFalse(board.isInCheckmate(Piece.Color.WHITE));
+    }
+
+    @Test
+    void nonCheckmate3() {
+        Board board = new Board(List.of("Kf6", "qh4"));
+        System.out.println(board);
+        assertFalse(board.isInCheckmate(Piece.Color.WHITE));
+    }
+
+    @Test
+    void nonCheckmate4() {
+        // not a checkmate because white can make a move blocking the threat
+        Board board = new Board(List.of("Kf6", "Bd5", "re3", "qh4", "ph7", "ni6", "Pg4"));
+        System.out.println(board);
+        assertFalse(board.isInCheckmate(Piece.Color.WHITE));
+    }
+
+    @Test
+    void legalMovesUnderCheck1() {
+        Board board = new Board(List.of("Ke10", "bc6", "Rf8", "Nf7"));
+        assertMovesEqual(Set.of("d8"), board, "f8"); // rook must block the check
+    }
+
+    @Test
+    void legalMovesUnderCheck2() {
+        Board board = new Board(List.of("Ke10", "bc6", "Rf8", "Nf7"));
+        assertMovesEqual(Set.of("c6", "d8"), board, "f7"); // knight must capture or block the check
+    }
+
+    @Test
+    void legalMovesUnderCheck3() {
+        Board board = new Board(List.of("Ke10", "bc6", "Rf8", "Nf7"));
+        assertMovesEqual(Set.of("d9", "e9", "f10", "f11", "g10", "f9"), board, "e10"); // king must move away from the check
+    }
+
+    @Test
+    void legalMovesPin() {
+        Board board = new Board(List.of("kb7", "pc7", "Re7"));
+        assertMovesEqual(Set.of(), board, "c7");
     }
 }

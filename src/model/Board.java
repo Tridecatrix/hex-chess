@@ -258,7 +258,8 @@ public class Board {
         Position playerKingPos = piece.color == Piece.Color.WHITE ? this.whiteKingPos : this.blackKingPos;
 
         // if there is no king, do not need the below
-        if (playerKingPos == null) return potentialMoves;
+        // also, king logic already handles making sure piece doesn't end in check
+        if (playerKingPos == null || piece instanceof King) return potentialMoves;
 
         // need one more condition: a move is not allowed if it causes the king to be in check,
         Set<Move> moves = new HashSet<>();
@@ -291,12 +292,21 @@ public class Board {
         this.setPos(move.toPos, movedPiece);
         playerPositionsList.add(move.toPos);
 
+        if (movedPiece instanceof King) {
+            if (movedPiece.color == Piece.Color.WHITE) {
+                this.whiteKingPos = move.toPos;
+            } else {
+                this.blackKingPos = move.toPos;
+            }
+        }
+
         if (capturedPiece != null)
             enemyPositionsList.remove(move.toPos);
 
         return capturedPiece;
     }
 
+    // helper for getLegalMoves; reverts a tentative move
     void revertTentativeMove(Move move, Piece capturedPiece) {
         Piece movedPiece = this.getPos(move.toPos);
         Piece.Color playerColor = movedPiece.color;
@@ -311,6 +321,14 @@ public class Board {
 
         this.setPos(move.fromPos, movedPiece);
         playerPositionsList.add(move.fromPos);
+
+        if (movedPiece instanceof King) {
+            if (movedPiece.color == Piece.Color.WHITE) {
+                this.whiteKingPos = move.fromPos;
+            } else {
+                this.blackKingPos = move.fromPos;
+            }
+        }
     }
 
     public MoveResult applyMoveWithLegalityCheck(Move move, Piece.Color playerColor) {
