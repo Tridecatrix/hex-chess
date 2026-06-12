@@ -4,9 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="deleted extra run config">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="minor refactors">
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_bdt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_blt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_kdt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_klt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_ndt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_nlt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_pdt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_plt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_qdt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_qlt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_rdt45.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_rlt45.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/BoardTile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/BoardTile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/Viewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Viewer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +71,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/adnan/Desktop/Side-projects/HexChess/lib/javafx-sdk-25.0.3/lib",
+    "last_opened_file_path": "C:/Users/adnan/Desktop/Work/2021/COMP1140/comp1140-ass2-tue12q",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.43970895",
@@ -399,12 +412,19 @@
       <option name="project" value="LOCAL" />
       <updated>1781227227437</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="minor refactors">
+      <option name="closed" value="true" />
+      <created>1781227921765</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1781227921765</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Improved terminal GUI + fixed minor hashset bug with Set&lt;Move&gt;" />
     <MESSAGE value="Added logic for pawn promotions" />
     <MESSAGE value="Refactored pieces lists to instead be piece position lists" />
     <MESSAGE value="Excluded positions under threat from king legal moves" />
@@ -429,7 +449,8 @@
     <MESSAGE value="arranged the tiles correctly" />
     <MESSAGE value="add .idea file" />
     <MESSAGE value="deleted extra run config" />
-    <option name="LAST_COMMIT_MESSAGE" value="deleted extra run config" />
+    <MESSAGE value="minor refactors" />
+    <option name="LAST_COMMIT_MESSAGE" value="minor refactors" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

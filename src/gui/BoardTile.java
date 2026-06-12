@@ -19,8 +19,6 @@ public class BoardTile extends Polygon {
     final String greyTileColor = "0xD18B47";
 
     TileColor color;
-    int xBoard;
-    int yBoard;
 
     // constructs a board tile, i.e. hexagon, with graphical center at x, y and side length s
     public BoardTile(double x, double y, double s, TileColor c) {
