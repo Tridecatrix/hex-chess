@@ -4,7 +4,6 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import model.piece.Pawn;
 import model.piece.Piece;
-import model.piece.Queen;
 
 import java.util.*;
 
@@ -13,6 +12,7 @@ public class Game {
     double whitePoints = 0;
     double blackPoints = 0;
     int movesSinceCaptureOrPawnMovement = 0;
+    int moveNumberForCurrentSide = 1;
 
     Board board;
 
@@ -22,6 +22,10 @@ public class Game {
 
     Piece.Color currentPlayer = Piece.Color.WHITE;
     GameResult currentGameState;
+
+    public int getMoveNumberForCurrentSide() {
+        return moveNumberForCurrentSide;
+    }
 
     public enum GameResult {
         STALEMATE,
@@ -93,6 +97,9 @@ public class Game {
             if (pawnMovementOrCapture) movesSinceCaptureOrPawnMovement = 0;
             else movesSinceCaptureOrPawnMovement++;
 
+            // update move number
+            moveNumberForCurrentSide += currentPlayer == Piece.Color.WHITE ? 0 : 1;
+
             // update current player
             currentPlayer = currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
 
@@ -151,6 +158,8 @@ public class Game {
         while (!previousBoards.isEmpty()) {
             previousBoards.remove();
         }
+        moveNumberForCurrentSide = 1;
+        currentGameState = GameResult.CONTINUING;
     }
 
     public void resign() {

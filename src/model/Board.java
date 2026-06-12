@@ -39,6 +39,14 @@ public class Board {
         this.board[pos.file][pos.rank] = piece;
     }
 
+    public Position getWhiteKingPos() {
+        return whiteKingPos;
+    }
+
+    public Position getBlackKingPos() {
+        return blackKingPos;
+    }
+
     // default constructor; initialise board in starting position
     public Board() {
         whitePiecePositions = new HashSet<>();
