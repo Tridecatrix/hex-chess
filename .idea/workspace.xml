@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="finished writing draw test">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="Added printout for when player is in check">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/TerminalGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/TerminalGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HexChess.iml" beforeDir="false" afterPath="$PROJECT_DIR$/HexChess.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/BoardTile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/BoardTile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/Viewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Viewer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Position.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Position.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +45,7 @@
     "Application.HelloFX.executor": "Run",
     "Application.Main.executor": "Run",
     "Application.TerminalGUI.executor": "Run",
+    "Application.Viewer.executor": "Run",
     "Downloaded.Files.Path.Enabled": "true",
     "JUnit.ChecksAndCheckmate.executor": "Run",
     "JUnit.ChecksAndCheckmateTest and 1 more.executor": "Run",
@@ -68,7 +73,7 @@
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\lib" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TerminalGUI">
+  <component name="RunManager" selected="Application.Viewer">
     <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="other.Debug" />
       <module name="HexChess" />
@@ -83,13 +88,16 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ChecksAndCheckmateTest and 1 more" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Viewer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="gui.Viewer" />
       <module name="HexChess" />
-      <option name="TEST_OBJECT" value="pattern" />
-      <patterns>
-        <pattern testClass="ChecksAndCheckmateTest" />
-        <pattern testClass="LegalMovesTest" />
-      </patterns>
+      <option name="VM_PARAMETERS" value="--module-path lib/javafx-sdk-25.0.3/lib --add-modules javafx.controls,javafx.fxml" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -116,19 +124,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.Viewer" />
       <item itemvalue="Application.Debug" />
       <item itemvalue="Application.TerminalGUI" />
       <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
       <item itemvalue="JUnit.DrawTest" />
-      <item itemvalue="JUnit.ChecksAndCheckmateTest and 1 more" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Viewer" />
         <item itemvalue="Application.TerminalGUI" />
         <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
         <item itemvalue="JUnit.DrawTest" />
         <item itemvalue="Application.Debug" />
-        <item itemvalue="JUnit.ChecksAndCheckmateTest and 1 more" />
       </list>
     </recent_temporary>
   </component>
@@ -373,12 +381,19 @@
       <option name="project" value="LOCAL" />
       <updated>1781164767865</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Added printout for when player is in check">
+      <option name="closed" value="true" />
+      <created>1781173402930</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1781173402930</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="began working on tests" />
     <MESSAGE value="Refactored the switch statements to have each piece as a separate class" />
     <MESSAGE value="Fixed up all tests and piece movement logic; passing all tests!" />
     <MESSAGE value="Minor change (refactored logic for Knight + fixed commas in terminal GUI moves list)" />
@@ -403,7 +418,8 @@
     <MESSAGE value="working on draw logic" />
     <MESSAGE value="finished implementing draw logic; begun writing draw tests" />
     <MESSAGE value="finished writing draw test" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished writing draw test" />
+    <MESSAGE value="Added printout for when player is in check" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added printout for when player is in check" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -14,6 +14,9 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Position;
+
+import java.util.List;
 
 import static java.lang.Math.sqrt;
 
@@ -58,31 +61,32 @@ public class Viewer extends Application {
         HBox root = new HBox(16);
         root.setPrefSize(1920, 1080);
         root.setAlignment(Pos.CENTER);
+        root.setSpacing(100);
 
-        AnchorPane boardSpace = new AnchorPane();
-        int BOARD_SIZE = 900;
-        boardSpace.setPrefSize(BOARD_SIZE, BOARD_SIZE);
+        Group boardView = new Group();
+        double BOARD_SIZE = 900;
 
-        BoardTile tile;
-        int TILE_HEIGHT = BOARD_SIZE / (2*6 - 1);
-        double TILE_SIDELENGTH = TILE_HEIGHT / sqrt(3);
-        for (int y = 0; y < 11; y++) {
-            for (int x = 0; x < 11; x++) {
-                if (y >= 11 - Math.abs(x - 5)) continue;
+        for (int xBoard = 0; xBoard < 11; xBoard++) {
+            for (int yBoard = 0; yBoard < 11; yBoard++) {
+                double h = BOARD_SIZE/11;
+                double s = BoardTile.fullHeightToSideLength(h);
+                if (new Position(xBoard, yBoard).isInBounds(11)) {
+                    // below is based on paper and pen working out of the pixel position of the hexagon centers given
+                    // xBoard and yBoard
+                    double x = 1.5 * s * xBoard;
+                    double y = -h / 2 * Position.distanceFromEdge(new Position(xBoard, yBoard), 11) + h * yBoard;
 
-                double tileX = x * BOARD_SIZE / 11;
-                double tileY = y * BOARD_SIZE / 11;
+                    int colorIndex = (yBoard + Position.distanceFromEdge(new Position(xBoard, yBoard), 11)) % 3;
+                    BoardTile.TileColor color = List.of(BoardTile.TileColor.BLACK, BoardTile.TileColor.GREY, BoardTile.TileColor.WHITE).get(colorIndex);
 
-                tile = new BoardTile(TILE_SIDELENGTH, BoardTile.TileColor.WHITE);
-
-                AnchorPane.setTopAnchor(tile, tileY);
-                AnchorPane.setLeftAnchor(tile, tileX);
-                boardSpace.getChildren().add(tile);
+                    boardView.getChildren().add(new BoardTile(x, y, s, color));
+                }
             }
         }
 
-        root.getChildren().add(boardSpace);
+        root.getChildren().add(boardView);
 
+        // add game info
         VBox gameInfo = new VBox(16);
         gameInfo.setAlignment(Pos.CENTER_LEFT);
         moveNumber = new Text("Move number: 1");
@@ -91,6 +95,7 @@ public class Viewer extends Application {
         currentPlayer.setFont(Font.font(22));
         gameInfo.getChildren().addAll(moveNumber, currentPlayer);
 
+        // add game buttons
         HBox gameButtons = new HBox(5);
         Button resign = new Button("Resign");
         Button restart = new Button("Restart");

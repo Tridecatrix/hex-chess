@@ -18,15 +18,15 @@ public class BoardTile extends Polygon {
 
     TileColor color;
 
-    public BoardTile(double s, TileColor c) {
+    public BoardTile(double x, double y, double s, TileColor c) {
         super();
         this.getPoints().addAll(new Double[]{
-                s, 0.0,
-                s/2, s*sqrt(3)/2,
-                -s/2, s*sqrt(3)/2,
-                -s, 0.0,
-                -s/2, -s*sqrt(3)/2,
-                s/2, -s*sqrt(3)/2
+                x+s, y,
+                x+s/2, y+s*sqrt(3)/2,
+                x-s/2, y+s*sqrt(3)/2,
+                x-s, y,
+                x-s/2, y-s*sqrt(3)/2,
+                x+s/2, y-s*sqrt(3)/2
         });
         this.color = c;
 
@@ -34,5 +34,21 @@ public class BoardTile extends Polygon {
                 this.color == TileColor.WHITE ? whiteTileColor :
                 this.color == TileColor.GREY ? greyTileColor : blackTileColor
         ));
+    }
+
+    public static double sideLengthToHeight(double s) {
+        return s*sqrt(3)/2;
+    }
+
+    public static double sideLengthToDiameter(double s) {
+        return 2*s;
+    }
+
+    public static double sideLengthToFullHeight(double s) {
+        return s*sqrt(3);
+    }
+
+    public static double fullHeightToSideLength(double h) {
+        return h/sqrt(3);
     }
 }

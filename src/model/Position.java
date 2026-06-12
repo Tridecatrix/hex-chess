@@ -47,6 +47,10 @@ public class Position {
         return Math.abs(pos.file - boardDim/2);
     }
 
+    public static int distanceFromEdge(Position pos, int boardDim) {
+        return boardDim/2 - Math.abs(pos.file - boardDim/2);
+    }
+
     // note in the following that movement directions need to be treated differently depending on if
     // the original position/destination position is on the left, middle or right of the board's center.
     // this is because the ranks (horizontal coordinates) go DOWN AND RIGHT on the left side of the board,
@@ -140,5 +144,11 @@ public class Position {
         } else {
             return new Position(pos.file + 1, pos.rank - 1);
         }
+    }
+
+    public boolean isInBounds(int boardDim) {
+        boolean isFileInBounds = this.file >= 0 && this.file < boardDim;
+        boolean isRankInBounds = this.rank >= 0 && this.rank < boardDim - distanceFromCenter(this, boardDim);
+        return isFileInBounds && isRankInBounds;
     }
 }
