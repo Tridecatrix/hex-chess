@@ -266,8 +266,7 @@ public class Board {
         Position playerKingPos = piece.color == Piece.Color.WHITE ? this.whiteKingPos : this.blackKingPos;
 
         // if there is no king, do not need the below
-        // also, king logic already handles making sure piece doesn't end in check
-        if (playerKingPos == null || piece instanceof King) return potentialMoves;
+        if (playerKingPos == null) return potentialMoves;
 
         // need one more condition: a move is not allowed if it causes the king to be in check,
         Set<Move> moves = new HashSet<>();

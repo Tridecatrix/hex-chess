@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="working towards gluing together frontend and backend logic">
-      <change afterPath="$PROJECT_DIR$/src/gui/PieceView.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/blank.png" afterDir="false" />
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="Finished frontend v0.9 (only missing promotion logic)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planning/mainUI.pdn" beforeDir="false" afterPath="$PROJECT_DIR$/planning/mainUI.pdn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/BoardTile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/BoardTile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/Viewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/piece/King.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/King.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/LegalMovesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/LegalMovesTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +73,7 @@
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\lib" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.ChecksAndCheckmateTest and 2 more">
     <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="other.Debug" />
       <module name="HexChess" />
@@ -126,8 +122,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
+        <item itemvalue="Application.Main" />
         <item itemvalue="Application.TerminalGUI" />
         <item itemvalue="Application.Debug" />
       </list>
@@ -422,12 +418,19 @@
       <option name="project" value="LOCAL" />
       <updated>1781231449644</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Finished frontend v0.9 (only missing promotion logic)">
+      <option name="closed" value="true" />
+      <created>1781248983831</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1781248983831</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Refactored pieces lists to instead be piece position lists" />
     <MESSAGE value="Excluded positions under threat from king legal moves" />
     <MESSAGE value="Wrote tests to verify new king movement logic works" />
     <MESSAGE value="completed update to account for checks when calculating legal moves and detect when king is in check" />
@@ -452,7 +455,8 @@
     <MESSAGE value="deleted extra run config" />
     <MESSAGE value="minor refactors" />
     <MESSAGE value="working towards gluing together frontend and backend logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="working towards gluing together frontend and backend logic" />
+    <MESSAGE value="Finished frontend v0.9 (only missing promotion logic)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finished frontend v0.9 (only missing promotion logic)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

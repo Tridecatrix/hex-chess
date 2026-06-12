@@ -42,14 +42,19 @@ public class King extends Piece {
                 && (board.getPos(pos) == null
                 || board.getPos(pos).color != this.color)).toList());
 
-        // additionally filter out positions under threat (cannot move the king into check)
+        // EDIT: don't bother filtering out positions with checks here, this is already done by Board's getLegalMoves method
+        // for all pieces
         Set<Move> moves = new HashSet<>();
-        List<Boolean> isSpaceUnderCheck = board.areSpacesUnderThreat(this.color, destinationsWithChecks);
-        for (int i = 0; i < destinationsWithChecks.size(); i++) {
-            if (!isSpaceUnderCheck.get(i)) {
-                moves.add(new Move(fromPos, destinationsWithChecks.get(i)));
-            }
+        for (Position toPos : destinationsWithChecks) {
+            moves.add(new Move(fromPos, toPos));
         }
+
+//        List<Boolean> isSpaceUnderCheck = board.areSpacesUnderThreat(this.color, destinationsWithChecks);
+//        for (int i = 0; i < destinationsWithChecks.size(); i++) {
+//            if (!isSpaceUnderCheck.get(i)) {
+//                moves.add(new Move(fromPos, destinationsWithChecks.get(i)));
+//            }
+//        }
 
         return moves;
     }

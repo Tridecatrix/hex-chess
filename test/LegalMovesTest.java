@@ -237,6 +237,15 @@ class LegalMovesTest {
     }
 
     @Test
+    void kingNoMovesIntoCheck4() {
+        Board board = new Board(List.of("kh8", "ph7", "Qj7", "Nh6", "Bi5", "Bd3"));
+
+        assertMovesEqual(Set.of("g7"), board, "h8");
+    }
+
+
+
+    @Test
     void enPassant() {
         Board board = new Board(List.of("Pd3", "pe5"));
         board.applyMoveWithLegalityCheck(new Move("d3", "d5"), Piece.Color.WHITE);
