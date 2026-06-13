@@ -9,12 +9,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.Game;
-import model.Move;
-import model.Position;
+import model.*;
 import model.piece.Piece;
 
 import java.util.List;
@@ -28,10 +27,13 @@ public class Main extends Application {
     BoardTile[][] boardTilesAsArray = new BoardTile[11][11];
     Pane boardAndPieces = new StackPane();
     Group pieces;
+    VBox sidebar;
     Text moveNumber;
     Text currentPlayer;
     Text gameStatus;
     Text gameWins;
+    Text temporaryMessage;
+    boolean showingTempMessage = false;
 
     // list of backend objects
     Game game;
@@ -162,7 +164,7 @@ public class Main extends Application {
         root.getChildren().add(boardAndPieces);
 
         // build sidebar
-        VBox sidebar = new VBox(16);
+        sidebar = new VBox(16);
         sidebar.setAlignment(Pos.CENTER_LEFT);
 
         // add game info
@@ -207,11 +209,22 @@ public class Main extends Application {
             game.restartGame();
             renderPieces();
             renderGameInfo();
+            clearHighlightingAll();
         });
 
         claimDraw.setOnAction(e -> {
-            game.claimDraw();
-            renderGameInfo();
+            if (game.claimDraw()) {
+                renderGameInfo();
+            } else {
+                if (showingTempMessage)
+                    sidebar.getChildren().remove(temporaryMessage);
+
+                temporaryMessage = new Text("No draw; continue");
+                temporaryMessage.setFont(Font.font(22));
+                temporaryMessage.setFill(Color.RED);
+                sidebar.getChildren().add(temporaryMessage);
+                showingTempMessage = true;
+            }
         });
 
         root.getChildren().add(sidebar);
@@ -297,7 +310,7 @@ public class Main extends Application {
                 gameStatus.setText("Game status: draw");
             }
             case RESIGNED -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "White" : "Black") + "\nwins by resignation!");
+                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by resignation!");
             }
             case CONTINUING -> {
                 gameStatus.setText("Game status: continuing");
@@ -307,8 +320,29 @@ public class Main extends Application {
         gameWins.setText(game.getWhitePoints() + "        " + game.getBlackPoints());
     }
 
+    private void renderPromotionMenu(Position promoteablePawn) {
+        // TODO: provide options for rendering the piece
+        this.game.handlePromotion(promoteablePawn, PieceType.QUEEN);
+
+        renderPieces();
+        renderGameInfo();
+
+        // highlight the king if it is in check after the move
+        if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
+            Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
+                    : game.getBoard().getBlackKingPos();
+
+            boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+        }
+    }
+
     // handler for clicking on a tile
     private void handleClickOnTile(int x, int y) {
+        // clear any temporary messages
+        if (showingTempMessage) {
+            sidebar.getChildren().remove(temporaryMessage);
+        }
+
         Position clickedTilePos = new Position(x, y);
 
         // if the game is already over, do nothing
@@ -357,7 +391,19 @@ public class Main extends Application {
 
             // apply the move
             Move move = new Move(fromPos, toPos);
-            game.applyMove(move);
+            MoveResult result = game.applyMove(move);
+
+            // TODO: additional actions: handle promotion
+            if (result.promoteablePawn != null) {
+                // the handler for the tiles in the promotion menu will handle deleting the promotion menu
+                // and completing the render operation
+                renderPromotionMenu(result.promoteablePawn);
+                return;
+            }
+
+            // additional actions: check if game end
+            game.checkIfGameEnd();
+
             renderPieces();
             renderGameInfo();
 
@@ -372,13 +418,21 @@ public class Main extends Application {
         else if (game.getBoard().getPos(clickedTilePos) != null && game.getBoard().getPos(clickedTilePos).color == game.getCurrentPlayer()) {
             this.selectedPos = clickedTilePos;
 
-            // clear existing highlighting (except for king position)
+            // clear existing highlighting
             for (int x2 = 0; x2 < 11; x2++) {
                 for (int y2 = 0; y2 < 11; y2++) {
                     if (boardTilesAsArray[x2][y2] != null && !(new Position(x2, y2)).equals(game.getBoard().getWhiteKingPos()) &&
                             !(new Position(x2, y2)).equals(game.getBoard().getBlackKingPos()))
                         boardTilesAsArray[x2][y2].setHighlight(BoardTile.Highlight.NONE);
                 }
+            }
+
+            // rehighlight the king if it is the king being selected
+            if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
+                Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
+                        : game.getBoard().getBlackKingPos();
+
+                boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
             }
 
             // add new highlighting
@@ -392,6 +446,15 @@ public class Main extends Application {
                     // this is a normal move
                     boardTilesAsArray[toPos.file][toPos.rank].setHighlight(BoardTile.Highlight.NORMAL);
                 }
+            }
+        }
+    }
+
+    public void clearHighlightingAll() {
+        for (int x2 = 0; x2 < 11; x2++) {
+            for (int y2 = 0; y2 < 11; y2++) {
+                if (boardTilesAsArray[x2][y2] != null)
+                    boardTilesAsArray[x2][y2].setHighlight(BoardTile.Highlight.NONE);
             }
         }
     }

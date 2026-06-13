@@ -233,6 +233,9 @@ public class Game {
     // - draw by 50 moves without captures or pawn movements
     public boolean claimDraw() {
         if (movesSinceCaptureOrPawnMovement >= 2*50) {
+            this.currentGameState = GameResult.DRAW;
+            whitePoints += 0.5;
+            blackPoints += 0.5;
             return true;
         }
 
@@ -242,7 +245,12 @@ public class Game {
             if (this.board.equals(previousBoard)) repTimes++;
         }
 
-        if (repTimes >= 2) return true;
+        if (repTimes >= 2) {
+            this.currentGameState = GameResult.DRAW;
+            whitePoints += 0.5;
+            blackPoints += 0.5;
+            return true;
+        }
 
         return false;
     }
