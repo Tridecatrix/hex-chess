@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -33,6 +34,7 @@ public class Main extends Application {
     Text gameStatus;
     Text gameWins;
     Text temporaryMessage;
+    Group promotionMenu;
     boolean showingTempMessage = false;
     boolean handlingPromotion = false;
 
@@ -208,6 +210,13 @@ public class Main extends Application {
 
         restart.setOnAction(e -> {
             game.restartGame();
+            if (handlingPromotion) {
+                handlingPromotion = false;
+                boardAndPieces.getChildren().remove(promotionMenu);
+            }
+            if (showingTempMessage) {
+                sidebar.getChildren().remove(temporaryMessage);
+            }
             renderPieces();
             renderGameInfo();
             clearHighlightingAll();
@@ -324,7 +333,7 @@ public class Main extends Application {
     private void renderPromotionMenu(Position promoteablePawn) {
         handlingPromotion = true;
 
-        Group promotionMenu = new Group();
+        promotionMenu = new Group();
 
         double h = BOARD_SIZE/11;                       // tile height
         double s = BoardTile.fullHeightToSideLength(h); // tile side length
@@ -425,6 +434,7 @@ public class Main extends Application {
         promotionTileBishop.setHighlight(BoardTile.Highlight.PROMOTION);
         promotionTileKnight.setHighlight(BoardTile.Highlight.PROMOTION);
         promotionTileRook.setHighlight(BoardTile.Highlight.PROMOTION);
+
         promotionMenu.getChildren().addAll(List.of(promotionTileQueen, promotionTileBishop, promotionTileKnight, promotionTileRook,
                 promotionQueen, promotionBishop, promotionKnight, promotionRook));
 
@@ -464,6 +474,7 @@ public class Main extends Application {
         game.handlePromotion(promoteablePawn, type);
 
         boardAndPieces.getChildren().remove(promotionMenu);
+        handlingPromotion = false;
 
         renderPieces();
         renderGameInfo();
