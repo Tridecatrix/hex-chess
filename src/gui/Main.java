@@ -34,6 +34,7 @@ public class Main extends Application {
     Text gameWins;
     Text temporaryMessage;
     boolean showingTempMessage = false;
+    boolean handlingPromotion = false;
 
     // list of backend objects
     Game game;
@@ -321,8 +322,148 @@ public class Main extends Application {
     }
 
     private void renderPromotionMenu(Position promoteablePawn) {
-        // TODO: provide options for rendering the piece
-        this.game.handlePromotion(promoteablePawn, PieceType.QUEEN);
+        handlingPromotion = true;
+
+        Group promotionMenu = new Group();
+
+        double h = BOARD_SIZE/11;                       // tile height
+        double s = BoardTile.fullHeightToSideLength(h); // tile side length
+
+        // put in blanks at all locations on the board to ensure coordinate alignment
+        for (int xBoard = 0; xBoard < 11; xBoard++) {
+            for (int yBoard = 0; yBoard < 11; yBoard++) {
+                Position pos = new Position(xBoard, yBoard);
+
+                String imagePath;
+                if (pos.isInBounds(11) || pos.equals(promoteablePawn))
+                    imagePath = "gui/assets/blank.png";
+                else {
+                    continue;
+                }
+
+                double x = 1.5 * s * xBoard;
+                double y = -(-h / 2 * Position.distanceFromEdge(new Position(xBoard, yBoard), 11) + h * yBoard);
+
+                PieceView blank = new PieceView(imagePath, xBoard, yBoard);
+                blank.setX(x);
+                blank.setY(y);
+                blank.setFitHeight(h * 0.8);
+                blank.setFitWidth(2 * s * 0.8);
+
+                promotionMenu.getChildren().add(blank);
+            }
+        }
+
+        // add additional blanks to adjust the piece positions given that the board also has coordinate markings
+        ImageView coordinateMarkingBlank = new ImageView("gui/assets/blank.png");
+        coordinateMarkingBlank.setX(1.5 * s * 5);
+        coordinateMarkingBlank.setY(h / 2 * Position.distanceFromEdge(new Position(5, 0), 11) + h*1.2);
+        promotionMenu.getChildren().add(coordinateMarkingBlank);
+
+        ImageView coordinateMarkingBlank3 = new ImageView("gui/assets/blank.png");
+        coordinateMarkingBlank3.setX(s*0.25);
+        coordinateMarkingBlank3.setY(-h * 0.125 - h * 2.5 - h/2 * 10);
+        promotionMenu.getChildren().add(coordinateMarkingBlank3);
+
+        // start building promotion tiles and icons
+
+        char pieceColor = game.getBoard().getPos(promoteablePawn).color == Piece.Color.WHITE ? 'l' : 'd';
+
+        int multiplier = game.getBoard().getPos(promoteablePawn).color == Piece.Color.WHITE ? 1 : -1;
+        double promotionX = s/2 + 13 + 1.5 * s * promoteablePawn.file;
+        double promotionY = h/2 - 4
+                - (-h / 2 * Position.distanceFromEdge(new Position(promoteablePawn.file, promoteablePawn.rank), 11)
+                + h * promoteablePawn.rank);
+
+        BoardTile promotionTileQueen = new BoardTile(promotionX, promotionY, s, BoardTile.TileColor.WHITE);
+        PieceView promotionQueen = new PieceView("gui/assets/Chess_q" + pieceColor + "t45.png");
+        promotionQueen.setX(promotionX-s+10);
+        promotionQueen.setY(promotionY-h/2+10);
+        promotionQueen.setFitHeight(h * 0.8);
+        promotionQueen.setFitWidth(2 * s * 0.8);
+
+        BoardTile promotionTileBishop;
+        PieceView promotionBishop = new PieceView("gui/assets/Chess_b" + pieceColor + "t45.png");
+        if (promoteablePawn.file == 0 || promoteablePawn.file == 1) {
+            promotionTileBishop = new BoardTile(promotionX + s * 1.5 + s / 2, promotionY - multiplier * (h / 2 + s / 2), s, BoardTile.TileColor.WHITE);
+            promotionBishop.setX(promotionX-s+10 + s * 1.5 + s / 2);
+            promotionBishop.setY(promotionY-h/2+10 - multiplier * (h / 2 + s / 2));
+            promotionBishop.setFitHeight(h * 0.8);
+            promotionBishop.setFitWidth(2 * s * 0.8);
+        } else {
+            promotionTileBishop = new BoardTile(promotionX - s * 1.5 - s / 2, promotionY + multiplier * (h / 2 + s / 2), s, BoardTile.TileColor.WHITE);
+            promotionBishop.setX(promotionX-s+10 - s * 1.5 - s / 2);
+            promotionBishop.setY(promotionY-h/2+10 + multiplier * (h / 2 + s / 2));
+            promotionBishop.setFitHeight(h * 0.8);
+            promotionBishop.setFitWidth(2 * s * 0.8);
+        }
+
+        BoardTile promotionTileKnight;
+        PieceView promotionKnight = new PieceView("gui/assets/Chess_n" + pieceColor + "t45.png");
+        if (promoteablePawn.file == 9 || promoteablePawn.file == 10) {
+            promotionTileKnight = new BoardTile(promotionX - s * 1.5 - s / 2, promotionY - multiplier * (h / 2 + s / 2), s, BoardTile.TileColor.WHITE);
+            promotionKnight.setX(promotionX-s+10 - s * 1.5 - s / 2);
+            promotionKnight.setY(promotionY-h/2+10 - multiplier * (h / 2 + s / 2));
+            promotionKnight.setFitHeight(h * 0.8);
+            promotionKnight.setFitWidth(2 * s * 0.8);
+        } else {
+            promotionTileKnight = new BoardTile(promotionX + s * 1.5 + s / 2, promotionY + multiplier * (h / 2 + s / 2), s, BoardTile.TileColor.WHITE);
+            promotionKnight.setX(promotionX-s+10 + s * 1.5 + s / 2);
+            promotionKnight.setY(promotionY-h/2+10 + multiplier * (h / 2 + s / 2));
+            promotionKnight.setFitHeight(h * 0.8);
+            promotionKnight.setFitWidth(2 * s * 0.8);
+        }
+
+        BoardTile promotionTileRook = new BoardTile(promotionX, promotionY + multiplier * (h + s), s, BoardTile.TileColor.WHITE);
+        PieceView promotionRook = new PieceView("gui/assets/Chess_r" + pieceColor + "t45.png");
+        promotionRook.setX(promotionX-s+10);
+        promotionRook.setY(promotionY-h/2+10 + multiplier * (h + s));
+        promotionRook.setFitHeight(h * 0.8);
+        promotionRook.setFitWidth(2 * s * 0.8);
+
+        promotionTileQueen.setHighlight(BoardTile.Highlight.PROMOTION);
+        promotionTileBishop.setHighlight(BoardTile.Highlight.PROMOTION);
+        promotionTileKnight.setHighlight(BoardTile.Highlight.PROMOTION);
+        promotionTileRook.setHighlight(BoardTile.Highlight.PROMOTION);
+        promotionMenu.getChildren().addAll(List.of(promotionTileQueen, promotionTileBishop, promotionTileKnight, promotionTileRook,
+                promotionQueen, promotionBishop, promotionKnight, promotionRook));
+
+        boardAndPieces.getChildren().add(promotionMenu);
+
+        // add handlers for each button and piece object
+        promotionTileQueen.setOnMouseClicked(e -> {
+            handlePromotionAndRender(promoteablePawn, PieceType.QUEEN, promotionMenu);
+        });
+        promotionQueen.setOnMouseClicked(e -> {
+            handlePromotionAndRender(promoteablePawn, PieceType.QUEEN, promotionMenu);
+        });
+
+        promotionTileBishop.setOnMouseClicked(e -> {
+            handlePromotionAndRender(promoteablePawn, PieceType.BISHOP, promotionMenu);
+        });
+        promotionBishop.setOnMouseClicked(e -> {
+            handlePromotionAndRender(promoteablePawn, PieceType.BISHOP, promotionMenu);
+        });
+
+        promotionTileKnight.setOnMouseClicked(e -> {
+            handlePromotionAndRender(promoteablePawn, PieceType.KNIGHT, promotionMenu);
+        });
+        promotionKnight.setOnMouseClicked(e -> {
+            handlePromotionAndRender(promoteablePawn, PieceType.KNIGHT, promotionMenu);
+        });
+
+        promotionTileRook.setOnMouseClicked(e -> {
+            handlePromotionAndRender(promoteablePawn, PieceType.ROOK, promotionMenu);
+        });
+        promotionRook.setOnMouseClicked(e -> {
+            handlePromotionAndRender(promoteablePawn, PieceType.ROOK, promotionMenu);
+        });
+    }
+
+    private void handlePromotionAndRender(Position promoteablePawn, PieceType type, Group promotionMenu) {
+        game.handlePromotion(promoteablePawn, type);
+
+        boardAndPieces.getChildren().remove(promotionMenu);
 
         renderPieces();
         renderGameInfo();
@@ -336,10 +477,11 @@ public class Main extends Application {
         }
     }
 
+
     // handler for clicking on a tile
     private void handleClickOnTile(int x, int y) {
         // clear any temporary messages
-        if (showingTempMessage) {
+        if (showingTempMessage || handlingPromotion) {
             sidebar.getChildren().remove(temporaryMessage);
         }
 
@@ -393,7 +535,6 @@ public class Main extends Application {
             Move move = new Move(fromPos, toPos);
             MoveResult result = game.applyMove(move);
 
-            // TODO: additional actions: handle promotion
             if (result.promoteablePawn != null) {
                 // the handler for the tiles in the promotion menu will handle deleting the promotion menu
                 // and completing the render operation

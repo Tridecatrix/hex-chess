@@ -361,7 +361,7 @@ public class Board {
         // Promotion check; the promotion action is handled in handlePromotion
         if (movedPiece instanceof Pawn) {
             if (movedPiece.color == Piece.Color.WHITE
-                    && move.toPos.rank == boarddim - Position.distanceFromCenter(move.toPos, boarddim)
+                    && move.toPos.rank == boarddim - Position.distanceFromCenter(move.toPos, boarddim) - 1
                || movedPiece.color == Piece.Color.BLACK && move.toPos.rank == 0) {
                 promotedPawn = move.toPos;
             }

@@ -18,7 +18,8 @@ public class BoardTile extends Polygon {
         NONE,
         NORMAL,
         CAPTURE,
-        CHECK
+        CHECK,
+        PROMOTION
     }
 
     static final String whiteTileColor = "0xFFCE9E";
@@ -38,6 +39,8 @@ public class BoardTile extends Polygon {
     static final String checkWhiteTileColor = "0xFF5A45";
     static final String checkBlackTileColor = "0xEA3D1F";
     static final String checkGreyTileColor = "0xF44B30";
+
+    static final String promotionTileColor = "0xB875C7";
 
     // for coloring king tile when it is in check
 
@@ -63,6 +66,7 @@ public class BoardTile extends Polygon {
                 case BLACK -> checkBlackTileColor;
                 case GREY -> checkGreyTileColor;
             };
+            case PROMOTION -> promotionTileColor;
         });
         this.setFill(newFill);
         this.highlight = highlight;

@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="Fixed incorrect logic for moving king into check">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="promotion concept">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/BoardTile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/BoardTile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +41,7 @@
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "Application.Debug.executor": "Run",
     "Application.HelloFX.executor": "Run",
-    "Application.Main.executor": "Debug",
+    "Application.Main.executor": "Run",
     "Application.TerminalGUI.executor": "Run",
     "Application.Viewer.executor": "Run",
     "Downloaded.Files.Path.Enabled": "true",
@@ -433,13 +434,27 @@
       <option name="project" value="LOCAL" />
       <updated>1781306310386</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="begun working on promotion logic">
+      <option name="closed" value="true" />
+      <created>1781317303355</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1781317303355</updated>
+    </task>
+    <task id="LOCAL-00039" summary="promotion concept">
+      <option name="closed" value="true" />
+      <created>1781317473761</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1781317473761</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Wrote tests to verify new king movement logic works" />
-    <MESSAGE value="completed update to account for checks when calculating legal moves and detect when king is in check" />
     <MESSAGE value="minor addition: check for checkmate" />
     <MESSAGE value="began working on checks/checkmate tests" />
     <MESSAGE value="flipped the black queen/king again" />
@@ -463,7 +478,9 @@
     <MESSAGE value="working towards gluing together frontend and backend logic" />
     <MESSAGE value="Finished frontend v0.9 (only missing promotion logic)" />
     <MESSAGE value="Fixed incorrect logic for moving king into check" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed incorrect logic for moving king into check" />
+    <MESSAGE value="begun working on promotion logic" />
+    <MESSAGE value="promotion concept" />
+    <option name="LAST_COMMIT_MESSAGE" value="promotion concept" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
