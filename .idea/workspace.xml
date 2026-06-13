@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="small changes to avoid promotion menu sticking around after game restart">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="Corrected game win text and game win logic">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -463,13 +465,19 @@
       <option name="project" value="LOCAL" />
       <updated>1781326281432</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="Change README.md">
+      <option name="closed" value="true" />
+      <created>1781326766554</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1781326766554</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="flipped the black queen/king again" />
-    <MESSAGE value="added checkmate tests" />
     <MESSAGE value="renamed checkmate tests" />
     <MESSAGE value="checkmate and check logic complete" />
     <MESSAGE value="en passant logic" />
@@ -493,7 +501,9 @@
     <MESSAGE value="promotion concept" />
     <MESSAGE value="Finished game v1.0 (added pawn promotion)" />
     <MESSAGE value="small changes to avoid promotion menu sticking around after game restart" />
-    <option name="LAST_COMMIT_MESSAGE" value="small changes to avoid promotion menu sticking around after game restart" />
+    <MESSAGE value="Change README.md" />
+    <MESSAGE value="Corrected game win text and game win logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="Corrected game win text and game win logic" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

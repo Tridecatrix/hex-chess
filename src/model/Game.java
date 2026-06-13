@@ -134,12 +134,13 @@ public class Game {
             return GameResult.CONTINUING;
         }
 
+        // current player is white => white is checkmated => black wins
         if (currentPlayer == Piece.Color.WHITE) {
-            whitePoints += winPoints;
-            blackPoints += 1 - winPoints;
-        } else if (currentPlayer == Piece.Color.BLACK) {
             blackPoints += winPoints;
             whitePoints += 1 - winPoints;
+        } else if (currentPlayer == Piece.Color.BLACK) {
+            whitePoints += winPoints;
+            blackPoints += 1 - winPoints;
         }
 
         currentGameState = result;

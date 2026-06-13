@@ -311,10 +311,10 @@ public class Main extends Application {
 
         switch (game.getCurrentGameState()) {
             case STALEMATE -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "White" : "Black") + "\nwins by stalemate!");
+                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by stalemate!");
             }
             case CHECKMATE -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "White" : "Black") + "\nwins by checkmate!");
+                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by checkmate!");
             }
             case DRAW -> {
                 gameStatus.setText("Game status: draw");
@@ -573,13 +573,12 @@ public class Main extends Application {
             // clear existing highlighting
             for (int x2 = 0; x2 < 11; x2++) {
                 for (int y2 = 0; y2 < 11; y2++) {
-                    if (boardTilesAsArray[x2][y2] != null && !(new Position(x2, y2)).equals(game.getBoard().getWhiteKingPos()) &&
-                            !(new Position(x2, y2)).equals(game.getBoard().getBlackKingPos()))
+                    if (boardTilesAsArray[x2][y2] != null)
                         boardTilesAsArray[x2][y2].setHighlight(BoardTile.Highlight.NONE);
                 }
             }
 
-            // rehighlight the king if it is the king being selected
+            // rehighlight the king if it is in check
             if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
                 Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
                         : game.getBoard().getBlackKingPos();
