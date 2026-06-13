@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="Finished game v1.0 (added pawn promotion)">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="small changes to avoid promotion menu sticking around after game restart">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +58,7 @@
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/adnan/Desktop/Work/2021/COMP1140/comp1140-ass2-tue12q",
-    "project.structure.last.edited": "Libraries",
+    "project.structure.last.edited": "Artifacts",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.43970895",
     "settings.editor.selected.configurable": "preferences.lookFeel"
@@ -456,12 +455,19 @@
       <option name="project" value="LOCAL" />
       <updated>1781325653498</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="small changes to avoid promotion menu sticking around after game restart">
+      <option name="closed" value="true" />
+      <created>1781326281432</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1781326281432</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="began working on checks/checkmate tests" />
     <MESSAGE value="flipped the black queen/king again" />
     <MESSAGE value="added checkmate tests" />
     <MESSAGE value="renamed checkmate tests" />
@@ -486,7 +492,8 @@
     <MESSAGE value="begun working on promotion logic" />
     <MESSAGE value="promotion concept" />
     <MESSAGE value="Finished game v1.0 (added pawn promotion)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finished game v1.0 (added pawn promotion)" />
+    <MESSAGE value="small changes to avoid promotion menu sticking around after game restart" />
+    <option name="LAST_COMMIT_MESSAGE" value="small changes to avoid promotion menu sticking around after game restart" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

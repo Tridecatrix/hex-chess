@@ -1,44 +1,10 @@
-https://www.youtube.com/watch?v=bgR3yESAEVE
+# Hexagonal Chess
 
-basic premise:
-hex chess with a 2 player mode, a 3 player mode and a 6 player mode
+Java implementation of [Glinski's Hexagonal Chess](https://en.wikipedia.org/wiki/Hexagonal_chess#Gli%C5%84ski's_hexagonal_chess). 
 
-# Minimal Viable Product
+Currently supports two player local multiplayer, with all game rules including draws by move repetition/no captures or
+pawn movements for 50 moves. 
 
-Just 2 player mode
-- a GUI
-  - Coloration
-  - Indicating possible moves
-- local multiplayer
-- All rules are implemented:
-  - Rules for each piece to move
-  - Check detection and handling (limit possible moves to only those which eliminate check)
-  - Checkmate detection
-  - Pawns:
-    - Pawn promotion
-    - Double space movement for pawns (including ability to move if on a starting square)
-    - En passant
-  - Rooks
-  - Knight
-  - Bishop (incl. weird diagonals)
-  - Queen
-  - King
-- Stalemate
-- Draws:
-  - repetition of moves
-  - last 50 moves have been without a pawn movement or capture and player claims draw (75 for automatic draw)
-- Starting positions
-
-The version of 2 player hex chess I'm making is specifically the Glinski variant https://en.wikipedia.org/wiki/Hexagonal_chess#Gli%C5%84ski's_hexagonal_chess
-- URL above provides a reference for the rules
-
-# Features to add
-
-- Online multiplayer
-  - Premoving and arrows
+Features to add:
 - 3 player and 6 player modes
-  - https://en.wikipedia.org/wiki/Hexagonal_chess#Three_player_hexagonal_chess_variants
-
-# Planning
-
-https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
+- Changeable board dimensions
