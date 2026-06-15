@@ -1,7 +1,6 @@
 package gui;
 
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -10,31 +9,34 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import model.*;
 import model.piece.Piece;
 
 import java.util.List;
-import java.util.Set;
 
 import static java.lang.Thread.sleep;
 
 public class Main extends Application {
-    // list of GUI elements
     Stage primaryStage;
+
+    // list of GUI elements that are printed on the board side
     BoardTile[][] boardTilesAsArray = new BoardTile[11][11];
-    Pane boardAndPieces = new StackPane();
-    Group pieces;
+    PieceView[][] pieceViewsAsArray = new PieceView[11][11];
+    StackPane[][] tileStacksAsArray = new StackPane[11][11];
+    Group boardAndCoordinatesView;
+
+    // list of GUI elements printed on the sidebar
     VBox sidebar;
     Text moveNumber;
     Text currentPlayer;
     Text gameStatus;
     Text gameWins;
     Text temporaryMessage;
-    Group promotionMenu;
+
     boolean showingTempMessage = false;
     boolean handlingPromotion = false;
 
@@ -87,12 +89,12 @@ public class Main extends Application {
         game = new Game();
 
         // begin setting up the board view
-        Group boardTiles = new Group();
-        pieces = new Group();
+        boardAndCoordinatesView = new Group();
+        root.getChildren().add(boardAndCoordinatesView);
         double h = BOARD_SIZE/11;                       // tile height
         double s = BoardTile.fullHeightToSideLength(h); // tile side length
 
-        // create board tiles
+        // create board tile stacks, pieces and boards
         for (int xBoard = 0; xBoard < 11; xBoard++) {
             for (int yBoard = 0; yBoard < 11; yBoard++) {
                 if (new Position(xBoard, yBoard).isInBounds(11)) {
@@ -105,31 +107,37 @@ public class Main extends Application {
                     int colorIndex = (yBoard + Position.distanceFromEdge(new Position(xBoard, yBoard), 11)) % 3;
                     BoardTile.TileColor color = List.of(BoardTile.TileColor.BLACK, BoardTile.TileColor.GREY, BoardTile.TileColor.WHITE).get(colorIndex);
 
+                    // create hexagon tile stack
+                    StackPane tileStack = new StackPane();
+                    tileStack.setLayoutX(x);
+                    tileStack.setLayoutY(y);
+                    tileStacksAsArray[xBoard][yBoard] = tileStack;
+                    tileStack.setAlignment(Pos.CENTER);
+                    boardAndCoordinatesView.getChildren().add(tileStack);
+
                     // create hexagon tile object
-                    BoardTile tile = new BoardTile(x, y, s, color);
+                    BoardTile tile = new BoardTile(s, color);
                     tile.setxBoard(xBoard);
                     tile.setyBoard(yBoard);
-
                     boardTilesAsArray[xBoard][yBoard] = tile;
-                    boardTiles.getChildren().add(tile);
-
+                    tileStack.getChildren().add(tile);
                     tile.setOnMouseClicked(e -> this.handleClickOnTile(tile.xBoard, tile.yBoard) );
+
+                    // piece objects will be created later in renderPieces()
                 }
             }
         }
 
-        boardAndPieces.getChildren().add(boardTiles);
-
-        Group coordinateMarkings = new Group();
 
         // create coordinate markings: x markings
         for (int xBoard = 0; xBoard < 11; xBoard++) {
             char file = (char) ((int) 'a' + xBoard);
             Text coordinateMarking = new Text(Character.toString(file));
             coordinateMarking.setFont(Font.font(24));
-            coordinateMarking.setX(1.5 * s * xBoard - 5);
-            coordinateMarking.setY(h / 2 * Position.distanceFromEdge(new Position(xBoard, 0), 11) + h);
-            boardTiles.getChildren().add(coordinateMarking);
+            coordinateMarking.setX(s + 1.5 * s * xBoard);
+            coordinateMarking.setY(h * 1.5 + h / 2 * Position.distanceFromEdge(new Position(xBoard, 0), 11));
+            boardAndCoordinatesView.getChildren().add(coordinateMarking);
+            coordinateMarking.setTextAlignment(TextAlignment.CENTER);
         }
 
         // create coordinate markings: y markings
@@ -138,37 +146,35 @@ public class Main extends Application {
             Text rightCoordinateMarking = new Text(Integer.toString(yBoard + 1));
             leftCoordinateMarking.setFont(Font.font(24));
             rightCoordinateMarking.setFont(Font.font(24));
+            leftCoordinateMarking.setTextAlignment(TextAlignment.RIGHT); // for some reason this doesn't work
+            rightCoordinateMarking.setTextAlignment(TextAlignment.LEFT);
 
             if (yBoard <= 5) {
-                leftCoordinateMarking.setX(-1.25 * s);
-                leftCoordinateMarking.setY(-h * 0.25 - h * yBoard);
-                rightCoordinateMarking.setX(0.9 * s + 1.5 * s * 10);
-                rightCoordinateMarking.setY(-h * 0.25 - h * yBoard);
+                leftCoordinateMarking.setX(s - 1.25 * s);
+                leftCoordinateMarking.setY(h * 0.25 - h * yBoard);
+                rightCoordinateMarking.setX(1.9 * s + 1.5 * s * 10);
+                rightCoordinateMarking.setY(h * 0.25 - h * yBoard);
             } else {
-                if (yBoard <= 8) {
-                    leftCoordinateMarking.setX(-1.25 * s + (yBoard - 5) * (s * 1.5));
-                    rightCoordinateMarking.setX(0.9 * s + 1.5 * s * 10 - (yBoard - 5) * (s * 1.5));
-                }
-                else {
-                    leftCoordinateMarking.setX(-1.5 * s + (yBoard - 5) * (s * 1.5));
-                    rightCoordinateMarking.setX(0.9 * s + 1.5 * s * 10 - (yBoard - 5) * (s * 1.5));
-                }
-                leftCoordinateMarking.setY(-h * 0.25 - h * 2.5 - h/2 * yBoard);
-                rightCoordinateMarking.setY(-h * 0.25 - h * 2.5 - h/2 * yBoard);
+                if (yBoard <= 8)
+                    leftCoordinateMarking.setX(-0.25 * s + (yBoard - 5) * (s * 1.5));
+                else
+                    leftCoordinateMarking.setX(-12 - 0.25 * s + (yBoard - 5) * (s * 1.5));
+                leftCoordinateMarking.setY(h * 0.25 - h * 2.5 - h/2 * yBoard);
+                rightCoordinateMarking.setX(1.9 * s + 1.5 * s * 10   - (yBoard - 5) * (s * 1.5));
+                rightCoordinateMarking.setY(h * 0.25 - h * 2.5 - h/2 * yBoard);
             }
 
-            boardTiles.getChildren().add(leftCoordinateMarking);
-            boardTiles.getChildren().add(rightCoordinateMarking);
+            boardAndCoordinatesView.getChildren().add(leftCoordinateMarking);
+            boardAndCoordinatesView.getChildren().add(rightCoordinateMarking);
         }
 
         // render initial pieces
         renderPieces();
 
-        root.getChildren().add(boardAndPieces);
-
         // build sidebar
         sidebar = new VBox(16);
         sidebar.setAlignment(Pos.CENTER_LEFT);
+        root.getChildren().add(sidebar);
 
         // add game info
         moveNumber = new Text();
@@ -212,7 +218,7 @@ public class Main extends Application {
             game.restartGame();
             if (handlingPromotion) {
                 handlingPromotion = false;
-                boardAndPieces.getChildren().remove(promotionMenu);
+                closePromotionMenu();
             }
             if (showingTempMessage) {
                 sidebar.getChildren().remove(temporaryMessage);
@@ -237,20 +243,23 @@ public class Main extends Application {
             }
         });
 
-        root.getChildren().add(sidebar);
-
         return root;
     }
 
     // After an update to the underlying Game, i.e. piece position update, render pieces
     private void renderPieces() {
-        // Remove all current piece images
-        boardAndPieces.getChildren().remove(pieces);
-
-        Group newPieces = new Group();
-
         double h = BOARD_SIZE/11;                       // tile height
         double s = BoardTile.fullHeightToSideLength(h); // tile side length
+
+        // Remove all current piece images
+        for (int xBoard = 0; xBoard < 11; xBoard++) {
+            for (int yBoard = 0; yBoard < 11; yBoard++) {
+                if (pieceViewsAsArray[xBoard][yBoard] != null)  {
+                    tileStacksAsArray[xBoard][yBoard].getChildren().remove(pieceViewsAsArray[xBoard][yBoard]);
+                    pieceViewsAsArray[xBoard][yBoard] = null;
+                }
+            }
+        }
 
         // go back over the board and rebuild pieces array
         for (int xBoard = 0; xBoard < 11; xBoard++) {
@@ -259,49 +268,20 @@ public class Main extends Application {
 
                 Piece piece = game.getBoard().getPos(pos);
 
-                String imagePath;
-                if (piece != null) {
-                    imagePath = "gui/assets/Chess_"
-                            + piece.getChar()
-                            + (piece.color == Piece.Color.WHITE ? 'l' : 'd')
-                            + "t45.png";
-                } else if (pos.isInBounds(11))
-                    // for empty but in bounds positions, put a blank transparent box; this ensures that piece
-                    // images are aligned properly to the tiles that they are on
-                    imagePath = "gui/assets/blank.png";
-                else {
+                if (piece == null) {
                     continue;
                 }
 
-                double x = 1.5 * s * xBoard;
-                double y = -(-h / 2 * Position.distanceFromEdge(new Position(xBoard, yBoard), 11) + h * yBoard);
-
-                PieceView pieceView = new PieceView(imagePath, xBoard, yBoard);
-                pieceView.setX(x);
-                pieceView.setY(y);
-                pieceView.setFitHeight(h * 0.8);
-                pieceView.setFitWidth(2 * s * 0.8);
+                PieceView pieceView = new PieceView(piece.getPieceType(), piece.color, xBoard, yBoard);
+                pieceView.setFitWidth(s * 1.5);
+                pieceView.setFitHeight(s * 1.5);
 
                 pieceView.setOnMouseClicked(e -> this.handleClickOnTile(pieceView.xBoard, pieceView.yBoard));
 
-                newPieces.getChildren().add(pieceView);
+                tileStacksAsArray[xBoard][yBoard].getChildren().add(pieceView);
+                pieceViewsAsArray[xBoard][yBoard] = pieceView;
             }
         }
-
-        // add additional blanks to adjust the piece positions given that the board also has coordinate markings
-        ImageView coordinateMarkingBlank = new ImageView("gui/assets/blank.png");
-        coordinateMarkingBlank.setX(1.5 * s * 5);
-        coordinateMarkingBlank.setY(h / 2 * Position.distanceFromEdge(new Position(5, 0), 11) + h*1.2);
-        newPieces.getChildren().add(coordinateMarkingBlank);
-
-        ImageView coordinateMarkingBlank3 = new ImageView("gui/assets/blank.png");
-        coordinateMarkingBlank3.setX(s*0.25);
-        coordinateMarkingBlank3.setY(-h * 0.125 - h * 2.5 - h/2 * 10);
-        newPieces.getChildren().add(coordinateMarkingBlank3);
-
-
-        this.pieces = newPieces;
-        boardAndPieces.getChildren().add(newPieces);
     }
 
     // After an update to the underlying game, update the rendered game info
@@ -333,153 +313,117 @@ public class Main extends Application {
     private void renderPromotionMenu(Position promoteablePawn) {
         handlingPromotion = true;
 
-        promotionMenu = new Group();
+        Piece.Color playerColor = this.game.getBoard().getPos(promoteablePawn).color;
 
-        double h = BOARD_SIZE/11;                       // tile height
-        double s = BoardTile.fullHeightToSideLength(h); // tile side length
+        Position promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos;
+        if (playerColor == Piece.Color.WHITE) {
+            promotionQueenPos = promoteablePawn;
+            promotionBishopPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
+            promotionKnightPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
+            promotionRookPos = Position.oneStepBackward(promoteablePawn, 11);
 
-        // put in blanks at all locations on the board to ensure coordinate alignment
-        for (int xBoard = 0; xBoard < 11; xBoard++) {
-            for (int yBoard = 0; yBoard < 11; yBoard++) {
-                Position pos = new Position(xBoard, yBoard);
+            if (!promotionBishopPos.isInBounds(11)) {
+                promotionBishopPos = Position.oneStepRightAndForward(promoteablePawn, 11);
+            }
+            if (!promotionKnightPos.isInBounds(11)) {
+                promotionKnightPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
+            }
+        } else {
+            promotionQueenPos = promoteablePawn;
+            promotionBishopPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
+            promotionKnightPos = Position.oneStepRightAndForward(promoteablePawn, 11);
+            promotionRookPos = Position.oneStepForward(promoteablePawn, 11);
 
-                String imagePath;
-                if (pos.isInBounds(11) || pos.equals(promoteablePawn))
-                    imagePath = "gui/assets/blank.png";
-                else {
-                    continue;
-                }
-
-                double x = 1.5 * s * xBoard;
-                double y = -(-h / 2 * Position.distanceFromEdge(new Position(xBoard, yBoard), 11) + h * yBoard);
-
-                PieceView blank = new PieceView(imagePath, xBoard, yBoard);
-                blank.setX(x);
-                blank.setY(y);
-                blank.setFitHeight(h * 0.8);
-                blank.setFitWidth(2 * s * 0.8);
-
-                promotionMenu.getChildren().add(blank);
+            if (!promotionBishopPos.isInBounds(11)) {
+                promotionBishopPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
+            }
+            if (!promotionKnightPos.isInBounds(11)) {
+                promotionKnightPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
             }
         }
 
-        // add additional blanks to adjust the piece positions given that the board also has coordinate markings
-        ImageView coordinateMarkingBlank = new ImageView("gui/assets/blank.png");
-        coordinateMarkingBlank.setX(1.5 * s * 5);
-        coordinateMarkingBlank.setY(h / 2 * Position.distanceFromEdge(new Position(5, 0), 11) + h*1.2);
-        promotionMenu.getChildren().add(coordinateMarkingBlank);
 
-        ImageView coordinateMarkingBlank3 = new ImageView("gui/assets/blank.png");
-        coordinateMarkingBlank3.setX(s*0.25);
-        coordinateMarkingBlank3.setY(-h * 0.125 - h * 2.5 - h/2 * 10);
-        promotionMenu.getChildren().add(coordinateMarkingBlank3);
+        PieceView promotionQueen = new PieceView(PieceType.QUEEN, playerColor, promotionQueenPos);
+        PieceView promotionBishop = new PieceView(PieceType.BISHOP, playerColor, promotionBishopPos);
+        PieceView promotionKnight = new PieceView(PieceType.KNIGHT, playerColor, promotionKnightPos);
+        PieceView promotionRook = new PieceView(PieceType.ROOK, playerColor, promotionRookPos);
 
-        // start building promotion tiles and icons
+        // highlight the promotion tiles and put the promotion objects on them
+        for (PieceView piece : List.of(promotionQueen, promotionBishop, promotionKnight, promotionRook)) {
+            double h = BOARD_SIZE/11;
+            double s = BoardTile.fullHeightToSideLength(h);
 
-        char pieceColor = game.getBoard().getPos(promoteablePawn).color == Piece.Color.WHITE ? 'l' : 'd';
+            piece.setFitHeight(s * 1.5);
+            piece.setFitWidth(s * 1.5);
 
-        int multiplier = game.getBoard().getPos(promoteablePawn).color == Piece.Color.WHITE ? 1 : -1;
-        double promotionX = s/2 + 13 + 1.5 * s * promoteablePawn.file;
-        double promotionY = h/2 - 4
-                - (-h / 2 * Position.distanceFromEdge(new Position(promoteablePawn.file, promoteablePawn.rank), 11)
-                + h * promoteablePawn.rank);
+            int xBoard = piece.xBoard;
+            int yBoard = piece.yBoard;
+            boardTilesAsArray[xBoard][yBoard].setHighlight(BoardTile.Highlight.PROMOTION);
+            tileStacksAsArray[xBoard][yBoard].getChildren().remove(pieceViewsAsArray[xBoard][yBoard]);
+            tileStacksAsArray[xBoard][yBoard].getChildren().add(piece);
+            pieceViewsAsArray[xBoard][yBoard] = piece;
 
-        BoardTile promotionTileQueen = new BoardTile(promotionX, promotionY, s, BoardTile.TileColor.WHITE);
-        PieceView promotionQueen = new PieceView("gui/assets/Chess_q" + pieceColor + "t45.png");
-        promotionQueen.setX(promotionX-s+10);
-        promotionQueen.setY(promotionY-h/2+10);
-        promotionQueen.setFitHeight(h * 0.8);
-        promotionQueen.setFitWidth(2 * s * 0.8);
-
-        BoardTile promotionTileBishop;
-        PieceView promotionBishop = new PieceView("gui/assets/Chess_b" + pieceColor + "t45.png");
-        if (promoteablePawn.file == 0 || promoteablePawn.file == 1) {
-            promotionTileBishop = new BoardTile(promotionX + s * 1.5 + s / 2, promotionY - multiplier * (h / 2 + s / 2), s, BoardTile.TileColor.WHITE);
-            promotionBishop.setX(promotionX-s+10 + s * 1.5 + s / 2);
-            promotionBishop.setY(promotionY-h/2+10 - multiplier * (h / 2 + s / 2));
-            promotionBishop.setFitHeight(h * 0.8);
-            promotionBishop.setFitWidth(2 * s * 0.8);
-        } else {
-            promotionTileBishop = new BoardTile(promotionX - s * 1.5 - s / 2, promotionY + multiplier * (h / 2 + s / 2), s, BoardTile.TileColor.WHITE);
-            promotionBishop.setX(promotionX-s+10 - s * 1.5 - s / 2);
-            promotionBishop.setY(promotionY-h/2+10 + multiplier * (h / 2 + s / 2));
-            promotionBishop.setFitHeight(h * 0.8);
-            promotionBishop.setFitWidth(2 * s * 0.8);
+            boardTilesAsArray[xBoard][yBoard].setOnMouseClicked(e -> { handlePromotionAndRender(promoteablePawn, piece.type); });
+            piece.setOnMouseClicked(e -> {handlePromotionAndRender(promoteablePawn, piece.type); });
         }
-
-        BoardTile promotionTileKnight;
-        PieceView promotionKnight = new PieceView("gui/assets/Chess_n" + pieceColor + "t45.png");
-        if (promoteablePawn.file == 9 || promoteablePawn.file == 10) {
-            promotionTileKnight = new BoardTile(promotionX - s * 1.5 - s / 2, promotionY - multiplier * (h / 2 + s / 2), s, BoardTile.TileColor.WHITE);
-            promotionKnight.setX(promotionX-s+10 - s * 1.5 - s / 2);
-            promotionKnight.setY(promotionY-h/2+10 - multiplier * (h / 2 + s / 2));
-            promotionKnight.setFitHeight(h * 0.8);
-            promotionKnight.setFitWidth(2 * s * 0.8);
-        } else {
-            promotionTileKnight = new BoardTile(promotionX + s * 1.5 + s / 2, promotionY + multiplier * (h / 2 + s / 2), s, BoardTile.TileColor.WHITE);
-            promotionKnight.setX(promotionX-s+10 + s * 1.5 + s / 2);
-            promotionKnight.setY(promotionY-h/2+10 + multiplier * (h / 2 + s / 2));
-            promotionKnight.setFitHeight(h * 0.8);
-            promotionKnight.setFitWidth(2 * s * 0.8);
-        }
-
-        BoardTile promotionTileRook = new BoardTile(promotionX, promotionY + multiplier * (h + s), s, BoardTile.TileColor.WHITE);
-        PieceView promotionRook = new PieceView("gui/assets/Chess_r" + pieceColor + "t45.png");
-        promotionRook.setX(promotionX-s+10);
-        promotionRook.setY(promotionY-h/2+10 + multiplier * (h + s));
-        promotionRook.setFitHeight(h * 0.8);
-        promotionRook.setFitWidth(2 * s * 0.8);
-
-        promotionTileQueen.setHighlight(BoardTile.Highlight.PROMOTION);
-        promotionTileBishop.setHighlight(BoardTile.Highlight.PROMOTION);
-        promotionTileKnight.setHighlight(BoardTile.Highlight.PROMOTION);
-        promotionTileRook.setHighlight(BoardTile.Highlight.PROMOTION);
-
-        promotionMenu.getChildren().addAll(List.of(promotionTileQueen, promotionTileBishop, promotionTileKnight, promotionTileRook,
-                promotionQueen, promotionBishop, promotionKnight, promotionRook));
-
-        boardAndPieces.getChildren().add(promotionMenu);
-
-        // add handlers for each button and piece object
-        promotionTileQueen.setOnMouseClicked(e -> {
-            handlePromotionAndRender(promoteablePawn, PieceType.QUEEN, promotionMenu);
-        });
-        promotionQueen.setOnMouseClicked(e -> {
-            handlePromotionAndRender(promoteablePawn, PieceType.QUEEN, promotionMenu);
-        });
-
-        promotionTileBishop.setOnMouseClicked(e -> {
-            handlePromotionAndRender(promoteablePawn, PieceType.BISHOP, promotionMenu);
-        });
-        promotionBishop.setOnMouseClicked(e -> {
-            handlePromotionAndRender(promoteablePawn, PieceType.BISHOP, promotionMenu);
-        });
-
-        promotionTileKnight.setOnMouseClicked(e -> {
-            handlePromotionAndRender(promoteablePawn, PieceType.KNIGHT, promotionMenu);
-        });
-        promotionKnight.setOnMouseClicked(e -> {
-            handlePromotionAndRender(promoteablePawn, PieceType.KNIGHT, promotionMenu);
-        });
-
-        promotionTileRook.setOnMouseClicked(e -> {
-            handlePromotionAndRender(promoteablePawn, PieceType.ROOK, promotionMenu);
-        });
-        promotionRook.setOnMouseClicked(e -> {
-            handlePromotionAndRender(promoteablePawn, PieceType.ROOK, promotionMenu);
-        });
     }
 
-    private void handlePromotionAndRender(Position promoteablePawn, PieceType type, Group promotionMenu) {
+    private void handlePromotionAndRender(Position promoteablePawn, PieceType type) {
         game.handlePromotion(promoteablePawn, type);
 
-        boardAndPieces.getChildren().remove(promotionMenu);
-        handlingPromotion = false;
+        Piece.Color playerColor = this.game.getBoard().getPos(promoteablePawn).color;
+
+        Position promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos;
+        if (playerColor == Piece.Color.WHITE) {
+            promotionQueenPos = promoteablePawn;
+            promotionBishopPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
+            promotionKnightPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
+            promotionRookPos = Position.oneStepBackward(promoteablePawn, 11);
+
+            if (!promotionBishopPos.isInBounds(11)) {
+                promotionBishopPos = Position.oneStepRightAndForward(promoteablePawn, 11);
+            }
+            if (!promotionKnightPos.isInBounds(11)) {
+                promotionKnightPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
+            }
+        } else {
+            promotionQueenPos = promoteablePawn;
+            promotionBishopPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
+            promotionKnightPos = Position.oneStepRightAndForward(promoteablePawn, 11);
+            promotionRookPos = Position.oneStepForward(promoteablePawn, 11);
+
+            if (!promotionBishopPos.isInBounds(11)) {
+                promotionBishopPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
+            }
+            if (!promotionKnightPos.isInBounds(11)) {
+                promotionKnightPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
+            }
+        }
+
+        for (Position pos : List.of(promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos)) {
+            // set the handlers for the board tiles back to normal
+            boardTilesAsArray[pos.file][pos.rank].setOnMouseClicked(e -> { handleClickOnTile(pos.file, pos.rank); });
+        }
 
         renderPieces();
         renderGameInfo();
 
-        // highlight the king if it is in check after the move
+        // remove promotion highlighting and then rehighlight the king if it's in check
+        clearHighlightingAll();
+        if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
+            Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
+                    : game.getBoard().getBlackKingPos();
+
+            boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+        }
+    }
+
+    private void closePromotionMenu() {
+        // re-render pieces
+        renderPieces();
+
+        // remove promotion highlighting and then rehighlight the king if it's in check
+        clearHighlightingAll();
         if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
             Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
                     : game.getBoard().getBlackKingPos();

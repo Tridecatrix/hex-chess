@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="Corrected game win text and game win logic">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/BoardTile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/BoardTile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/PieceView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/PieceView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/PieceType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/PieceType.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,37 +37,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Application.Debug.executor": "Run",
-    "Application.HelloFX.executor": "Run",
-    "Application.Main.executor": "Run",
-    "Application.TerminalGUI.executor": "Run",
-    "Application.Viewer.executor": "Run",
-    "Downloaded.Files.Path.Enabled": "true",
-    "JUnit.ChecksAndCheckmate.executor": "Run",
-    "JUnit.ChecksAndCheckmateTest and 1 more.executor": "Run",
-    "JUnit.ChecksAndCheckmateTest and 2 more.executor": "Run",
-    "JUnit.ChecksAndCheckmateTest.executor": "Run",
-    "JUnit.DrawTest.executor": "Run",
-    "JUnit.LegalMovesTest.executor": "Debug",
-    "JUnit.LegalMovesTest.pawnStartingBlack.executor": "Debug",
-    "JUnit.MyFirstJUnitJupiterTests.executor": "Run",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/adnan/Desktop/Work/2021/COMP1140/comp1140-ass2-tue12q",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.43970895",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Application.Debug.executor&quot;: &quot;Run&quot;,
+    &quot;Application.HelloFX.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TerminalGUI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Viewer.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
+    &quot;JUnit.ChecksAndCheckmate.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ChecksAndCheckmateTest and 1 more.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ChecksAndCheckmateTest and 2 more.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ChecksAndCheckmateTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DrawTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LegalMovesTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.LegalMovesTest.pawnStartingBlack.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.MyFirstJUnitJupiterTests.executor&quot;: &quot;Run&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/adnan/Desktop/Work/2021/COMP1140/comp1140-ass2-tue12q&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.43970895&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\src\gui\assets\svgs" />

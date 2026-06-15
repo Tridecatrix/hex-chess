@@ -98,16 +98,16 @@ public class BoardTile extends Polygon {
     int xBoard;
     int yBoard;
 
-    // constructs a board tile, i.e. hexagon, with graphical center at x, y and side length s
-    public BoardTile(double x, double y, double s, TileColor c) {
+    // constructs a board tile, i.e. hexagon, with side length s at (0,0) relative to parent
+    public BoardTile(double s, TileColor c) {
         super();
         double h = sideLengthToHeight(s);
-        this.getPoints().addAll(x+s, y,
-                x+s/2, y+h,
-                x-s/2, y+h,
-                x-s, y,
-                x-s/2, y-h,
-                x+s/2, y-h);
+        this.getPoints().addAll(s, 0.0,
+                s/2, h,
+                -s/2, h,
+                -s, 0.0,
+                -s/2, -h,
+                s/2, -h);
         this.color = c;
 
         this.setFill(Color.web(
