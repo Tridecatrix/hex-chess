@@ -17,14 +17,21 @@ public class Game {
     Board board;
 
     // for checking repetition
-    Queue<Board> previousBoards = new ArrayDeque<>();
+    Deque<Board> previousBoards = new ArrayDeque<>();
     static final int repetitionCheckMaxWindow = 20;
 
     Piece.Color currentPlayer = Piece.Color.WHITE;
     GameResult currentGameState;
 
-    public int getMoveNumberForCurrentSide() {
-        return moveNumberForCurrentSide;
+    // for handling timing logic
+    GameTimer gameTimer;
+
+    public GameTimer getGameTimer() {
+        return gameTimer;
+    }
+
+    public void setGameTimer(GameTimer gameTimer) {
+        this.gameTimer = gameTimer;
     }
 
     public enum GameResult {
@@ -32,6 +39,7 @@ public class Game {
         CHECKMATE,
         DRAW,
         RESIGNED,
+        FLAGGED,
         CONTINUING
     }
 
@@ -44,6 +52,10 @@ public class Game {
     public Game(List<String> pieces) {
         board = new Board(pieces);
         currentGameState = GameResult.CONTINUING;
+    }
+
+    public int getMoveNumberForCurrentSide() {
+        return moveNumberForCurrentSide;
     }
 
     @Override
@@ -101,7 +113,23 @@ public class Game {
             moveNumberForCurrentSide += currentPlayer == Piece.Color.WHITE ? 0 : 1;
 
             // update current player
+            Piece.Color previousPlayer = currentPlayer;
             currentPlayer = currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
+
+            // update timer
+            if (gameTimer != null) {
+                gameTimer.updateTimersPlayerChange(previousPlayer, currentPlayer);
+
+                // detect loss due to flagging (running out of time)
+                if (gameTimer.isOutOfTime(previousPlayer)) {
+                    currentGameState = GameResult.FLAGGED;
+                    if (previousPlayer == Piece.Color.WHITE) {
+                        blackPoints += 1;
+                    } else if (previousPlayer == Piece.Color.BLACK) {
+                        whitePoints += 1;
+                    }
+                }
+            }
 
             // update list of previous boards
             previousBoards.add(boardStateCopy);
@@ -134,6 +162,11 @@ public class Game {
             return GameResult.CONTINUING;
         }
 
+        // if timer enabled, stop the timing
+        if (this.gameTimer != null) {
+            this.gameTimer.stopTimer();
+        }
+
         // current player is white => white is checkmated => black wins
         if (currentPlayer == Piece.Color.WHITE) {
             blackPoints += winPoints;
@@ -145,6 +178,22 @@ public class Game {
 
         currentGameState = result;
         return result;
+    }
+
+    public void updateTimer(long now) {
+        if (gameTimer != null) {
+            gameTimer.updateTimers(now, this.currentPlayer);
+
+            // detect loss due to flagging (running out of time)
+            if (gameTimer.isOutOfTime(this.currentPlayer) && currentGameState != GameResult.FLAGGED) {
+                currentGameState = GameResult.FLAGGED;
+                if (currentPlayer == Piece.Color.WHITE) {
+                    blackPoints += 1;
+                } else if (currentPlayer == Piece.Color.BLACK) {
+                    whitePoints += 1;
+                }
+            }
+        }
     }
 
     public void resetPoints() {
@@ -161,6 +210,9 @@ public class Game {
         }
         moveNumberForCurrentSide = 1;
         currentGameState = GameResult.CONTINUING;
+        if (this.gameTimer != null) {
+            this.gameTimer.startOrRestartTimer();
+        }
     }
 
     public void resign() {
@@ -171,6 +223,9 @@ public class Game {
         }
 
         currentGameState = GameResult.RESIGNED;
+        if (this.gameTimer != null) {
+            this.gameTimer.stopTimer();
+        }
 
         // note: restartGame has to be called seperately
     }
@@ -237,6 +292,9 @@ public class Game {
             this.currentGameState = GameResult.DRAW;
             whitePoints += 0.5;
             blackPoints += 0.5;
+            if (this.gameTimer != null) {
+                this.gameTimer.stopTimer();
+            }
             return true;
         }
 
@@ -274,5 +332,18 @@ public class Game {
 
     public GameResult getCurrentGameState() {
         return currentGameState;
+    }
+
+    // returns true if undo is successful
+    public boolean undo() {
+        if (previousBoards.isEmpty()) { return false; }
+
+        this.board = previousBoards.removeLast();
+        this.currentPlayer = this.currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
+
+        // update move number
+        moveNumberForCurrentSide -= currentPlayer == Piece.Color.WHITE ? 0 : 1;
+
+        return true;
     }
 }

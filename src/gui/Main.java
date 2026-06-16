@@ -1,12 +1,12 @@
 package gui;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -17,11 +17,26 @@ import model.*;
 import model.piece.Piece;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 import static java.lang.Thread.sleep;
 
 public class Main extends Application {
     Stage primaryStage;
+
+    // list of GUI elements and variables associated with game settings
+    boolean timerEnabled;
+    VBox timerSettings;
+    CheckBox enableTimer;
+    ComboBox<String> timerPresetDropdown;
+    HBox timerSelect;
+    List<HBox> customTimerFieldsWithText;
+    TextField customTimerStartingTimeWhite;
+    TextField customTimerIncrementWhite;
+    TextField customTimerStartingTimeBlack;
+    TextField customTimerIncrementBlack;
+    boolean customTimerSettingsEnabled;
 
     // list of GUI elements that are printed on the board side
     BoardTile[][] boardTilesAsArray = new BoardTile[11][11];
@@ -35,13 +50,20 @@ public class Main extends Application {
     Text currentPlayer;
     Text gameStatus;
     Text gameWins;
+    Text timerSettingsDesc;
+    Text timeRemainingWhite;
+    Text timeRemainingBlack;
     Text temporaryMessage;
+
+    // timer
+    AnimationTimer animationTimer;
 
     boolean showingTempMessage = false;
     boolean handlingPromotion = false;
 
     // list of backend objects
     Game game;
+    GameTimer gameTimer;
 
     // other objects involved in logic
     Position selectedPos; // for tracking selections after a piece is selected
@@ -59,12 +81,28 @@ public class Main extends Application {
     }
 
     private Parent createTitleScreen() {
-        VBox root = new VBox(8);
+        VBox root = new VBox(16);
         root.setPrefSize(WINDOWWIDTH, WINDOWHEIGHT);
         root.setAlignment(Pos.CENTER);
 
         Text titleText = new Text("Hex Chess");
         titleText.setFont(new Font(72));
+
+        VBox settings = new VBox(5);
+        settings.setAlignment(Pos.CENTER);
+
+        Text settingsHeader = new Text("Settings:");
+        settingsHeader.setFont(Font.font(24));
+        settingsHeader.setTextAlignment(TextAlignment.CENTER);
+        settings.getChildren().add(settingsHeader);
+
+        timerSettings = new VBox(5);
+        timerSettings.setAlignment(Pos.CENTER);
+        enableTimer = new CheckBox("Enable timer");
+        enableTimer.setFont(Font.font(16));
+        timerSettings.getChildren().add(enableTimer);
+        enableTimer.setOnAction(e -> { expandTimerOptions(); });
+        settings.getChildren().add(timerSettings);
 
         Button playButton = new Button("Play");
         playButton.setFont(new Font(48));
@@ -74,9 +112,71 @@ public class Main extends Application {
         });
 
         root.getChildren().add(titleText);
+        root.getChildren().add(settings);
         root.getChildren().add(playButton);
 
         return root;
+    }
+
+    private void expandTimerOptions() {
+        this.timerEnabled = enableTimer.isSelected();
+        if (timerEnabled) {
+            timerSelect = new HBox(10);
+            timerSelect.getChildren().add(new Text("Timing: "));
+            timerSelect.setAlignment(Pos.CENTER);
+
+            timerPresetDropdown = new ComboBox<>();
+            timerPresetDropdown.getItems().addAll("Bullet", "Blitz", "Rapid", "Classical", "Custom");
+            timerPresetDropdown.setValue("Rapid");
+            gameTimer = new GameTimer(GameTimer.TimingSetting.RAPID);
+            timerPresetDropdown.setOnAction(e2 -> {
+                if (Objects.equals(timerPresetDropdown.getValue(), "Custom")) {
+                    customTimerSettingsEnabled = true;
+
+                    customTimerStartingTimeWhite = new TextField();
+                    customTimerIncrementWhite = new TextField();
+                    customTimerStartingTimeBlack = new TextField();
+                    customTimerIncrementBlack = new TextField();
+
+                    HBox hbox1 = new HBox(5, new Text("Start time for White (sec):"), customTimerStartingTimeWhite);
+                    HBox hbox2 = new HBox(5, new Text("Increment for White (sec):"), customTimerIncrementWhite);
+                    HBox hbox3 = new HBox(5, new Text("Start time for Black (sec):"), customTimerStartingTimeBlack);
+                    HBox hbox4 = new HBox(5, new Text("Increment for Black (sec):"), customTimerIncrementBlack);
+                    customTimerFieldsWithText = List.of(hbox1, hbox2, hbox3, hbox4);
+
+                    // set numeric filter on the textfields
+                    UnaryOperator<TextFormatter.Change> filter = change -> {
+                        String text = change.getControlNewText();
+                        if (text.matches("\\d*")) {
+                            return change; // Accept the change
+                        }
+                        return null; // Reject the change
+                    };
+
+
+                    for (TextField field : List.of(customTimerIncrementWhite, customTimerStartingTimeWhite,
+                            customTimerIncrementBlack, customTimerIncrementBlack)) {
+                        field.setTextFormatter(new TextFormatter<>(filter));
+                    }
+
+                    for (HBox box : customTimerFieldsWithText) {
+                        box.setAlignment(Pos.CENTER);
+                    }
+
+                    timerSettings.getChildren().addAll(customTimerFieldsWithText);
+                } else if (customTimerSettingsEnabled) {
+                    customTimerSettingsEnabled = false;
+                    timerSettings.getChildren().removeAll(customTimerFieldsWithText);
+                }
+            });
+            timerSelect.getChildren().add(timerPresetDropdown);
+
+            timerSettings.getChildren().add(timerSelect);
+        }
+        else {
+            // get rid of the timer settings
+            timerSettings.getChildren().remove(timerSelect);
+        }
     }
 
     private Parent createGameScreen() {
@@ -87,6 +187,41 @@ public class Main extends Application {
 
         // initialise the backend (game object)
         game = new Game();
+
+        // initialise the backend (game timer)
+        if (timerEnabled) {
+            GameTimer timer;
+
+            switch (timerPresetDropdown.getValue()) {
+                case "Bullet" -> { timer = new GameTimer(GameTimer.TimingSetting.BULLET); }
+                case "Blitz" -> { timer = new GameTimer(GameTimer.TimingSetting.BLITZ); }
+                case "Rapid" -> { timer = new GameTimer(GameTimer.TimingSetting.RAPID); }
+                case "Classical" -> { timer = new GameTimer(GameTimer.TimingSetting.CLASSICAL); }
+                case "Custom" -> {
+                    timer = new GameTimer(
+                            Integer.parseInt(customTimerStartingTimeWhite.getText()),
+                            Integer.parseInt(customTimerStartingTimeBlack.getText()),
+                            Integer.parseInt(customTimerIncrementWhite.getText()),
+                            Integer.parseInt(customTimerIncrementBlack.getText()));
+                }
+                default -> {
+                    throw new IllegalArgumentException("Illegal timing option");
+                }
+            }
+
+            timer.startOrRestartTimer();
+            game.setGameTimer(timer);
+
+            // set up an animation timer to update the timer
+            animationTimer = new AnimationTimer() {
+                @Override
+                public void handle(long l) {
+                    game.updateTimer(l);
+                    renderGameInfo();
+                }
+            };
+            animationTimer.start();
+        }
 
         // begin setting up the board view
         boardAndCoordinatesView = new Group();
@@ -127,7 +262,6 @@ public class Main extends Application {
                 }
             }
         }
-
 
         // create coordinate markings: x markings
         for (int xBoard = 0; xBoard < 11; xBoard++) {
@@ -186,6 +320,21 @@ public class Main extends Application {
         gameStatus = new Text();
         gameStatus.setFont(Font.font(22));
 
+        if (timerEnabled) {
+            if (game.getGameTimer().getIncrementSecWhite() == game.getGameTimer().getIncrementSecBlack() &&
+                game.getGameTimer().getStartingTimeSecWhite() == game.getGameTimer().getStartingTimeSecBlack())
+                timerSettingsDesc = new Text("Time setting: " + game.getGameTimer().getStartingTimeSecWhite()/60 + "m+" + game.getGameTimer().getIncrementSecWhite() + "s");
+            else {
+                timerSettingsDesc = new Text("Time setting: " + game.getGameTimer().getStartingTimeSecWhite()/60 + "m+" + game.getGameTimer().getIncrementSecWhite() + "s"
+                    + "/" + game.getGameTimer().getStartingTimeSecBlack()/60 + "m+" + game.getGameTimer().getIncrementSecBlack() + "s");
+            }
+            timerSettingsDesc.setFont(Font.font(22));
+            timeRemainingWhite = new Text();
+            timeRemainingWhite.setFont(Font.font(22));
+            timeRemainingBlack = new Text();
+            timeRemainingBlack.setFont(Font.font(22));
+        }
+
         VBox wins = new VBox(5);
         Text heading1 = new Text("Games won by:");
         Text heading2 = new Text("White   Black");
@@ -197,14 +346,22 @@ public class Main extends Application {
 
         renderGameInfo();
 
-        sidebar.getChildren().addAll(moveNumber, currentPlayer, gameStatus, wins);
+        sidebar.getChildren().addAll(moveNumber, currentPlayer, gameStatus);
+        if (timerEnabled) {
+            sidebar.getChildren().add(timerSettingsDesc);
+            sidebar.getChildren().add(timeRemainingWhite);
+            sidebar.getChildren().add(timeRemainingBlack);
+        }
+        sidebar.getChildren().add(wins);
 
         // add game buttons
         HBox gameButtons = new HBox(5);
         Button resign = new Button("Resign");
         Button restart = new Button("Restart");
         Button claimDraw = new Button("Claim draw");
-        gameButtons.getChildren().addAll(resign, restart, claimDraw);
+        Button changeSettings = new Button("Change settings");
+        Button undo = new Button("Undo");
+        gameButtons.getChildren().addAll(resign, restart, claimDraw, changeSettings, undo);
         sidebar.getChildren().add(gameButtons);
 
         resign.setOnAction(e -> {
@@ -241,6 +398,28 @@ public class Main extends Application {
                 sidebar.getChildren().add(temporaryMessage);
                 showingTempMessage = true;
             }
+        });
+
+        changeSettings.setOnAction(e -> {
+            timerEnabled = false;
+            this.primaryStage.setScene(new Scene(createTitleScreen()));
+        });
+
+        undo.setOnAction(e -> {
+            if (!game.undo()) {
+                if (showingTempMessage)
+                    sidebar.getChildren().remove(temporaryMessage);
+
+                temporaryMessage = new Text("Cannot undo");
+                temporaryMessage.setFont(Font.font(22));
+                temporaryMessage.setFill(Color.RED);
+                sidebar.getChildren().add(temporaryMessage);
+                showingTempMessage = true;
+            }
+
+            renderPieces();
+            renderGameInfo();
+            clearHighlightingAndRehighlightCheck();
         });
 
         return root;
@@ -302,12 +481,24 @@ public class Main extends Application {
             case RESIGNED -> {
                 gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by resignation!");
             }
+            case FLAGGED -> {
+                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by timeout!");
+            }
             case CONTINUING -> {
                 gameStatus.setText("Game status: continuing");
             }
         }
 
         gameWins.setText(game.getWhitePoints() + "        " + game.getBlackPoints());
+
+        if (timerEnabled) {
+            timeRemainingWhite.setText("White time remaining: " + game.getGameTimer().getTimeRemainingAsString(Piece.Color.WHITE));
+            timeRemainingBlack.setText("Black time remaining: " + game.getGameTimer().getTimeRemainingAsString(Piece.Color.BLACK));
+        }
+    }
+
+    private void renderTimers() {
+
     }
 
     private void renderPromotionMenu(Position promoteablePawn) {
@@ -409,13 +600,7 @@ public class Main extends Application {
         renderGameInfo();
 
         // remove promotion highlighting and then rehighlight the king if it's in check
-        clearHighlightingAll();
-        if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
-            Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
-                    : game.getBoard().getBlackKingPos();
-
-            boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
-        }
+        clearHighlightingAndRehighlightCheck();
     }
 
     private void closePromotionMenu() {
@@ -423,13 +608,7 @@ public class Main extends Application {
         renderPieces();
 
         // remove promotion highlighting and then rehighlight the king if it's in check
-        clearHighlightingAll();
-        if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
-            Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
-                    : game.getBoard().getBlackKingPos();
-
-            boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
-        }
+        clearHighlightingAndRehighlightCheck();
     }
 
 
@@ -452,22 +631,7 @@ public class Main extends Application {
             // deselect
             this.selectedPos = null;
 
-            // clear highlighting (except for king position)
-            for (int x2 = 0; x2 < 11; x2++) {
-                for (int y2 = 0; y2 < 11; y2++) {
-                    if (boardTilesAsArray[x2][y2] != null && !(new Position(x2, y2)).equals(game.getBoard().getWhiteKingPos()) &&
-                            !(new Position(x2, y2)).equals(game.getBoard().getBlackKingPos()))
-                        boardTilesAsArray[x2][y2].setHighlight(BoardTile.Highlight.NONE);
-                }
-            }
-
-            // rehighlight the king if it is the king being selected
-            if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
-                Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
-                        : game.getBoard().getBlackKingPos();
-
-                boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
-            }
+            clearHighlightingAndRehighlightCheck();
         }
         // if the player is clicking on a position that was highlighted after a previous selection, move the selected
         // piece to that position
@@ -514,21 +678,7 @@ public class Main extends Application {
         else if (game.getBoard().getPos(clickedTilePos) != null && game.getBoard().getPos(clickedTilePos).color == game.getCurrentPlayer()) {
             this.selectedPos = clickedTilePos;
 
-            // clear existing highlighting
-            for (int x2 = 0; x2 < 11; x2++) {
-                for (int y2 = 0; y2 < 11; y2++) {
-                    if (boardTilesAsArray[x2][y2] != null)
-                        boardTilesAsArray[x2][y2].setHighlight(BoardTile.Highlight.NONE);
-                }
-            }
-
-            // rehighlight the king if it is in check
-            if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
-                Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
-                        : game.getBoard().getBlackKingPos();
-
-                boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
-            }
+            clearHighlightingAndRehighlightCheck();
 
             // add new highlighting
             boardTilesAsArray[x][y].setHighlight(BoardTile.Highlight.NORMAL);
@@ -553,6 +703,18 @@ public class Main extends Application {
             }
         }
     }
+
+    public void clearHighlightingAndRehighlightCheck() {
+        clearHighlightingAll();
+        if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
+            Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
+                    : game.getBoard().getBlackKingPos();
+
+            boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+        }
+    }
+
+
 
     public static void main(String[] args) {
         launch(args);
