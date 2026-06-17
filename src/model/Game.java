@@ -14,7 +14,14 @@ public class Game {
     int movesSinceCaptureOrPawnMovement = 0;
     int moveNumberForCurrentSide = 1;
 
+    public enum Mode {
+        TWO_PLAYER,
+        THREE_PLAYER,
+        // SIX_PLAYER
+    }
+
     Board board;
+    Mode mode;
 
     // for checking repetition
     Deque<Board> previousBoards = new ArrayDeque<>();
@@ -48,7 +55,12 @@ public class Game {
         currentGameState = GameResult.CONTINUING;
     }
 
-    // testing constructor
+    public Game(Mode mode) {
+        board = new Board(mode);
+        currentGameState = GameResult.CONTINUING;
+    }
+
+    // testing constructors
     public Game(List<String> pieces) {
         board = new Board(pieces);
         currentGameState = GameResult.CONTINUING;

@@ -43,12 +43,12 @@ public class Position {
         return string.toString();
     }
 
-    public static int distanceFromCenter(Position pos, int boardDim) {
-        return Math.abs(pos.file - boardDim/2);
+    public static int distanceFromCenter(Position pos, int boardDiameter) {
+        return Math.abs(pos.file - boardDiameter/2);
     }
 
-    public static int distanceFromEdge(Position pos, int boardDim) {
-        return boardDim/2 - Math.abs(pos.file - boardDim/2);
+    public static int distanceFromEdge(Position pos, int boardDiameter) {
+        return boardDiameter/2 - Math.abs(pos.file - boardDiameter/2);
     }
 
     // note in the following that movement directions need to be treated differently depending on if
@@ -56,99 +56,99 @@ public class Position {
     // this is because the ranks (horizontal coordinates) go DOWN AND RIGHT on the left side of the board,
     // but DOWN AND LEFT on the right side of the board.
 
-    public static Position oneStepForward(Position pos, int boardDim) {
+    public static Position oneStepForward(Position pos, int boardDiameter) {
         return new Position(pos.file, pos.rank + 1);
     }
 
-    public static Position oneStepBackward(Position pos, int boardDim) {
+    public static Position oneStepBackward(Position pos, int boardDiameter) {
         return new Position(pos.file, pos.rank - 1);
     }
 
-    public static Position oneStepLeftAndForward(Position pos, int boardDim) {
-        if (pos.file <= boardDim/2) {
+    public static Position oneStepLeftAndForward(Position pos, int boardDiameter) {
+        if (pos.file <= boardDiameter/2) {
             return new Position(pos.file - 1, pos.rank);
         } else {
             return new Position(pos.file - 1, pos.rank + 1);
         }
     }
 
-    public static Position oneStepRightAndForward(Position pos, int boardDim) {
-        if (pos.file >= boardDim/2) {
+    public static Position oneStepRightAndForward(Position pos, int boardDiameter) {
+        if (pos.file >= boardDiameter/2) {
             return new Position(pos.file + 1, pos.rank);
         } else {
             return new Position(pos.file + 1, pos.rank + 1);
         }
     }
 
-    public static Position oneStepLeftAndBackward(Position pos, int boardDim) {
-        if (pos.file <= boardDim/2) {
+    public static Position oneStepLeftAndBackward(Position pos, int boardDiameter) {
+        if (pos.file <= boardDiameter/2) {
             return new Position(pos.file - 1, pos.rank - 1);
         } else {
             return new Position(pos.file - 1, pos.rank);
         }
     }
-    public static Position oneStepRightAndBackward(Position pos, int boardDim) {
-        if (pos.file >= boardDim/2) {
+    public static Position oneStepRightAndBackward(Position pos, int boardDiameter) {
+        if (pos.file >= boardDiameter/2) {
             return new Position(pos.file + 1, pos.rank - 1);
         } else {
             return new Position(pos.file + 1, pos.rank);
         }
     }
 
-    public static Position bishopStepLeft(Position pos, int boardDim) {
-        if (pos.file < boardDim/2 + 1) {
+    public static Position bishopStepLeft(Position pos, int boardDiameter) {
+        if (pos.file < boardDiameter/2 + 1) {
             return new Position(pos.file - 2, pos.rank - 1);
-        } else if (pos.file == boardDim/2 + 1) {
+        } else if (pos.file == boardDiameter/2 + 1) {
             return new Position(pos.file - 2, pos.rank);
         } else {
             return new Position(pos.file - 2, pos.rank + 1);
         }
     }
 
-    public static Position bishopStepRight(Position pos, int boardDim) {
-        if (pos.file < boardDim/2 - 1) {
+    public static Position bishopStepRight(Position pos, int boardDiameter) {
+        if (pos.file < boardDiameter/2 - 1) {
             return new Position(pos.file + 2, pos.rank + 1);
-        } else if (pos.file == boardDim/2 - 1) {
+        } else if (pos.file == boardDiameter/2 - 1) {
             return new Position(pos.file + 2, pos.rank);
         } else {
             return new Position(pos.file + 2, pos.rank - 1);
         }
     }
 
-    public static Position bishopStepForwardLeft(Position pos, int boardDim) {
-        if (pos.file <= boardDim/2) {
+    public static Position bishopStepForwardLeft(Position pos, int boardDiameter) {
+        if (pos.file <= boardDiameter/2) {
             return new Position(pos.file - 1, pos.rank + 1);
         } else {
             return new Position(pos.file - 1, pos.rank + 2);
         }
     }
 
-    public static Position bishopStepForwardRight(Position pos, int boardDim) {
-        if (pos.file >= boardDim/2) {
+    public static Position bishopStepForwardRight(Position pos, int boardDiameter) {
+        if (pos.file >= boardDiameter/2) {
             return new Position(pos.file + 1, pos.rank + 1);
         } else {
             return new Position(pos.file + 1, pos.rank + 2);
         }
     }
 
-    public static Position bishopStepBackwardLeft(Position pos, int boardDim) {
-        if (pos.file <= boardDim/2) {
+    public static Position bishopStepBackwardLeft(Position pos, int boardDiameter) {
+        if (pos.file <= boardDiameter/2) {
             return new Position(pos.file - 1, pos.rank - 2);
         } else {
             return new Position(pos.file - 1, pos.rank - 1);
         }
     }
-    public static Position bishopStepBackwardRight(Position pos, int boardDim) {
-        if (pos.file >= boardDim/2) {
+    public static Position bishopStepBackwardRight(Position pos, int boardDiameter) {
+        if (pos.file >= boardDiameter/2) {
             return new Position(pos.file + 1, pos.rank - 2);
         } else {
             return new Position(pos.file + 1, pos.rank - 1);
         }
     }
 
-    public boolean isInBounds(int boardDim) {
-        boolean isFileInBounds = this.file >= 0 && this.file < boardDim;
-        boolean isRankInBounds = this.rank >= 0 && this.rank < boardDim - distanceFromCenter(this, boardDim);
+    public boolean isInBounds(int boardDiameter) {
+        boolean isFileInBounds = this.file >= 0 && this.file < boardDiameter;
+        boolean isRankInBounds = this.rank >= 0 && this.rank < boardDiameter - distanceFromCenter(this, boardDiameter);
         return isFileInBounds && isRankInBounds;
     }
 }

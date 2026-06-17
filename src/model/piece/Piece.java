@@ -24,7 +24,8 @@ public abstract class Piece {
 
     public enum Color {
         WHITE,
-        BLACK
+        BLACK,
+        GREY
     }
 
     public Color color;

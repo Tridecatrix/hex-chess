@@ -41,7 +41,7 @@ public enum PieceType {
     }
 
     public char getPieceIcon(Piece.Color color) {
-        if (color == Piece.Color.WHITE) {
+        if (color == Piece.Color.WHITE || color == Piece.Color.GREY) {
             switch (this) {
                 case PAWN -> {
                     return '♙';

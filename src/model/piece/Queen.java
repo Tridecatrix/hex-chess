@@ -35,11 +35,11 @@ public class Queen extends Piece {
         Set<Move> moves = new HashSet<>();
 
         for (BiFunction<Position, Integer, Position> stepInDir : movementDirs) {
-            Position nextPos = stepInDir.apply(fromPos, board.boarddim);
+            Position nextPos = stepInDir.apply(fromPos, board.boardDiameter);
 
             while (board.isInBounds(nextPos) && board.getPos(nextPos) == null) {
                 moves.add(new Move(fromPos, nextPos));
-                nextPos = stepInDir.apply(nextPos, board.boarddim); // continue moving in direction until we
+                nextPos = stepInDir.apply(nextPos, board.boardDiameter); // continue moving in direction until we
                                                                     // hit a piece or edge of board
             }
 

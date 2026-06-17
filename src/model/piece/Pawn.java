@@ -25,15 +25,15 @@ public class Pawn extends Piece {
 
         Position forwardPos, doubleForwardPos, leftCapturePos, rightCapturePos;
         if (this.color == Color.WHITE) {
-            forwardPos = Position.oneStepForward(fromPos, board.boarddim);
-            doubleForwardPos = Position.oneStepForward(forwardPos, board.boarddim);
-            leftCapturePos = Position.oneStepLeftAndForward(fromPos, board.boarddim);
-            rightCapturePos = Position.oneStepRightAndForward(fromPos, board.boarddim);
+            forwardPos = Position.oneStepForward(fromPos, board.boardDiameter);
+            doubleForwardPos = Position.oneStepForward(forwardPos, board.boardDiameter);
+            leftCapturePos = Position.oneStepLeftAndForward(fromPos, board.boardDiameter);
+            rightCapturePos = Position.oneStepRightAndForward(fromPos, board.boardDiameter);
         } else {
-            forwardPos = Position.oneStepBackward(fromPos, board.boarddim);
-            doubleForwardPos = Position.oneStepBackward(forwardPos, board.boarddim);
-            leftCapturePos = Position.oneStepLeftAndBackward(fromPos, board.boarddim);
-            rightCapturePos = Position.oneStepRightAndBackward(fromPos, board.boarddim);
+            forwardPos = Position.oneStepBackward(fromPos, board.boardDiameter);
+            doubleForwardPos = Position.oneStepBackward(forwardPos, board.boardDiameter);
+            leftCapturePos = Position.oneStepLeftAndBackward(fromPos, board.boardDiameter);
+            rightCapturePos = Position.oneStepRightAndBackward(fromPos, board.boardDiameter);
         }
 
         // Pawn basic logic: able to move one space ahead into an empty square
@@ -54,7 +54,7 @@ public class Pawn extends Piece {
         // Pawn logic: if the piece is on a starting position, it can jump two steps forward
         // Note this is true also if the pawn moves into the starting position of another pawn
         if (this.color == Color.WHITE) {
-            if (fromPos.rank == 4 - Position.distanceFromCenter(fromPos, board.boarddim)) {
+            if (fromPos.rank == 4 - Position.distanceFromCenter(fromPos, board.boardDiameter)) {
                 if (board.isInBounds(doubleForwardPos) && board.getPos(forwardPos) == null && board.getPos(doubleForwardPos) == null)
                     moves.add(new Move(fromPos, doubleForwardPos));
             }
@@ -71,11 +71,11 @@ public class Pawn extends Piece {
         if (board.passantablePawn != null) {
             Position leftPassantPosition, rightPassantPosition;
             if (this.color == Color.WHITE) {
-                leftPassantPosition = Position.oneStepLeftAndBackward(fromPos, board.boarddim);
-                rightPassantPosition = Position.oneStepRightAndBackward(fromPos, board.boarddim);
+                leftPassantPosition = Position.oneStepLeftAndBackward(fromPos, board.boardDiameter);
+                rightPassantPosition = Position.oneStepRightAndBackward(fromPos, board.boardDiameter);
             } else {
-                leftPassantPosition = Position.oneStepLeftAndForward(fromPos, board.boarddim);
-                rightPassantPosition = Position.oneStepRightAndForward(fromPos, board.boarddim);
+                leftPassantPosition = Position.oneStepLeftAndForward(fromPos, board.boardDiameter);
+                rightPassantPosition = Position.oneStepRightAndForward(fromPos, board.boardDiameter);
             }
 
             if (board.passantablePawn.equals(leftPassantPosition)) {
@@ -94,11 +94,11 @@ public class Pawn extends Piece {
 
         Position leftCapturePos, rightCapturePos;
         if (this.color == Color.WHITE) {
-            leftCapturePos = Position.oneStepLeftAndForward(fromPos, board.boarddim);
-            rightCapturePos = Position.oneStepRightAndForward(fromPos, board.boarddim);
+            leftCapturePos = Position.oneStepLeftAndForward(fromPos, board.boardDiameter);
+            rightCapturePos = Position.oneStepRightAndForward(fromPos, board.boardDiameter);
         } else {
-            leftCapturePos = Position.oneStepLeftAndBackward(fromPos, board.boarddim);
-            rightCapturePos = Position.oneStepRightAndBackward(fromPos, board.boarddim);
+            leftCapturePos = Position.oneStepLeftAndBackward(fromPos, board.boardDiameter);
+            rightCapturePos = Position.oneStepRightAndBackward(fromPos, board.boardDiameter);
         }
 
         if (board.isInBounds(leftCapturePos))

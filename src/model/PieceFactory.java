@@ -19,6 +19,10 @@ public class PieceFactory {
             case "black":
                 colorAsObj = Piece.Color.BLACK;
                 break;
+            case "g":
+            case "grey":
+                colorAsObj = Piece.Color.GREY;
+                break;
             default:
                 throw new RuntimeException("Invalid piece color");
         }
