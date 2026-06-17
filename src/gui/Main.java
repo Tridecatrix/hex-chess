@@ -307,7 +307,7 @@ public class Main extends Application {
         }
 
         // render initial pieces
-//        renderPieces();
+        renderPieces();
 
         // build sidebar with background
         sidebar = new VBox(16);

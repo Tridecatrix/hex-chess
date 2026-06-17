@@ -5,6 +5,7 @@ import model.piece.Piece;
 public enum PieceType {
     PAWN,
     KNIGHT,
+    NIGHTRIDER,
     BISHOP,
     ROOK,
     QUEEN,
@@ -29,6 +30,9 @@ public enum PieceType {
             }
             case KING -> {
                 return 'k';
+            }
+            case NIGHTRIDER -> {
+                return 'm';
             }
             default -> {
                 return ' ';
@@ -57,6 +61,9 @@ public enum PieceType {
                 case KING -> {
                     return '♔';
                 }
+                case NIGHTRIDER -> {
+                    return 'm';
+                }
             }
         } else {
             switch (this) {
@@ -77,6 +84,9 @@ public enum PieceType {
                 }
                 case KING -> {
                     return '♚';
+                }
+                case NIGHTRIDER -> {
+                    return 'm';
                 }
             }
         }

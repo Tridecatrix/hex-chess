@@ -48,6 +48,10 @@ public class PieceFactory {
             case "king":
                 piece = new King(colorAsObj);
                 break;
+            case "m":
+            case "nightrider":
+                piece = new Nightrider(colorAsObj);
+                break;
             default:
                 throw new GameException("Invalid piece type");
         }
@@ -64,6 +68,7 @@ public class PieceFactory {
             case QUEEN -> piece = new Queen(color);
             case KING -> piece = new King(color);
             case PAWN -> piece = new Pawn(color);
+            case NIGHTRIDER -> piece = new Nightrider(color);
             default -> throw new GameException("Illegal piece creation");
         }
         return piece;
