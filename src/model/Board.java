@@ -199,6 +199,10 @@ public class Board {
     // explicitly create the fields with new/createPiece to avoid just having a reference to the object referred to
     // by the original fields
     public Board(Board boardOriginal) {
+        boardDim = boardOriginal.boardDim;
+        boardDiameter = boardOriginal.boardDiameter;
+        board = new Piece[boardOriginal.boardDiameter][boardOriginal.boardDiameter];
+
         for (int x = 0; x < this.boardDiameter; x++) {
             for (int y = 0; y < this.boardDiameter; y++) {
                 Position pos = new Position(x, y);
