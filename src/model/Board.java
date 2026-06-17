@@ -1,5 +1,7 @@
 package model;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import model.piece.King;
 import model.piece.Pawn;
 import model.piece.Piece;
@@ -22,6 +24,10 @@ public class Board {
     // references to all pieces in the game (for check/checkmate detection)
     Set<Position> whitePiecePositions = new HashSet<>();
     Set<Position> blackPiecePositions = new HashSet<>();
+
+    // types of captured pieces, for use in displaying captured piece lists on GUI
+    List<PieceType> whiteCapturedPieces = new ArrayList<>(18);
+    List<PieceType> blackCapturedPieces = new ArrayList<>(18);
 
     Position whiteKingPos;
     Position blackKingPos;
@@ -47,11 +53,16 @@ public class Board {
         return blackKingPos;
     }
 
+    public List<PieceType> getWhiteCapturedPieces() {
+        return whiteCapturedPieces;
+    }
+
+    public List<PieceType> getBlackCapturedPieces() {
+        return blackCapturedPieces;
+    }
+
     // default constructor; initialise board in starting position
     public Board() {
-        whitePiecePositions = new HashSet<>();
-        blackPiecePositions = new HashSet<>();
-
         for (String pos : List.of("b1", "c2", "d3", "e4", "f5", "g4", "h3", "i2", "j1")) {
             Piece pawn = PieceFactory.createPiece("pawn", "white");
             Position posAsObj = new Position(pos);
@@ -120,6 +131,8 @@ public class Board {
     }
 
     // deep copy constructor; given a board, create a copy
+    // explicitly create the fields with new/createPiece to avoid just having a reference to the object referred to
+    // by the original fields
     public Board(Board boardOriginal) {
         for (int x = 0; x < this.boarddim; x++) {
             for (int y = 0; y < this.boarddim; y++) {
@@ -140,6 +153,9 @@ public class Board {
             this.blackPiecePositions.add(new Position(pos.file, pos.rank));
         }
 
+        this.whiteCapturedPieces.addAll(boardOriginal.whiteCapturedPieces);
+        this.blackCapturedPieces.addAll(boardOriginal.blackCapturedPieces);
+
         if (boardOriginal.whiteKingPos == null)
             this.whiteKingPos = null;
         else
@@ -158,9 +174,6 @@ public class Board {
 
         string.append("   a     b     c     d     e     f     g     h     i     j     k\n");
 
-        // TODO:
-        // - make the cell walls logic work for any xScale
-        // - add vertical coordinates to the left and right side
         for (int y = 21; y >= 0; y--) {
             for (int x = 0; x < 11*xScale; x++) {
                 int xBoard = x/xScale;
@@ -344,6 +357,7 @@ public class Board {
 
         Set<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
         Set<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
+        List<PieceType> enemyCapturedList = playerColor == Piece.Color.WHITE ? blackCapturedPieces : whiteCapturedPieces;
 
         Piece movedPiece = this.getPos(move.fromPos);
         this.setPos(move.fromPos, null);
@@ -352,6 +366,8 @@ public class Board {
         Piece capturedPiece = this.getPos(move.toPos);
         if (capturedPiece != null) {
             enemyPositionsList.remove(move.toPos);
+            enemyCapturedList.add(capturedPiece.getPieceType());
+            enemyCapturedList.sort(PieceType::compareTo);
         }
         this.setPos(move.toPos, movedPiece);
         playerPositionsList.add(move.toPos);
@@ -382,6 +398,7 @@ public class Board {
                 && move.fromPos.file != move.toPos.file // this is a capturing move
                 && move.toPos.file == passantablePawn.file && move.toPos.rank == passantablePawn.rank + forwardStep) {
                 // the passantable pawn is in the capture position
+            enemyCapturedList.addFirst(PieceType.PAWN);
             enemyPositionsList.remove(passantablePawn);
             this.setPos(passantablePawn, null);
         }

@@ -2,6 +2,7 @@ package gui;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -9,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -49,6 +51,8 @@ public class Main extends Application {
     Text moveNumber;
     Text currentPlayer;
     Text gameStatus;
+    Text capturedPiecesWhite;
+    Text capturedPiecesBlack;
     Text gameWins;
     Text timerSettingsDesc;
     Text timeRemainingWhite;
@@ -303,11 +307,13 @@ public class Main extends Application {
         }
 
         // render initial pieces
-        renderPieces();
+//        renderPieces();
 
-        // build sidebar
+        // build sidebar with background
         sidebar = new VBox(16);
         sidebar.setAlignment(Pos.CENTER_LEFT);
+        sidebar.setMaxHeight(500);
+        sidebar.setBackground(new Background(new BackgroundFill(Color.web("#e3e3e3"), new CornerRadii(20), new Insets(-20))));
         root.getChildren().add(sidebar);
 
         // add game info
@@ -319,6 +325,16 @@ public class Main extends Application {
 
         gameStatus = new Text();
         gameStatus.setFont(Font.font(22));
+
+        Text whiteCapturesHeading = new Text("White captures:");
+        whiteCapturesHeading.setFont(Font.font(22));
+        capturedPiecesWhite = new Text();
+        capturedPiecesWhite.setFont(Font.font(16));
+
+        Text blackCapturesHeading = new Text("Black captures:");
+        blackCapturesHeading.setFont(Font.font(22));
+        capturedPiecesBlack = new Text();
+        capturedPiecesBlack.setFont(Font.font(16));
 
         if (timerEnabled) {
             if (game.getGameTimer().getIncrementSecWhite() == game.getGameTimer().getIncrementSecBlack() &&
@@ -339,7 +355,7 @@ public class Main extends Application {
         Text heading1 = new Text("Games won by:");
         Text heading2 = new Text("White   Black");
         gameWins = new Text();
-        heading1.setFont(Font.font(16));
+        heading1.setFont(Font.font(22));
         heading2.setFont(Font.font(16));
         gameWins.setFont(Font.font(16));
         wins.getChildren().addAll(heading1, heading2, gameWins);
@@ -347,6 +363,7 @@ public class Main extends Application {
         renderGameInfo();
 
         sidebar.getChildren().addAll(moveNumber, currentPlayer, gameStatus);
+        sidebar.getChildren().addAll(whiteCapturesHeading, capturedPiecesWhite, blackCapturesHeading, capturedPiecesBlack);
         if (timerEnabled) {
             sidebar.getChildren().add(timerSettingsDesc);
             sidebar.getChildren().add(timeRemainingWhite);
@@ -355,13 +372,18 @@ public class Main extends Application {
         sidebar.getChildren().add(wins);
 
         // add game buttons
-        HBox gameButtons = new HBox(5);
+        VBox gameButtons = new VBox(5);
+        HBox gameButtonsRow1 = new HBox(5);
+        HBox gameButtonsRow2 = new HBox(5);
         Button resign = new Button("Resign");
         Button restart = new Button("Restart");
+        Button restartScores = new Button("Restart scores");
         Button claimDraw = new Button("Claim draw");
         Button changeSettings = new Button("Change settings");
         Button undo = new Button("Undo");
-        gameButtons.getChildren().addAll(resign, restart, claimDraw, changeSettings, undo);
+        gameButtonsRow1.getChildren().addAll(resign, restart, restartScores);
+        gameButtonsRow2.getChildren().addAll(claimDraw, changeSettings, undo);
+        gameButtons.getChildren().addAll(gameButtonsRow1, gameButtonsRow2);
         sidebar.getChildren().add(gameButtons);
 
         resign.setOnAction(e -> {
@@ -383,6 +405,11 @@ public class Main extends Application {
             renderPieces();
             renderGameInfo();
             clearHighlightingAll();
+        });
+
+        restartScores.setOnAction(e -> {
+            game.restartScores();
+            renderGameInfo();
         });
 
         claimDraw.setOnAction(e -> {
@@ -488,6 +515,42 @@ public class Main extends Application {
                 gameStatus.setText("Game status: continuing");
             }
         }
+
+        StringBuilder capturedPiecesWhiteStr = new StringBuilder();
+        if (game.getBoard().getBlackCapturedPieces().isEmpty()) {
+            capturedPiecesWhiteStr.append("None");
+        }
+        else {
+            for (int i = 0; i < game.getBoard().getBlackCapturedPieces().size(); i++) {
+                capturedPiecesWhiteStr.append(game.getBoard().getBlackCapturedPieces().get(i).getPieceIcon(Piece.Color.BLACK));
+                if (i != game.getBoard().getBlackCapturedPieces().size() - 1) {
+                    capturedPiecesWhiteStr.append(", ");
+                }
+                if (i == 8 && i !=  game.getBoard().getWhiteCapturedPieces().size() - 1) {
+                    // after 9 pieces, start printing on new line
+                    capturedPiecesWhiteStr.append('\n');
+                }
+            }
+        }
+        capturedPiecesWhite.setText(capturedPiecesWhiteStr.toString());
+
+        StringBuilder capturedPiecesBlackStr = new StringBuilder();
+        if (game.getBoard().getWhiteCapturedPieces().isEmpty()) {
+            capturedPiecesBlackStr.append("None");
+        }
+        else {
+            for (int i = 0; i < game.getBoard().getWhiteCapturedPieces().size(); i++) {
+                capturedPiecesBlackStr.append(game.getBoard().getWhiteCapturedPieces().get(i).getPieceIcon(Piece.Color.WHITE));
+                if (i != game.getBoard().getWhiteCapturedPieces().size() - 1) {
+                    capturedPiecesBlackStr.append(", ");
+                }
+                if (i == 8 && i !=  game.getBoard().getWhiteCapturedPieces().size() - 1) {
+                    // after 9 pieces, start printing on new line
+                    capturedPiecesBlackStr.append('\n');
+                }
+            }
+        }
+        capturedPiecesBlack.setText(capturedPiecesBlackStr.toString());
 
         gameWins.setText(game.getWhitePoints() + "        " + game.getBlackPoints());
 

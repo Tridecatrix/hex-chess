@@ -344,6 +344,16 @@ public class Game {
         // update move number
         moveNumberForCurrentSide -= currentPlayer == Piece.Color.WHITE ? 0 : 1;
 
+        // update game status
+        if (currentGameState != GameResult.CONTINUING) {
+            currentGameState = GameResult.CONTINUING;
+        }
+
         return true;
+    }
+
+    public void restartScores() {
+        whitePoints = 0;
+        blackPoints = 0;
     }
 }

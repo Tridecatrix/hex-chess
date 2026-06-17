@@ -1,11 +1,13 @@
 package model;
 
+import model.piece.Piece;
+
 public enum PieceType {
+    PAWN,
     KNIGHT,
     BISHOP,
     ROOK,
     QUEEN,
-    PAWN,
     KING;
 
     public char getChar() {
@@ -32,5 +34,53 @@ public enum PieceType {
                 return ' ';
             }
         }
+    }
+
+    public char getPieceIcon(Piece.Color color) {
+        if (color == Piece.Color.WHITE) {
+            switch (this) {
+                case PAWN -> {
+                    return '♙';
+                }
+                case KNIGHT -> {
+                    return '♘';
+                }
+                case BISHOP -> {
+                    return '♗';
+                }
+                case ROOK -> {
+                    return '♖';
+                }
+                case QUEEN -> {
+                    return '♕';
+                }
+                case KING -> {
+                    return '♔';
+                }
+            }
+        } else {
+            switch (this) {
+                case PAWN -> {
+                    return '♟';
+                }
+                case KNIGHT -> {
+                    return '♞';
+                }
+                case BISHOP -> {
+                    return '♝';
+                }
+                case ROOK -> {
+                    return '♜';
+                }
+                case QUEEN -> {
+                    return '♛';
+                }
+                case KING -> {
+                    return '♚';
+                }
+            }
+        }
+
+        return ' ';
     }
 }
