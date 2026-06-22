@@ -55,7 +55,7 @@ public class Knight extends Piece {
     }
 
     @Override
-    public char getChar() {
+    public char getCharBase() {
         return 'n';
     }
 

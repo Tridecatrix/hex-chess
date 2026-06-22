@@ -23,6 +23,11 @@ public class Position {
         this.rank = Integer.parseInt(pos.substring(1)) - 1;
     }
 
+    public Position(Position original) {
+        this.file = original.file;
+        this.rank = original.rank;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof Position) {

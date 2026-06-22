@@ -17,7 +17,7 @@ public class Game {
     public enum Mode {
         TWO_PLAYER,
         THREE_PLAYER,
-        // SIX_PLAYER
+        SIX_PLAYER
     }
 
     Board board;
@@ -258,38 +258,38 @@ public class Game {
         }
 
         if (repTimes >= 4) return true;
-
-        // insufficient material: build sets of all types of pieces for white and black
-        Multiset<PieceType> whitePieceTypes = HashMultiset.create();
-        Multiset<PieceType> blackPieceTypes = HashMultiset.create();
-        for (Position pos : this.board.whitePiecePositions) {
-            whitePieceTypes.add(this.board.getPos(pos).getPieceType());
-        }
-        for (Position pos : this.board.blackPiecePositions) {
-            blackPieceTypes.add(this.board.getPos(pos).getPieceType());
-        }
-
-        // insufficient material: king vs king
-        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
-                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))) {
-            return true;
-        }
-
-        // insufficient material: king & knight vs king
-        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.KNIGHT)))
-                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
-           || whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
-                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.KNIGHT)))) {
-            return true;
-        }
-
-        // insufficient material: king and bishop v king
-        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.BISHOP)))
-                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
-                || whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
-                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.BISHOP)))) {
-            return true;
-        }
+//
+//        // insufficient material: build sets of all types of pieces for white and black
+//        Multiset<PieceType> whitePieceTypes = HashMultiset.create();
+//        Multiset<PieceType> blackPieceTypes = HashMultiset.create();
+//        for (Position pos : this.board.get) {
+//            whitePieceTypes.add(this.board.getPos(pos).getPieceType());
+//        }
+//        for (Position pos : this.board.blackPiecePositions) {
+//            blackPieceTypes.add(this.board.getPos(pos).getPieceType());
+//        }
+//
+//        // insufficient material: king vs king
+//        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
+//                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))) {
+//            return true;
+//        }
+//
+//        // insufficient material: king & knight vs king
+//        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.KNIGHT)))
+//                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
+//           || whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
+//                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.KNIGHT)))) {
+//            return true;
+//        }
+//
+//        // insufficient material: king and bishop v king
+//        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.BISHOP)))
+//                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
+//                || whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
+//                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.BISHOP)))) {
+//            return true;
+//        }
 
         return false;
     }

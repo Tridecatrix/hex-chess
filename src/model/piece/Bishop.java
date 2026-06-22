@@ -46,7 +46,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public char getChar() {
+    public char getCharBase() {
         return 'b';
     }
 

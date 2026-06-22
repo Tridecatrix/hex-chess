@@ -10,22 +10,16 @@ public class PieceFactory {
         Piece piece;
         Piece.Color colorAsObj;
 
-        switch(color.toLowerCase()) {
-            case "w":
-            case "white":
-                colorAsObj = Piece.Color.WHITE;
-                break;
-            case "b":
-            case "black":
-                colorAsObj = Piece.Color.BLACK;
-                break;
-            case "g":
-            case "grey":
-                colorAsObj = Piece.Color.GREY;
-                break;
-            default:
-                throw new RuntimeException("Invalid piece color");
-        }
+        colorAsObj = switch (color) {
+            case "w", "white" -> Piece.Color.WHITE;
+            case "b", "black" -> Piece.Color.BLACK;
+            case "r", "red" -> Piece.Color.RED;
+            case "B", "blue" -> Piece.Color.BLUE;
+            case "g", "green" -> Piece.Color.GREEN;
+            case "p", "purple" -> Piece.Color.PURPLE;
+            case "y", "yellow" -> Piece.Color.YELLOW;
+            default -> throw new RuntimeException("Invalid piece color");
+        };
 
         switch(type.toLowerCase()) {
             case "p":

@@ -15,7 +15,7 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public char getChar() {
+    public char getCharBase() {
         return 'p';
     }
 

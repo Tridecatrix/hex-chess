@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -51,8 +50,8 @@ public class Main extends Application {
     Text moveNumber;
     Text currentPlayer;
     Text gameStatus;
-    Text capturedPiecesWhite;
-    Text capturedPiecesBlack;
+    Text capturedPiecesWhiteText;
+    Text capturedPiecesBlackText;
     Text gameWins;
     Text timerSettingsDesc;
     Text timeRemainingWhite;
@@ -328,13 +327,13 @@ public class Main extends Application {
 
         Text whiteCapturesHeading = new Text("White captures:");
         whiteCapturesHeading.setFont(Font.font(22));
-        capturedPiecesWhite = new Text();
-        capturedPiecesWhite.setFont(Font.font(16));
+        capturedPiecesWhiteText = new Text();
+        capturedPiecesWhiteText.setFont(Font.font(16));
 
         Text blackCapturesHeading = new Text("Black captures:");
         blackCapturesHeading.setFont(Font.font(22));
-        capturedPiecesBlack = new Text();
-        capturedPiecesBlack.setFont(Font.font(16));
+        capturedPiecesBlackText = new Text();
+        capturedPiecesBlackText.setFont(Font.font(16));
 
         if (timerEnabled) {
             if (game.getGameTimer().getIncrementSecWhite() == game.getGameTimer().getIncrementSecBlack() &&
@@ -363,7 +362,7 @@ public class Main extends Application {
         renderGameInfo();
 
         sidebar.getChildren().addAll(moveNumber, currentPlayer, gameStatus);
-        sidebar.getChildren().addAll(whiteCapturesHeading, capturedPiecesWhite, blackCapturesHeading, capturedPiecesBlack);
+        sidebar.getChildren().addAll(whiteCapturesHeading, capturedPiecesWhiteText, blackCapturesHeading, capturedPiecesBlackText);
         if (timerEnabled) {
             sidebar.getChildren().add(timerSettingsDesc);
             sidebar.getChildren().add(timeRemainingWhite);
@@ -517,40 +516,42 @@ public class Main extends Application {
         }
 
         StringBuilder capturedPiecesWhiteStr = new StringBuilder();
-        if (game.getBoard().getBlackCapturedPieces().isEmpty()) {
+        List<Piece> capturedPiecesWhite = game.getBoard().getCapturedPieces().get(Piece.Color.WHITE);
+        if (capturedPiecesWhite.isEmpty()) {
             capturedPiecesWhiteStr.append("None");
         }
         else {
-            for (int i = 0; i < game.getBoard().getBlackCapturedPieces().size(); i++) {
-                capturedPiecesWhiteStr.append(game.getBoard().getBlackCapturedPieces().get(i).getPieceIcon(Piece.Color.BLACK));
-                if (i != game.getBoard().getBlackCapturedPieces().size() - 1) {
+            for (int i = 0; i < capturedPiecesWhite.size(); i++) {
+                capturedPiecesWhiteStr.append(capturedPiecesWhite.get(i).getPieceIcon());
+                if (i != capturedPiecesWhite.size() - 1) {
                     capturedPiecesWhiteStr.append(", ");
                 }
-                if (i == 8 && i !=  game.getBoard().getWhiteCapturedPieces().size() - 1) {
+                if (i == 8 && i != capturedPiecesWhite.size() - 1) {
                     // after 9 pieces, start printing on new line
                     capturedPiecesWhiteStr.append('\n');
                 }
             }
         }
-        capturedPiecesWhite.setText(capturedPiecesWhiteStr.toString());
-
+        capturedPiecesWhiteText.setText(capturedPiecesWhiteStr.toString());
+        List<Piece> capturedPiecesBlack = game.getBoard().getCapturedPieces().get(Piece.Color.BLACK);
         StringBuilder capturedPiecesBlackStr = new StringBuilder();
-        if (game.getBoard().getWhiteCapturedPieces().isEmpty()) {
+
+        if (capturedPiecesBlack.isEmpty()) {
             capturedPiecesBlackStr.append("None");
         }
         else {
-            for (int i = 0; i < game.getBoard().getWhiteCapturedPieces().size(); i++) {
-                capturedPiecesBlackStr.append(game.getBoard().getWhiteCapturedPieces().get(i).getPieceIcon(Piece.Color.WHITE));
-                if (i != game.getBoard().getWhiteCapturedPieces().size() - 1) {
+            for (int i = 0; i < capturedPiecesBlack.size(); i++) {
+                capturedPiecesBlackStr.append(capturedPiecesBlack.get(i).getPieceIcon());
+                if (i != capturedPiecesBlack.size() - 1) {
                     capturedPiecesBlackStr.append(", ");
                 }
-                if (i == 8 && i !=  game.getBoard().getWhiteCapturedPieces().size() - 1) {
+                if (i == 8 && i != capturedPiecesBlack.size() - 1) {
                     // after 9 pieces, start printing on new line
                     capturedPiecesBlackStr.append('\n');
                 }
             }
         }
-        capturedPiecesBlack.setText(capturedPiecesBlackStr.toString());
+        capturedPiecesBlackText.setText(capturedPiecesBlackStr.toString());
 
         gameWins.setText(game.getWhitePoints() + "        " + game.getBlackPoints());
 
@@ -732,8 +733,7 @@ public class Main extends Application {
 
             // highlight the king if it is in check after the move
             if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
-                Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
-                        : game.getBoard().getBlackKingPos();
+                Position kingPos = game.getBoard().getKingPositions().get(game.getCurrentPlayer());
 
                 boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
             }
@@ -770,8 +770,7 @@ public class Main extends Application {
     public void clearHighlightingAndRehighlightCheck() {
         clearHighlightingAll();
         if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
-            Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
-                    : game.getBoard().getBlackKingPos();
+            Position kingPos = game.getBoard().getKingPositions().get(game.getCurrentPlayer());
 
             boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
         }

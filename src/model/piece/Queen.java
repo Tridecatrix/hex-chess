@@ -52,7 +52,7 @@ public class Queen extends Piece {
     }
 
     @Override
-    public char getChar() {
+    public char getCharBase() {
         return 'q';
     }
 

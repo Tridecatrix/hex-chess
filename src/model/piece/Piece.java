@@ -5,9 +5,7 @@ import model.Move;
 import model.PieceType;
 import model.Position;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Piece {
     @Override
@@ -25,8 +23,22 @@ public abstract class Piece {
     public enum Color {
         WHITE,
         BLACK,
-        GREY
+        RED, // for 3 player
+        BLUE, // for 3 player
+        YELLOW, // for 6 player
+        GREEN, // for 6 player
+        PURPLE // for 6 player
     }
+
+    public static List<Color> allColors = List.of(
+            Piece.Color.WHITE,
+            Piece.Color.BLACK,
+            Piece.Color.RED,
+            Piece.Color.BLUE,
+            Piece.Color.YELLOW,
+            Piece.Color.GREEN,
+            Piece.Color.PURPLE
+    );
 
     public Color color;
 
@@ -42,7 +54,81 @@ public abstract class Piece {
         return getMovesFromPos(board, fromPos);
     }
 
-    abstract public char getChar();
+    public char getChar() {
+        switch (color) {
+            case WHITE, RED, BLUE -> { return Character.toUpperCase(this.getCharBase()); }
+            case BLACK, YELLOW, GREEN, PURPLE -> { return Character.toLowerCase(this.getCharBase()); }
+            default -> { return ' '; }
+        }
+    }
+
+    abstract char getCharBase();
 
     abstract public PieceType getPieceType();
+
+    public Color getColor() {
+        return color;
+    }
+
+    public int compareTo(Piece other) {
+        if (this.color.equals(other.color)) {
+            return this.getPieceType().compareTo(other.getPieceType());
+        } else {
+            return this.color.compareTo(other.color);
+        }
+    }
+
+    public char getPieceIcon() {
+        if (this.color != Color.BLACK) {
+            switch (this.getPieceType()) {
+                case PAWN -> {
+                    return '♙';
+                }
+                case KNIGHT -> {
+                    return '♘';
+                }
+                case BISHOP -> {
+                    return '♗';
+                }
+                case ROOK -> {
+                    return '♖';
+                }
+                case QUEEN -> {
+                    return '♕';
+                }
+                case KING -> {
+                    return '♔';
+                }
+                case NIGHTRIDER -> {
+                    return 'm';
+                }
+            }
+        } else {
+            switch (this.getPieceType()) {
+                case PAWN -> {
+                    return '♟';
+                }
+                case KNIGHT -> {
+                    return '♞';
+                }
+                case BISHOP -> {
+                    return '♝';
+                }
+                case ROOK -> {
+                    return '♜';
+                }
+                case QUEEN -> {
+                    return '♛';
+                }
+                case KING -> {
+                    return '♚';
+                }
+                case NIGHTRIDER -> {
+                    return 'm';
+                }
+            }
+        }
+
+        return ' ';
+    }
 }
