@@ -42,7 +42,7 @@ public class Knight extends Piece {
         for (List<BiFunction<Position, Integer, Position>> steps : stepsAll) {
             Position toPos = fromPos;
             for (BiFunction<Position, Integer, Position> step : steps) {
-                toPos = step.apply(toPos, board.boardDiameter);
+                toPos = step.apply(toPos, board.getBoardDiameter());
             }
             possibleMoves.add(new Move(fromPos, toPos));
         }

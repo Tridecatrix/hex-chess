@@ -26,7 +26,7 @@ import static java.lang.Thread.sleep;
 public class Main extends Application {
     Stage primaryStage;
 
-    // list of GUI elements and variables associated with game settings
+    // list of GUI elements and variables associated with game settings on the main menu
     boolean timerEnabled;
     VBox timerSettings;
     CheckBox enableTimer;
@@ -38,11 +38,12 @@ public class Main extends Application {
     TextField customTimerStartingTimeBlack;
     TextField customTimerIncrementBlack;
     boolean customTimerSettingsEnabled;
+    ComboBox<String> gameModeDropdown;
 
     // list of GUI elements that are printed on the board side
-    BoardTile[][] boardTilesAsArray = new BoardTile[11][11];
-    PieceView[][] pieceViewsAsArray = new PieceView[11][11];
-    StackPane[][] tileStacksAsArray = new StackPane[11][11];
+    BoardTile[][] boardTilesAsArray;
+    PieceView[][] pieceViewsAsArray;
+    StackPane[][] tileStacksAsArray;
     Group boardAndCoordinatesView;
 
     // list of GUI elements printed on the sidebar
@@ -93,6 +94,7 @@ public class Main extends Application {
 
         VBox settings = new VBox(5);
         settings.setAlignment(Pos.CENTER);
+        settings.setPrefWidth(200);
 
         Text settingsHeader = new Text("Settings:");
         settingsHeader.setFont(Font.font(24));
@@ -106,6 +108,16 @@ public class Main extends Application {
         timerSettings.getChildren().add(enableTimer);
         enableTimer.setOnAction(e -> { expandTimerOptions(); });
         settings.getChildren().add(timerSettings);
+
+        HBox gameModeSettings = new HBox(5);
+        gameModeSettings.setAlignment(Pos.CENTER);
+        Text gameModeText = new Text("Game mode:");
+        gameModeText.setFont(Font.font(16));
+        gameModeDropdown = new ComboBox<>();
+        gameModeDropdown.getItems().addAll("2 player", "3 player", "6 player");
+        gameModeDropdown.setValue("2 player");
+        gameModeSettings.getChildren().addAll(gameModeText, gameModeDropdown);
+        settings.getChildren().add(gameModeSettings);
 
         Button playButton = new Button("Play");
         playButton.setFont(new Font(48));
@@ -189,7 +201,13 @@ public class Main extends Application {
         root.setSpacing(100);
 
         // initialise the backend (game object)
-        game = new Game();
+        Game.Mode gamemode = switch (gameModeDropdown.getValue()) {
+            case "2 player" -> Game.Mode.TWO_PLAYER;
+            case "3 player" -> Game.Mode.THREE_PLAYER;
+            case "6 player" -> Game.Mode.SIX_PLAYER;
+            default -> throw new IllegalArgumentException("Illegal game mode");
+        };
+        game = new Game(gamemode);
 
         // initialise the backend (game timer)
         if (timerEnabled) {
@@ -229,20 +247,25 @@ public class Main extends Application {
         // begin setting up the board view
         boardAndCoordinatesView = new Group();
         root.getChildren().add(boardAndCoordinatesView);
-        double h = BOARD_SIZE/11;                       // tile height
+        int d = game.getBoard().getBoardDiameter();
+        double h = BOARD_SIZE/d;                       // tile height
         double s = BoardTile.fullHeightToSideLength(h); // tile side length
 
+        tileStacksAsArray = new StackPane[d][d];
+        boardTilesAsArray = new BoardTile[d][d];
+        pieceViewsAsArray = new PieceView[d][d];
+
         // create board tile stacks, pieces and boards
-        for (int xBoard = 0; xBoard < 11; xBoard++) {
-            for (int yBoard = 0; yBoard < 11; yBoard++) {
-                if (new Position(xBoard, yBoard).isInBounds(11)) {
+        for (int xBoard = 0; xBoard < d; xBoard++) {
+            for (int yBoard = 0; yBoard < d; yBoard++) {
+                if (new Position(xBoard, yBoard).isInBounds(d)) {
                     // calculate the x and y pixel position of the hexagon center from hexagon side length s, hexagon height h,
-                    // xBoard and yBoard (i.e. position on the 11x11 board array)
+                    // xBoard and yBoard (i.e. position on the dxd board array)
                     double x = 1.5 * s * xBoard;
-                    double y = -(-h / 2 * Position.distanceFromEdge(new Position(xBoard, yBoard), 11) + h * yBoard);
+                    double y = -(-h / 2 * Position.distanceFromEdge(new Position(xBoard, yBoard), d) + h * yBoard);
 
                     // get the hexagon color based on its position on the board
-                    int colorIndex = (yBoard + Position.distanceFromEdge(new Position(xBoard, yBoard), 11)) % 3;
+                    int colorIndex = (yBoard + Position.distanceFromEdge(new Position(xBoard, yBoard), d)) % 3;
                     BoardTile.TileColor color = List.of(BoardTile.TileColor.BLACK, BoardTile.TileColor.GREY, BoardTile.TileColor.WHITE).get(colorIndex);
 
                     // create hexagon tile stack
@@ -267,18 +290,18 @@ public class Main extends Application {
         }
 
         // create coordinate markings: x markings
-        for (int xBoard = 0; xBoard < 11; xBoard++) {
+        for (int xBoard = 0; xBoard < d; xBoard++) {
             char file = (char) ((int) 'a' + xBoard);
             Text coordinateMarking = new Text(Character.toString(file));
             coordinateMarking.setFont(Font.font(24));
-            coordinateMarking.setX(s + 1.5 * s * xBoard);
-            coordinateMarking.setY(h * 1.5 + h / 2 * Position.distanceFromEdge(new Position(xBoard, 0), 11));
-            boardAndCoordinatesView.getChildren().add(coordinateMarking);
+            coordinateMarking.setX(s + 1.5 * s * xBoard - 6);
+            coordinateMarking.setY(h * 1.5 + h / 2 * Position.distanceFromEdge(new Position(xBoard, 0), d));
             coordinateMarking.setTextAlignment(TextAlignment.CENTER);
+            boardAndCoordinatesView.getChildren().add(coordinateMarking);
         }
 
         // create coordinate markings: y markings
-        for (int yBoard = 0; yBoard < 11; yBoard++) {
+        for (int yBoard = 0; yBoard < d; yBoard++) {
             Text leftCoordinateMarking = new Text(Integer.toString(yBoard + 1));
             Text rightCoordinateMarking = new Text(Integer.toString(yBoard + 1));
             leftCoordinateMarking.setFont(Font.font(24));
@@ -286,19 +309,26 @@ public class Main extends Application {
             leftCoordinateMarking.setTextAlignment(TextAlignment.RIGHT); // for some reason this doesn't work
             rightCoordinateMarking.setTextAlignment(TextAlignment.LEFT);
 
-            if (yBoard <= 5) {
-                leftCoordinateMarking.setX(s - 1.25 * s);
+            int dim = game.getBoard().getBoardDim();
+
+            if (yBoard <= dim-1) {
+                if (yBoard <= 8)
+                    leftCoordinateMarking.setX(-12);
+                else
+                    leftCoordinateMarking.setX(-24);
                 leftCoordinateMarking.setY(h * 0.25 - h * yBoard);
-                rightCoordinateMarking.setX(1.9 * s + 1.5 * s * 10);
+
+                rightCoordinateMarking.setX(0.4 * s + 1.5 * s * d);
                 rightCoordinateMarking.setY(h * 0.25 - h * yBoard);
             } else {
                 if (yBoard <= 8)
-                    leftCoordinateMarking.setX(-0.25 * s + (yBoard - 5) * (s * 1.5));
+                    leftCoordinateMarking.setX(-12 + (yBoard - (dim-1)) * (s * 1.5));
                 else
-                    leftCoordinateMarking.setX(-12 - 0.25 * s + (yBoard - 5) * (s * 1.5));
-                leftCoordinateMarking.setY(h * 0.25 - h * 2.5 - h/2 * yBoard);
-                rightCoordinateMarking.setX(1.9 * s + 1.5 * s * 10   - (yBoard - 5) * (s * 1.5));
-                rightCoordinateMarking.setY(h * 0.25 - h * 2.5 - h/2 * yBoard);
+                    leftCoordinateMarking.setX(-24 + (yBoard - (dim-1)) * (s * 1.5));
+                leftCoordinateMarking.setY(h * 0.25 - h * (dim-1) - h/2 * (yBoard - (dim-1)));
+
+                rightCoordinateMarking.setX(0.4 * s + 1.5 * s * d - (yBoard - (dim-1)) * (s * 1.5));
+                rightCoordinateMarking.setY(h * 0.25 - h * (dim-1) - h/2 * (yBoard - (dim-1)));
             }
 
             boardAndCoordinatesView.getChildren().add(leftCoordinateMarking);
@@ -453,12 +483,13 @@ public class Main extends Application {
 
     // After an update to the underlying Game, i.e. piece position update, render pieces
     private void renderPieces() {
-        double h = BOARD_SIZE/11;                       // tile height
+        int d = game.getBoard().getBoardDiameter();
+        double h = BOARD_SIZE/d;                       // tile height
         double s = BoardTile.fullHeightToSideLength(h); // tile side length
 
         // Remove all current piece images
-        for (int xBoard = 0; xBoard < 11; xBoard++) {
-            for (int yBoard = 0; yBoard < 11; yBoard++) {
+        for (int xBoard = 0; xBoard < d; xBoard++) {
+            for (int yBoard = 0; yBoard < d; yBoard++) {
                 if (pieceViewsAsArray[xBoard][yBoard] != null)  {
                     tileStacksAsArray[xBoard][yBoard].getChildren().remove(pieceViewsAsArray[xBoard][yBoard]);
                     pieceViewsAsArray[xBoard][yBoard] = null;
@@ -467,8 +498,8 @@ public class Main extends Application {
         }
 
         // go back over the board and rebuild pieces array
-        for (int xBoard = 0; xBoard < 11; xBoard++) {
-            for (int yBoard = 0; yBoard < 11; yBoard++) {
+        for (int xBoard = 0; xBoard < d; xBoard++) {
+            for (int yBoard = 0; yBoard < d; yBoard++) {
                 Position pos = new Position(xBoard, yBoard);
 
                 Piece piece = game.getBoard().getPos(pos);
@@ -514,44 +545,44 @@ public class Main extends Application {
                 gameStatus.setText("Game status: continuing");
             }
         }
-
-        StringBuilder capturedPiecesWhiteStr = new StringBuilder();
-        List<Piece> capturedPiecesWhite = game.getBoard().getCapturedPieces().get(Piece.Color.WHITE);
-        if (capturedPiecesWhite.isEmpty()) {
-            capturedPiecesWhiteStr.append("None");
-        }
-        else {
-            for (int i = 0; i < capturedPiecesWhite.size(); i++) {
-                capturedPiecesWhiteStr.append(capturedPiecesWhite.get(i).getPieceIcon());
-                if (i != capturedPiecesWhite.size() - 1) {
-                    capturedPiecesWhiteStr.append(", ");
-                }
-                if (i == 8 && i != capturedPiecesWhite.size() - 1) {
-                    // after 9 pieces, start printing on new line
-                    capturedPiecesWhiteStr.append('\n');
-                }
-            }
-        }
-        capturedPiecesWhiteText.setText(capturedPiecesWhiteStr.toString());
-        List<Piece> capturedPiecesBlack = game.getBoard().getCapturedPieces().get(Piece.Color.BLACK);
-        StringBuilder capturedPiecesBlackStr = new StringBuilder();
-
-        if (capturedPiecesBlack.isEmpty()) {
-            capturedPiecesBlackStr.append("None");
-        }
-        else {
-            for (int i = 0; i < capturedPiecesBlack.size(); i++) {
-                capturedPiecesBlackStr.append(capturedPiecesBlack.get(i).getPieceIcon());
-                if (i != capturedPiecesBlack.size() - 1) {
-                    capturedPiecesBlackStr.append(", ");
-                }
-                if (i == 8 && i != capturedPiecesBlack.size() - 1) {
-                    // after 9 pieces, start printing on new line
-                    capturedPiecesBlackStr.append('\n');
-                }
-            }
-        }
-        capturedPiecesBlackText.setText(capturedPiecesBlackStr.toString());
+//
+//        StringBuilder capturedPiecesWhiteStr = new StringBuilder();
+//        List<Piece> capturedPiecesWhite = game.getBoard().getCapturedPieces().get(Piece.Color.WHITE);
+//        if (capturedPiecesWhite.isEmpty()) {
+//            capturedPiecesWhiteStr.append("None");
+//        }
+//        else {
+//            for (int i = 0; i < capturedPiecesWhite.size(); i++) {
+//                capturedPiecesWhiteStr.append(capturedPiecesWhite.get(i).getPieceIcon());
+//                if (i != capturedPiecesWhite.size() - 1) {
+//                    capturedPiecesWhiteStr.append(", ");
+//                }
+//                if (i == 8 && i != capturedPiecesWhite.size() - 1) {
+//                    // after 9 pieces, start printing on new line
+//                    capturedPiecesWhiteStr.append('\n');
+//                }
+//            }
+//        }
+//        capturedPiecesWhiteText.setText(capturedPiecesWhiteStr.toString());
+//        List<Piece> capturedPiecesBlack = game.getBoard().getCapturedPieces().get(Piece.Color.BLACK);
+//        StringBuilder capturedPiecesBlackStr = new StringBuilder();
+//
+//        if (capturedPiecesBlack.isEmpty()) {
+//            capturedPiecesBlackStr.append("None");
+//        }
+//        else {
+//            for (int i = 0; i < capturedPiecesBlack.size(); i++) {
+//                capturedPiecesBlackStr.append(capturedPiecesBlack.get(i).getPieceIcon());
+//                if (i != capturedPiecesBlack.size() - 1) {
+//                    capturedPiecesBlackStr.append(", ");
+//                }
+//                if (i == 8 && i != capturedPiecesBlack.size() - 1) {
+//                    // after 9 pieces, start printing on new line
+//                    capturedPiecesBlackStr.append('\n');
+//                }
+//            }
+//        }
+//        capturedPiecesBlackText.setText(capturedPiecesBlackStr.toString());
 
         gameWins.setText(game.getWhitePoints() + "        " + game.getBlackPoints());
 
@@ -569,31 +600,32 @@ public class Main extends Application {
         handlingPromotion = true;
 
         Piece.Color playerColor = this.game.getBoard().getPos(promoteablePawn).color;
+        int d = game.getBoard().getBoardDiameter();
 
         Position promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos;
         if (playerColor == Piece.Color.WHITE) {
             promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
-            promotionKnightPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
-            promotionRookPos = Position.oneStepBackward(promoteablePawn, 11);
+            promotionBishopPos = Position.oneStepLeftAndBackward(promoteablePawn, d);
+            promotionKnightPos = Position.oneStepRightAndBackward(promoteablePawn, d);
+            promotionRookPos = Position.oneStepBackward(promoteablePawn, d);
 
-            if (!promotionBishopPos.isInBounds(11)) {
-                promotionBishopPos = Position.oneStepRightAndForward(promoteablePawn, 11);
+            if (!promotionBishopPos.isInBounds(d)) {
+                promotionBishopPos = Position.oneStepRightAndForward(promoteablePawn, d);
             }
-            if (!promotionKnightPos.isInBounds(11)) {
-                promotionKnightPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
+            if (!promotionKnightPos.isInBounds(d)) {
+                promotionKnightPos = Position.oneStepLeftAndForward(promoteablePawn, d);
             }
         } else {
             promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
-            promotionKnightPos = Position.oneStepRightAndForward(promoteablePawn, 11);
-            promotionRookPos = Position.oneStepForward(promoteablePawn, 11);
+            promotionBishopPos = Position.oneStepLeftAndForward(promoteablePawn, d);
+            promotionKnightPos = Position.oneStepRightAndForward(promoteablePawn, d);
+            promotionRookPos = Position.oneStepForward(promoteablePawn, d);
 
-            if (!promotionBishopPos.isInBounds(11)) {
-                promotionBishopPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
+            if (!promotionBishopPos.isInBounds(d)) {
+                promotionBishopPos = Position.oneStepRightAndBackward(promoteablePawn, d);
             }
-            if (!promotionKnightPos.isInBounds(11)) {
-                promotionKnightPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
+            if (!promotionKnightPos.isInBounds(d)) {
+                promotionKnightPos = Position.oneStepLeftAndBackward(promoteablePawn, d);
             }
         }
 
@@ -605,7 +637,7 @@ public class Main extends Application {
 
         // highlight the promotion tiles and put the promotion objects on them
         for (PieceView piece : List.of(promotionQueen, promotionBishop, promotionKnight, promotionRook)) {
-            double h = BOARD_SIZE/11;
+            double h = BOARD_SIZE/d;
             double s = BoardTile.fullHeightToSideLength(h);
 
             piece.setFitHeight(s * 1.5);
@@ -627,31 +659,32 @@ public class Main extends Application {
         game.handlePromotion(promoteablePawn, type);
 
         Piece.Color playerColor = this.game.getBoard().getPos(promoteablePawn).color;
+        int d = this.game.getBoard().getBoardDiameter();
 
         Position promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos;
         if (playerColor == Piece.Color.WHITE) {
             promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
-            promotionKnightPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
-            promotionRookPos = Position.oneStepBackward(promoteablePawn, 11);
+            promotionBishopPos = Position.oneStepLeftAndBackward(promoteablePawn, d);
+            promotionKnightPos = Position.oneStepRightAndBackward(promoteablePawn, d);
+            promotionRookPos = Position.oneStepBackward(promoteablePawn, d);
 
-            if (!promotionBishopPos.isInBounds(11)) {
-                promotionBishopPos = Position.oneStepRightAndForward(promoteablePawn, 11);
+            if (!promotionBishopPos.isInBounds(d)) {
+                promotionBishopPos = Position.oneStepRightAndForward(promoteablePawn, d);
             }
-            if (!promotionKnightPos.isInBounds(11)) {
-                promotionKnightPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
+            if (!promotionKnightPos.isInBounds(d)) {
+                promotionKnightPos = Position.oneStepLeftAndForward(promoteablePawn, d);
             }
         } else {
             promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
-            promotionKnightPos = Position.oneStepRightAndForward(promoteablePawn, 11);
-            promotionRookPos = Position.oneStepForward(promoteablePawn, 11);
+            promotionBishopPos = Position.oneStepLeftAndForward(promoteablePawn, d);
+            promotionKnightPos = Position.oneStepRightAndForward(promoteablePawn, d);
+            promotionRookPos = Position.oneStepForward(promoteablePawn, d);
 
-            if (!promotionBishopPos.isInBounds(11)) {
-                promotionBishopPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
+            if (!promotionBishopPos.isInBounds(d)) {
+                promotionBishopPos = Position.oneStepRightAndBackward(promoteablePawn, d);
             }
-            if (!promotionKnightPos.isInBounds(11)) {
-                promotionKnightPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
+            if (!promotionKnightPos.isInBounds(d)) {
+                promotionKnightPos = Position.oneStepLeftAndBackward(promoteablePawn, d);
             }
         }
 
@@ -707,12 +740,7 @@ public class Main extends Application {
             // clear selection and highlighting (including king)
             this.selectedPos = null;
 
-            for (int x2 = 0; x2 < 11; x2++) {
-                for (int y2 = 0; y2 < 11; y2++) {
-                    if (boardTilesAsArray[x2][y2] != null)
-                        boardTilesAsArray[x2][y2].setHighlight(BoardTile.Highlight.NONE);
-                }
-            }
+            clearHighlightingAll();
 
             // apply the move
             Move move = new Move(fromPos, toPos);
@@ -759,8 +787,10 @@ public class Main extends Application {
     }
 
     public void clearHighlightingAll() {
-        for (int x2 = 0; x2 < 11; x2++) {
-            for (int y2 = 0; y2 < 11; y2++) {
+        int d = game.getBoard().getBoardDiameter();
+
+        for (int x2 = 0; x2 < d; x2++) {
+            for (int y2 = 0; y2 < d; y2++) {
                 if (boardTilesAsArray[x2][y2] != null)
                     boardTilesAsArray[x2][y2].setHighlight(BoardTile.Highlight.NONE);
             }

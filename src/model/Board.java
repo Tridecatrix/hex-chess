@@ -12,20 +12,26 @@ import java.util.stream.Stream;
  * Class for tracking the board and the pieces on the board
  */
 public class Board {
-    public int boardDim; // side length of the board in tiles
-    public int boardDiameter; // most importantly, determines the max height and width of the board
+    int boardDim; // side length of the board in tiles
+    int boardDiameter; // most importantly, determines the max height and width of the board
 
     Piece[][] board;
 
     // references to all pieces in the game (for check/checkmate detection)
     Map<Piece.Color, Set<Position>> piecePositions = new HashMap<>();
-
     Map<Piece.Color, List<Piece>> capturedPieces = new HashMap<>();
-
     Map<Piece.Color, Position> kingPositions = new HashMap<>();
 
     // for tracking en passant
     public Position passantablePawn;
+
+    public int getBoardDim() {
+        return boardDim;
+    }
+
+    public int getBoardDiameter() {
+        return boardDiameter;
+    }
 
     public Piece getPos(Position pos) {
         return this.board[pos.file][pos.rank];
@@ -313,8 +319,8 @@ public class Board {
 
             this.setPos(new Position("r1"), PieceFactory.createPiece("rook", "purple"));
             this.setPos(new Position("s1"), PieceFactory.createPiece("knight", "purple"));
-            this.setPos(new Position("r3"), PieceFactory.createPiece("queen", "purple"));
-            this.setPos(new Position("t1"), PieceFactory.createPiece("knight", "purple"));
+            this.setPos(new Position("t1"), PieceFactory.createPiece("queen", "purple"));
+            this.setPos(new Position("r3"), PieceFactory.createPiece("knight", "purple"));
             this.setPos(new Position("u1"), PieceFactory.createPiece("bishop", "purple"));
             this.setPos(new Position("t2"), PieceFactory.createPiece("bishop", "purple"));
             this.setPos(new Position("s3"), PieceFactory.createPiece("bishop", "purple"));
