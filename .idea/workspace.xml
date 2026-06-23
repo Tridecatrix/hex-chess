@@ -4,60 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="fixed minor bug with a board constructor">
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_bbt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_bgt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_bpt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_brt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_byt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_kbt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_kgt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_kpt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_krt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_kyt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_mbt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_mgt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_mpt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_mrt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_myt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_nbt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_ngt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_npt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_nrt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_nyt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_pbt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_pgt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_ppt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_prt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_pyt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_qbt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_qgt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_qpt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_qrt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_qyt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_rbt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_rgt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_rpt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_rrt45.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/assets/Chess_ryt45.png" afterDir="false" />
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="created constructors for 3 and 6 player games">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planning/3 player and 6 player boards.pdn" beforeDir="false" afterPath="$PROJECT_DIR$/planning/3 player and 6 player boards.pdn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planning/3 player board.png" beforeDir="false" afterPath="$PROJECT_DIR$/planning/3 player board.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/PieceView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/PieceView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/PieceFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/PieceFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/PieceType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/PieceType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Position.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Position.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Bishop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Bishop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/King.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/King.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Knight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Knight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Nightrider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Nightrider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Pawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Pawn.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Piece.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Queen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Queen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Rook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Rook.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/other/Debug.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/other/Debug.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +80,7 @@
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\lib" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.ChecksAndCheckmateTest and 2 more">
+  <component name="RunManager" selected="Application.Debug">
     <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="other.Debug" />
       <module name="HexChess" />
@@ -179,10 +129,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Debug" />
         <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.TerminalGUI" />
-        <item itemvalue="Application.Debug" />
       </list>
     </recent_temporary>
   </component>
@@ -579,7 +529,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781682121404</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="created constructors for 3 and 6 player games">
+      <option name="closed" value="true" />
+      <created>1782110028251</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1782110028251</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -595,7 +553,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="add intellij info to repo" />
     <MESSAGE value="working on draw logic" />
     <MESSAGE value="finished implementing draw logic; begun writing draw tests" />
     <MESSAGE value="finished writing draw test" />
@@ -620,7 +577,8 @@
     <MESSAGE value="began planning for 3 and 6 player mode" />
     <MESSAGE value="made nightrider fairy piece" />
     <MESSAGE value="fixed minor bug with a board constructor" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed minor bug with a board constructor" />
+    <MESSAGE value="created constructors for 3 and 6 player games" />
+    <option name="LAST_COMMIT_MESSAGE" value="created constructors for 3 and 6 player games" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

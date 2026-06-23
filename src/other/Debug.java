@@ -1,11 +1,14 @@
 package other;
 
+import model.Board;
 import model.Game;
+
+import java.util.List;
 
 public class Debug {
     public static void main(String[] args) {
-        Game game = new Game();
+        Board board = new Board(Game.Mode.SIX_PLAYER);
 
-        game.checkIfForcedDraw();
+        System.out.println(board);
     }
 }

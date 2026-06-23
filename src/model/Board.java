@@ -15,9 +15,6 @@ public class Board {
     public int boardDim; // side length of the board in tiles
     public int boardDiameter; // most importantly, determines the max height and width of the board
 
-    // for 91 space board; there are 11 files going vertically and 11 ranks going skew-horizontally.
-    // for files on the outer edges of the board, some of the ranks don't exist, e.g. only a1-7 exist
-    // file f, or file 6, is the middle of the board
     Piece[][] board;
 
     // references to all pieces in the game (for check/checkmate detection)
@@ -29,8 +26,6 @@ public class Board {
 
     // for tracking en passant
     public Position passantablePawn;
-
-    public static final int centerFile = 5;
 
     public Piece getPos(Position pos) {
         return this.board[pos.file][pos.rank];
@@ -126,7 +121,7 @@ public class Board {
             }
 
             for (String pos : List.of("a3", "b4", "c5", "d6", "e7", "e8", "e9", "e10", "e11")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "black");
+                Piece pawn = PieceFactory.createPiece("pawn", "red");
                 Position posAsObj = new Position(pos);
                 piecePositions.get(Piece.Color.RED).add(posAsObj);
                 this.setPos(new Position(pos), pawn);
@@ -204,7 +199,7 @@ public class Board {
             capturedPieces.put(Piece.Color.BLUE, new ArrayList<>());
             capturedPieces.put(Piece.Color.PURPLE, new ArrayList<>());
 
-            for (String pos : List.of("g1", "h2", "i3", "j4", "k5", "m4", "n3", "o2", "p1")) {
+            for (String pos : List.of("g1", "h2", "i3", "j4", "k5", "l4", "m3", "n2", "o1")) {
                 Piece pawn = PieceFactory.createPiece("pawn", "white");
                 Position posAsObj = new Position(pos);
                 piecePositions.get(Piece.Color.WHITE).add(posAsObj);
@@ -219,9 +214,9 @@ public class Board {
             this.setPos(new Position("k2"), PieceFactory.createPiece("bishop", "white"));
             this.setPos(new Position("k3"), PieceFactory.createPiece("bishop", "white"));
             this.setPos(new Position("l1"), PieceFactory.createPiece("king", "white"));
+            this.setPos(new Position("l3"), PieceFactory.createPiece("knight", "white"));
             this.setPos(new Position("m1"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("n1"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("o1"), PieceFactory.createPiece("rook", "white"));
+            this.setPos(new Position("n1"), PieceFactory.createPiece("rook", "white"));
             piecePositions.get(Piece.Color.WHITE).addAll(Stream.of(
                     "h1", "i1", "j1", "j3", "k1", "k2", "k3", "l1", "m3", "n1", "o1").map(Position::new).toList());
 
@@ -267,24 +262,24 @@ public class Board {
             piecePositions.get(Piece.Color.RED).addAll(Stream.of(
                     "d14", "c13", "b12", "d12", "a11", "b11", "c11", "a10", "c10", "a9", "a8").map(Position::new).toList());
 
-            for (String pos : List.of("h17", "i17", "j17", "k17", "l17", "m17", "n17", "o17", "p17")) {
+            for (String pos : List.of("g17", "h17", "i17", "j17", "k17", "l17", "m17", "n17", "o17")) {
                 Piece pawn = PieceFactory.createPiece("pawn", "yellow");
                 Position posAsObj = new Position(pos);
                 piecePositions.get(Piece.Color.YELLOW).add(posAsObj);
                 this.setPos(posAsObj, pawn);
             }
 
-            this.setPos(new Position("o18"), PieceFactory.createPiece("rook", "yellow"));
-            this.setPos(new Position("n19"), PieceFactory.createPiece("knight", "yellow"));
-            this.setPos(new Position("m20"), PieceFactory.createPiece("queen", "yellow"));
-            this.setPos(new Position("m18"), PieceFactory.createPiece("knight", "yellow"));
-            this.setPos(new Position("l21"), PieceFactory.createPiece("bishop", "yellow"));
-            this.setPos(new Position("l20"), PieceFactory.createPiece("bishop", "yellow"));
-            this.setPos(new Position("l19"), PieceFactory.createPiece("bishop", "yellow"));
-            this.setPos(new Position("k20"), PieceFactory.createPiece("king", "yellow"));
-            this.setPos(new Position("k18"), PieceFactory.createPiece("knight", "yellow"));
-            this.setPos(new Position("j19"), PieceFactory.createPiece("knight", "yellow"));
-            this.setPos(new Position("i18"), PieceFactory.createPiece("rook", "yellow"));
+            this.setPos(new Position("n18"), PieceFactory.createPiece("rook", "yellow"));
+            this.setPos(new Position("m19"), PieceFactory.createPiece("knight", "yellow"));
+            this.setPos(new Position("l20"), PieceFactory.createPiece("queen", "yellow"));
+            this.setPos(new Position("l18"), PieceFactory.createPiece("knight", "yellow"));
+            this.setPos(new Position("k21"), PieceFactory.createPiece("bishop", "yellow"));
+            this.setPos(new Position("k20"), PieceFactory.createPiece("bishop", "yellow"));
+            this.setPos(new Position("k19"), PieceFactory.createPiece("bishop", "yellow"));
+            this.setPos(new Position("j20"), PieceFactory.createPiece("king", "yellow"));
+            this.setPos(new Position("j18"), PieceFactory.createPiece("knight", "yellow"));
+            this.setPos(new Position("i19"), PieceFactory.createPiece("knight", "yellow"));
+            this.setPos(new Position("h18"), PieceFactory.createPiece("rook", "yellow"));
             piecePositions.get(Piece.Color.YELLOW).addAll(Stream.of(
                     "o18", "n19", "m20", "m18", "l21", "l20", "l19", "k20", "k18", "j19", "i18").map(Position::new).toList());
 
@@ -341,7 +336,8 @@ public class Board {
     // Nh6 is a white knight at position h6
     // pc7 is a black pawn at position c7
     public Board(List<String> pieces, int boardDim) {
-        boardDiameter = 2*boardDim - 1;
+        this.boardDim = boardDim;
+        this.boardDiameter = 2*boardDim - 1;
 
         board = new Piece[boardDiameter][boardDiameter];
 
@@ -418,15 +414,27 @@ public class Board {
         StringBuilder string = new StringBuilder();
         int xScale = 6;
 
-        string.append("   a     b     c     d     e     f     g     h     i     j     k\n");
+        // print coordinates at top of board
+        for (int c = 0; c < boardDiameter; c++) {
+            if (c == 0) string.repeat(" ", xScale/2);
+            else string.repeat(" ", xScale-1);
 
-        for (int y = 21; y >= 0; y--) {
-            for (int x = 0; x < 11*xScale; x++) {
+            string.append((char) ('a' + c));
+
+            if (c == boardDiameter - 1) string.repeat(" ", xScale/2);
+        }
+        string.append('\n');
+
+        // main loop
+        for (int y = boardDiameter*2 - 1; y >= 0; y--) { // go in reverse so that white is at bottom of board
+            for (int x = 0; x < boardDiameter * xScale; x++) {
                 int xBoard = x/xScale;
-                float yBoard = ((float) (y - Math.abs(xBoard - centerFile)))/2;
+                float yBoard = ((float) (y - Math.abs(xBoard - (boardDim-1))))/2; // if this isn't a float,
+                                                                                  // there ends up being half-cells
+                                                                                  // at the bottom of the board for some reason
 
                 // if yBoard is off the bounds of the board, print blank
-                if (yBoard < 0 || yBoard >= 11 - Math.abs(xBoard - centerFile)) {
+                if (yBoard < 0 || yBoard >= boardDiameter - Math.abs(xBoard - (boardDim-1))) {
                     string.append(' ');
                     continue;
                 }
@@ -434,13 +442,13 @@ public class Board {
                 // NOTE THAT THE BELOW ONLY WORKS FOR xScale == 6
                 // get the coordinate within each 2x6 size hexagon cell. how y % 2 corresponds to the bottom/top
                 // of the cell alternates with each cell going horizontally, hence why both y % 2 and xBoard % 2
-                // are involved in the calculation.
+                // are involved in the calculation. the parity also depends on if boardDim is odd or even.
                 int xCell = x % xScale;
-                boolean isBottomOfCell = (y % 2 == 1) ^ (xBoard % 2 == 1);
+                boolean isBottomOfCell = ((y % 2 == 1) ^ (xBoard % 2 == 1)) ^ (boardDim % 2 == 1);
 
                 // for x coordinates in the cell that aren't the left/right walls, print an underscore or overline
                 // to indicate the tops/bottoms of cells
-                if (xCell == 1 || xCell == 2 || xCell == 4 || xCell == 5) {
+                if (xCell != 0 && xCell != xScale/2) {
                     if (isBottomOfCell) string.append('_');
                     else string.append('‾');
                     continue;
@@ -452,49 +460,55 @@ public class Board {
                 if (xCell == 0) {
                     if (isBottomOfCell) string.append('\\');
                     else string.append('/');
-                    continue;
+                } else {
+                    // else xCell = xScale/2, i.e. the middle of the cell
+
+                    Piece piece = board[xBoard][(int) yBoard];
+
+                    if (piece == null) {
+                        string.append(' ');
+                        continue;
+                    }
+
+                    char charToAppend = piece.getChar();
+                    string.append(charToAppend);
                 }
-
-                Piece piece = board[xBoard][(int) yBoard];
-
-                if (piece == null) {
-                    string.append(' ');
-                    continue;
-                }
-
-                char charToAppend = piece.getChar();
-                charToAppend = piece.color == Piece.Color.WHITE ? Character.toUpperCase(charToAppend) : charToAppend;
-                string.append(charToAppend);
             }
 
             string.append('\n');
         }
 
-        // go back through the string and add in the rightmost walls
-        //
-        // (the first for loop does the \ wall on the rightmost cell in the top 5 rows,
-        // the second for loop does the / wall on the rightmost cell in the bottom 5 rows,
-        // and the final for loop does alternating \ and / to make the two rightmost walls
-        // of the middle 6 rows of hexagons. the offset calculations are somewhat bespoke
-        // and are the result of experimentation)
-        for (int y = 1; y < 6; y++) {
-            int x = 6*6 + (y-1)*8 - 1;
-            string.insert(y*11*6 + x, '\\');
+        // go back through and add the rightmost wall to each row of cells
+        // first loop does the top boardDim-1 rows (which all end in \), second loop does alternating \ and /
+        // on the middle 2*boardDim rows and the third loop does the bottom boardDim-1 rows (which all end in /)
+
+        // the row length is boardDiameter*xScale+2 to account for the extra \ added to previous lines as well
+        // as the \n newline character
+        int rowLen = boardDiameter*xScale+2;
+
+        for (int y = 1; y < boardDim; y++) {
+            int x = (boardDim + y-1) * xScale;
+            string.insert(y * rowLen + x, '\\');
         }
-        for (int y = 23; y > 18; y--) {
-            int x = 4*6 - (y-17)*5 + 1;
-            string.insert(y*11*6 + x, '/');
+
+        for (int y = boardDim; y < boardDim*3; y++) {
+            int yRelative = y - boardDim;
+            int x = boardDiameter * xScale;
+            string.insert(y * rowLen + x, yRelative % 2 == 0 ? '\\' : '/');
         }
-        for (int y = 0; y < 12; y++) {
-            string.insert(6*11+3 + (6*11+1)*6 + y*(6*11+2), y % 2 == 1 ? '/' : '\\');
+
+        for (int y = boardDim*3; y < boardDiameter*2+1; y++) {
+            int yRelative = y - boardDim*3;
+            int x = (boardDiameter - yRelative-1) * xScale;
+            string.insert(y * rowLen + x, '/');
         }
 
         return string.toString();
     }
 
     public boolean isInBounds(Position pos) {
-        boolean isFileInBounds = pos.file >= 0 && pos.file < 11;
-        boolean isRankInBounds = pos.rank >= 0 && pos.rank < 11 - Math.abs(pos.file - centerFile);
+        boolean isFileInBounds = pos.file >= 0 && pos.file < boardDiameter;
+        boolean isRankInBounds = pos.rank >= 0 && pos.rank < boardDiameter - Math.abs(pos.file - (boardDim-1));
         return isFileInBounds && isRankInBounds;
     }
 
