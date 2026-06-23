@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="print initial game board for 3 player and 6 player">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="added extra rooks to fix 3 and 6 player starting positions having kings in check">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/piece/Pawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Pawn.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +79,7 @@
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\lib" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.ChecksAndCheckmateTest and 2 more">
     <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="other.Debug" />
       <module name="HexChess" />
@@ -129,9 +128,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.Debug" />
-        <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
         <item itemvalue="Application.TerminalGUI" />
       </list>
     </recent_temporary>
@@ -144,14 +143,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779682179881</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Refactored king logic">
-      <option name="closed" value="true" />
-      <created>1779762335852</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1779762335852</updated>
     </task>
     <task id="LOCAL-00004" summary="Minor refactors">
       <option name="closed" value="true" />
@@ -537,7 +528,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782192244754</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="added extra rooks to fix 3 and 6 player starting positions having kings in check">
+      <option name="closed" value="true" />
+      <created>1782194703061</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1782194703063</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -553,7 +552,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="finished writing draw test" />
     <MESSAGE value="Added printout for when player is in check" />
     <MESSAGE value="arranged the tiles correctly" />
     <MESSAGE value="add .idea file" />
@@ -578,7 +576,8 @@
     <MESSAGE value="created constructors for 3 and 6 player games" />
     <MESSAGE value="fixed the toString method and allowed it to work with any xScale and boardDim" />
     <MESSAGE value="print initial game board for 3 player and 6 player" />
-    <option name="LAST_COMMIT_MESSAGE" value="print initial game board for 3 player and 6 player" />
+    <MESSAGE value="added extra rooks to fix 3 and 6 player starting positions having kings in check" />
+    <option name="LAST_COMMIT_MESSAGE" value="added extra rooks to fix 3 and 6 player starting positions having kings in check" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
