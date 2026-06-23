@@ -144,6 +144,8 @@ public class Board {
             this.setPos(new Position("e1"), PieceFactory.createPiece("knight", "white"));
             this.setPos(new Position("f1"), PieceFactory.createPiece("queen", "white"));
             this.setPos(new Position("f3"), PieceFactory.createPiece("knight", "white"));
+            this.setPos(new Position("e2"), PieceFactory.createPiece("rook", "white"));
+            this.setPos(new Position("i2"), PieceFactory.createPiece("rook", "white"));
             this.setPos(new Position("g1"), PieceFactory.createPiece("bishop", "white"));
             this.setPos(new Position("g2"), PieceFactory.createPiece("bishop", "white"));
             this.setPos(new Position("g3"), PieceFactory.createPiece("bishop", "white"));
@@ -158,6 +160,8 @@ public class Board {
             this.setPos(new Position("c9"), PieceFactory.createPiece("knight", "red"));
             this.setPos(new Position("b8"), PieceFactory.createPiece("queen", "red"));
             this.setPos(new Position("d8"), PieceFactory.createPiece("knight", "red"));
+            this.setPos(new Position("b5"), PieceFactory.createPiece("rook", "red"));
+            this.setPos(new Position("d9"), PieceFactory.createPiece("rook", "red"));
             this.setPos(new Position("a7"), PieceFactory.createPiece("bishop", "red"));
             this.setPos(new Position("b7"), PieceFactory.createPiece("bishop", "red"));
             this.setPos(new Position("c7"), PieceFactory.createPiece("bishop", "red"));
@@ -172,6 +176,8 @@ public class Board {
             this.setPos(new Position("m5"), PieceFactory.createPiece("knight", "blue"));
             this.setPos(new Position("m6"), PieceFactory.createPiece("queen", "blue"));
             this.setPos(new Position("k6"), PieceFactory.createPiece("knight", "blue"));
+            this.setPos(new Position("j9"), PieceFactory.createPiece("rook", "blue"));
+            this.setPos(new Position("l5"), PieceFactory.createPiece("rook", "blue"));
             this.setPos(new Position("m7"), PieceFactory.createPiece("bishop", "blue"));
             this.setPos(new Position("l7"), PieceFactory.createPiece("bishop", "blue"));
             this.setPos(new Position("k7"), PieceFactory.createPiece("bishop", "blue"));
@@ -216,6 +222,8 @@ public class Board {
             this.setPos(new Position("i1"), PieceFactory.createPiece("knight", "white"));
             this.setPos(new Position("j1"), PieceFactory.createPiece("queen", "white"));
             this.setPos(new Position("j3"), PieceFactory.createPiece("knight", "white"));
+            this.setPos(new Position("i2"), PieceFactory.createPiece("rook", "white"));
+            this.setPos(new Position("m2"), PieceFactory.createPiece("rook", "white"));
             this.setPos(new Position("k1"), PieceFactory.createPiece("bishop", "white"));
             this.setPos(new Position("k2"), PieceFactory.createPiece("bishop", "white"));
             this.setPos(new Position("k3"), PieceFactory.createPiece("bishop", "white"));
@@ -237,6 +245,8 @@ public class Board {
             this.setPos(new Position("a3"), PieceFactory.createPiece("knight", "green"));
             this.setPos(new Position("a2"), PieceFactory.createPiece("queen", "green"));
             this.setPos(new Position("c4"), PieceFactory.createPiece("knight", "green"));
+            this.setPos(new Position("b4"), PieceFactory.createPiece("rook", "green"));
+            this.setPos(new Position("d2"), PieceFactory.createPiece("rook", "green"));
             this.setPos(new Position("a1"), PieceFactory.createPiece("bishop", "green"));
             this.setPos(new Position("b2"), PieceFactory.createPiece("bishop", "green"));
             this.setPos(new Position("c3"), PieceFactory.createPiece("bishop", "green"));
@@ -258,6 +268,8 @@ public class Board {
             this.setPos(new Position("c13"), PieceFactory.createPiece("knight", "red"));
             this.setPos(new Position("b12"), PieceFactory.createPiece("queen", "red"));
             this.setPos(new Position("d12"), PieceFactory.createPiece("knight", "red"));
+            this.setPos(new Position("b9"), PieceFactory.createPiece("rook", "red"));
+            this.setPos(new Position("d13"), PieceFactory.createPiece("rook", "red"));
             this.setPos(new Position("a11"), PieceFactory.createPiece("bishop", "red"));
             this.setPos(new Position("b11"), PieceFactory.createPiece("bishop", "red"));
             this.setPos(new Position("c11"), PieceFactory.createPiece("bishop", "red"));
@@ -279,6 +291,8 @@ public class Board {
             this.setPos(new Position("m19"), PieceFactory.createPiece("knight", "yellow"));
             this.setPos(new Position("l20"), PieceFactory.createPiece("queen", "yellow"));
             this.setPos(new Position("l18"), PieceFactory.createPiece("knight", "yellow"));
+            this.setPos(new Position("i18"), PieceFactory.createPiece("rook", "yellow"));
+            this.setPos(new Position("m18"), PieceFactory.createPiece("rook", "yellow"));
             this.setPos(new Position("k21"), PieceFactory.createPiece("bishop", "yellow"));
             this.setPos(new Position("k20"), PieceFactory.createPiece("bishop", "yellow"));
             this.setPos(new Position("k19"), PieceFactory.createPiece("bishop", "yellow"));
@@ -300,6 +314,8 @@ public class Board {
             this.setPos(new Position("u9"), PieceFactory.createPiece("knight", "blue"));
             this.setPos(new Position("u10"), PieceFactory.createPiece("queen", "blue"));
             this.setPos(new Position("s10"), PieceFactory.createPiece("knight", "blue"));
+            this.setPos(new Position("r13"), PieceFactory.createPiece("rook", "blue"));
+            this.setPos(new Position("t9"), PieceFactory.createPiece("rook", "blue"));
             this.setPos(new Position("u11"), PieceFactory.createPiece("bishop", "blue"));
             this.setPos(new Position("t11"), PieceFactory.createPiece("bishop", "blue"));
             this.setPos(new Position("s11"), PieceFactory.createPiece("bishop", "blue"));
@@ -321,6 +337,8 @@ public class Board {
             this.setPos(new Position("s1"), PieceFactory.createPiece("knight", "purple"));
             this.setPos(new Position("t1"), PieceFactory.createPiece("queen", "purple"));
             this.setPos(new Position("r3"), PieceFactory.createPiece("knight", "purple"));
+            this.setPos(new Position("r2"), PieceFactory.createPiece("rook", "purple"));
+            this.setPos(new Position("t4"), PieceFactory.createPiece("rook", "purple"));
             this.setPos(new Position("u1"), PieceFactory.createPiece("bishop", "purple"));
             this.setPos(new Position("t2"), PieceFactory.createPiece("bishop", "purple"));
             this.setPos(new Position("s3"), PieceFactory.createPiece("bishop", "purple"));

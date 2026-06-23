@@ -215,7 +215,7 @@ public class Game {
 
     public void restartGame() {
         currentPlayer = Piece.Color.WHITE;
-        board = new Board();
+        board = new Board(mode);
         movesSinceCaptureOrPawnMovement = 0;
         while (!previousBoards.isEmpty()) {
             previousBoards.remove();
