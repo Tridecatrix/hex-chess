@@ -62,14 +62,21 @@ public class Pawn extends Piece {
         return result;
     }
 
-    public boolean isStartingPosition(Position pos, Piece.Color color, int boarddim) {
-        if (color == Color.WHITE && boarddim == 6) {
-            return pos.rank == (4 - Position.distanceFromCenter(pos, 2*boarddim-1));
-        } else if (color == Color.BLACK && boarddim == 6) {
-            return pos.rank == 6;
+    public boolean isStartingPosition(Position pos, Piece.Color color, Board board) {
+        return distanceFromFinalRank(pos, color, board) == board.getBoardDiameter() - 4;
+    }
+
+    // distance from the final rank for this pawn
+    public int distanceFromFinalRank(Position fromPos, Piece.Color color, Board board) {
+        BiFunction<Position, Integer, Position> forwardDir = getDirections(color).get(Direction.FORWARD);
+
+        int result = 0;
+        while (board.isInBounds(fromPos)) {
+            fromPos = forwardDir.apply(fromPos, board.getBoardDiameter());
+            result++;
         }
-        // TODO
-        return false;
+
+        return result;
     }
 
     @Override
@@ -108,7 +115,7 @@ public class Pawn extends Piece {
 
         // Pawn logic: if the piece is on a starting position, it can jump two steps forward
         // Note this is true also if the pawn moves into the starting position of another pawn
-        if (isStartingPosition(fromPos, pawn.color, board.getBoardDim())) {
+        if (isStartingPosition(fromPos, pawn.color, board)) {
             if (board.isInBounds(doubleForwardPos) && board.getPos(forwardPos) == null && board.getPos(doubleForwardPos) == null)
                 moves.add(new Move(fromPos, doubleForwardPos));
         }
@@ -119,13 +126,8 @@ public class Pawn extends Piece {
         // TODO: fix for 3 and 6 player
         if (board.passantablePawn != null) {
             Position leftPassantPosition, rightPassantPosition;
-            if (this.color == Color.WHITE) {
-                leftPassantPosition = directions.get(Direction.PASSANT_LEFT).apply(fromPos, board.getBoardDiameter());
-                rightPassantPosition = directions.get(Direction.PASSANT_RIGHT).apply(fromPos, board.getBoardDiameter());
-            } else {
-                leftPassantPosition = Position.oneStepLeftAndForward(fromPos, board.getBoardDiameter());
-                rightPassantPosition = Position.oneStepRightAndForward(fromPos, board.getBoardDiameter());
-            }
+            leftPassantPosition = directions.get(Direction.PASSANT_LEFT).apply(fromPos, board.getBoardDiameter());
+            rightPassantPosition = directions.get(Direction.PASSANT_RIGHT).apply(fromPos, board.getBoardDiameter());
 
             if (board.passantablePawn.equals(leftPassantPosition)) {
                 moves.add(new Move(fromPos, leftCapturePos));

@@ -22,6 +22,7 @@ public class Game {
 
     Board board;
     Mode mode;
+    List<Piece.Color> activeColors;
 
     // for checking repetition
     Deque<Board> previousBoards = new ArrayDeque<>();
@@ -53,17 +54,30 @@ public class Game {
     public Game() {
         board = new Board();
         currentGameState = GameResult.CONTINUING;
+        activeColors = List.of(Piece.Color.WHITE, Piece.Color.BLACK);
     }
 
     public Game(Mode mode) {
+        this.mode = mode;
         board = new Board(mode);
         currentGameState = GameResult.CONTINUING;
+        activeColors = switch(mode) {
+            case TWO_PLAYER -> List.of(Piece.Color.WHITE, Piece.Color.BLACK);
+            case THREE_PLAYER -> List.of(Piece.Color.WHITE, Piece.Color.RED, Piece.Color.BLUE);
+            case SIX_PLAYER -> List.of(Piece.Color.WHITE, Piece.Color.GREEN, Piece.Color.RED,
+                                       Piece.Color.YELLOW, Piece.Color.BLUE, Piece.Color.PURPLE);
+        };
     }
 
     // testing constructors
     public Game(List<String> pieces) {
-        board = new Board(pieces);
+        this(pieces, 6, List.of(Piece.Color.WHITE, Piece.Color.BLACK));
+    }
+
+    public Game(List<String> pieces, int boarddim, List<Piece.Color> activeColors) {
+        board = new Board(pieces, boarddim);
         currentGameState = GameResult.CONTINUING;
+        this.activeColors = activeColors;
     }
 
     public int getMoveNumberForCurrentSide() {
@@ -121,12 +135,12 @@ public class Game {
             if (pawnMovementOrCapture) movesSinceCaptureOrPawnMovement = 0;
             else movesSinceCaptureOrPawnMovement++;
 
-            // update move number
-            moveNumberForCurrentSide += currentPlayer == Piece.Color.WHITE ? 0 : 1;
+            // update move number; only update once the last player in the list of active players has had its turn
+            moveNumberForCurrentSide += currentPlayer == activeColors.getLast() ? 1 : 0;
 
-            // update current player
+            // update current player (cycle to next player)
             Piece.Color previousPlayer = currentPlayer;
-            currentPlayer = currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
+            currentPlayer = activeColors.get((activeColors.indexOf(previousPlayer) + 1) % activeColors.size());
 
             // update timer
             if (gameTimer != null) {
@@ -215,7 +229,7 @@ public class Game {
 
     public void restartGame() {
         currentPlayer = Piece.Color.WHITE;
-        board = new Board(mode);
+        this.board = new Board(this.mode);
         movesSinceCaptureOrPawnMovement = 0;
         while (!previousBoards.isEmpty()) {
             previousBoards.remove();

@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="added extra rooks to fix 3 and 6 player starting positions having kings in check">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="started working on adjusting pawn logic for 6 player mode">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/piece/Pawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Pawn.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -39,37 +41,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Application.Debug.executor&quot;: &quot;Run&quot;,
-    &quot;Application.HelloFX.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TerminalGUI.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Viewer.executor&quot;: &quot;Run&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
-    &quot;JUnit.ChecksAndCheckmate.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ChecksAndCheckmateTest and 1 more.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ChecksAndCheckmateTest and 2 more.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ChecksAndCheckmateTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DrawTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.LegalMovesTest.executor&quot;: &quot;Debug&quot;,
-    &quot;JUnit.LegalMovesTest.pawnStartingBlack.executor&quot;: &quot;Debug&quot;,
-    &quot;JUnit.MyFirstJUnitJupiterTests.executor&quot;: &quot;Run&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;3player&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/adnan/Desktop/Side-projects/HexChess/src/gui/assets&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.43970895&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Application.Debug.executor": "Run",
+    "Application.HelloFX.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.TerminalGUI.executor": "Run",
+    "Application.Viewer.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "true",
+    "JUnit.ChecksAndCheckmate.executor": "Run",
+    "JUnit.ChecksAndCheckmateTest and 1 more.executor": "Run",
+    "JUnit.ChecksAndCheckmateTest and 2 more.executor": "Run",
+    "JUnit.ChecksAndCheckmateTest.executor": "Run",
+    "JUnit.DrawTest.executor": "Run",
+    "JUnit.LegalMovesTest.executor": "Debug",
+    "JUnit.LegalMovesTest.pawnStartingBlack.executor": "Debug",
+    "JUnit.MyFirstJUnitJupiterTests.executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "3player",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/adnan/Desktop/Side-projects/HexChess/src/gui/assets",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.43970895",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\src\gui\assets" />
@@ -79,7 +81,7 @@
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\lib" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.ChecksAndCheckmateTest and 2 more">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="other.Debug" />
       <module name="HexChess" />
@@ -128,8 +130,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
         <item itemvalue="Application.Debug" />
         <item itemvalue="Application.TerminalGUI" />
       </list>
@@ -143,14 +145,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779682179881</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Minor refactors">
-      <option name="closed" value="true" />
-      <created>1779762378795</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1779762378795</updated>
     </task>
     <task id="LOCAL-00005" summary="sync (revamped terminal GUI and started work on javaFX board visuals)">
       <option name="closed" value="true" />
@@ -536,7 +530,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782194703063</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="started working on adjusting pawn logic for 6 player mode">
+      <option name="closed" value="true" />
+      <created>1782196555355</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1782196555355</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -552,7 +554,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Added printout for when player is in check" />
     <MESSAGE value="arranged the tiles correctly" />
     <MESSAGE value="add .idea file" />
     <MESSAGE value="deleted extra run config" />
@@ -577,7 +578,8 @@
     <MESSAGE value="fixed the toString method and allowed it to work with any xScale and boardDim" />
     <MESSAGE value="print initial game board for 3 player and 6 player" />
     <MESSAGE value="added extra rooks to fix 3 and 6 player starting positions having kings in check" />
-    <option name="LAST_COMMIT_MESSAGE" value="added extra rooks to fix 3 and 6 player starting positions having kings in check" />
+    <MESSAGE value="started working on adjusting pawn logic for 6 player mode" />
+    <option name="LAST_COMMIT_MESSAGE" value="started working on adjusting pawn logic for 6 player mode" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -601,6 +603,11 @@
           <url>file://$PROJECT_DIR$/src/model/GameTimer.java</url>
           <line>95</line>
           <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/model/Game.java</url>
+          <line>230</line>
+          <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

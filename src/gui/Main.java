@@ -522,7 +522,7 @@ public class Main extends Application {
 
     // After an update to the underlying game, update the rendered game info
     private void renderGameInfo() {
-        currentPlayer.setText("Current player: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "White" : "Black"));
+        currentPlayer.setText("Current player: " + game.getCurrentPlayer().toString().toLowerCase());
         moveNumber.setText((String.format("%-28s", "Move number: " + game.getMoveNumberForCurrentSide())));
 
         switch (game.getCurrentGameState()) {
