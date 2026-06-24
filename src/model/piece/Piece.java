@@ -27,17 +27,33 @@ public abstract class Piece {
         BLUE, // for 3 player
         YELLOW, // for 6 player
         GREEN, // for 6 player
-        PURPLE // for 6 player
+        PURPLE; // for 6 player
+
+        public String toStringCapitalised() {
+            return this.toString().substring(0, 1).toUpperCase() + this.toString().substring(1).toLowerCase();
+        }
+
+        public String getPieceColorAsHex() {
+            return switch (this) {
+                case WHITE -> "0x000000"; // white pieces have their outlines in black
+                case BLACK -> "0x000000";
+                case RED -> "0xFF0000";
+                case BLUE -> "0x0000FF";
+                case YELLOW -> "0xCCCC00";
+                case GREEN -> "0x00CC00";
+                case PURPLE -> "0xB056FF";
+            };
+        }
     }
 
     public static List<Color> allColors = List.of(
-            Piece.Color.WHITE,
-            Piece.Color.BLACK,
-            Piece.Color.RED,
-            Piece.Color.BLUE,
-            Piece.Color.YELLOW,
-            Piece.Color.GREEN,
-            Piece.Color.PURPLE
+            Color.WHITE,
+            Color.BLACK,
+            Color.RED,
+            Color.BLUE,
+            Color.YELLOW,
+            Color.GREEN,
+            Color.PURPLE
     );
 
     public Color color;

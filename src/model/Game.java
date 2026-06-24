@@ -22,6 +22,10 @@ public class Game {
     Mode mode;
     List<Piece.Color> activeColors;
 
+    public List<Piece.Color> getActiveColors() {
+        return activeColors;
+    }
+
     // for checking repetition
     Deque<Board> previousBoards = new ArrayDeque<>();
     static final int repetitionCheckMaxWindow = 20;

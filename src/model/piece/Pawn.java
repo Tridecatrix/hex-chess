@@ -86,6 +86,8 @@ public class Pawn extends Piece {
         Position leftCapturePos = Pawn.getDirections(playerColor).get(Direction.CAPTURE_LEFT).apply(move.fromPos, board.getBoardDiameter());
         Position rightCapturePos = Pawn.getDirections(playerColor).get(Direction.CAPTURE_RIGHT).apply(move.fromPos, board.getBoardDiameter());
         for (Piece.Color passantableColor : board.getPassantablePawns().keySet()) {
+            if (passantableColor == playerColor) continue;
+
             Position passantablePawn = board.getPassantablePawns().get(passantableColor);
 
             // the passanted pawn had to have made 2 steps in the last turn; get the position
@@ -162,6 +164,8 @@ public class Pawn extends Piece {
         // If the enemy pawn has moved 2 spaces in the immediate last turn, and you are attacking the space that it
         // would have moved to if it moved 1 space, then you can still capture it
         for (Color passantableColor : board.getPassantablePawns().keySet()) {
+            if (passantableColor == pawn.color) continue;
+
             Position passantablePawn = board.getPassantablePawns().get(passantableColor);
 
             Position singleStepForPassantablePawn = Pawn.getDirections(passantableColor).get(Direction.BACKWARD)
