@@ -6,7 +6,6 @@ import model.Move;
 import model.piece.Piece;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -248,16 +247,16 @@ class LegalMovesTest {
     @Test
     void enPassant() {
         Board board = new Board(List.of("Pd3", "pe5"));
-        board.applyMoveWithLegalityCheck(new Move("d3", "d5"), Piece.Color.WHITE);
+        board.applyMove(new Move("d3", "d5"), Piece.Color.WHITE);
         assertMovesEqual(Set.of("e4", "d4"), board, "e5");
     }
 
     @Test
     void enPassantNotPossibleAfter2Moves() {
         Board board = new Board(List.of("Pd3", "pe5", "pf7", "Pg4"));
-        board.applyMoveWithLegalityCheck(new Move("d3", "d5"), Piece.Color.WHITE);
-        board.applyMoveWithLegalityCheck(new Move("f7", "f6"), Piece.Color.BLACK);
-        board.applyMoveWithLegalityCheck(new Move("g4", "g5"), Piece.Color.WHITE);
+        board.applyMove(new Move("d3", "d5"), Piece.Color.WHITE);
+        board.applyMove(new Move("f7", "f6"), Piece.Color.BLACK);
+        board.applyMove(new Move("g4", "g5"), Piece.Color.WHITE);
         assertMovesEqual(Set.of("e4"), board, "e5");
     }
 }

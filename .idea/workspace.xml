@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="adjusted movement order to work with 3/6 player and adjusted pawn starting position logic">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="fixed en passant and pawn promotion logic for 3/6 player">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Move.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Move.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Pawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Pawn.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +78,7 @@
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\lib" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Application.TerminalGUI">
     <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="other.Debug" />
       <module name="HexChess" />
@@ -131,10 +127,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.TerminalGUI" />
         <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
         <item itemvalue="Application.Debug" />
-        <item itemvalue="Application.TerminalGUI" />
       </list>
     </recent_temporary>
   </component>
@@ -146,14 +142,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779682179881</updated>
-    </task>
-    <task id="LOCAL-00006" summary="installed junit 6 as dependency">
-      <option name="closed" value="true" />
-      <created>1780288501039</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1780288501039</updated>
     </task>
     <task id="LOCAL-00007" summary="began working on tests">
       <option name="closed" value="true" />
@@ -539,7 +527,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782265536078</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="fixed en passant and pawn promotion logic for 3/6 player">
+      <option name="closed" value="true" />
+      <created>1782271342118</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1782271342118</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -555,7 +551,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="add .idea file" />
     <MESSAGE value="deleted extra run config" />
     <MESSAGE value="minor refactors" />
     <MESSAGE value="working towards gluing together frontend and backend logic" />
@@ -580,7 +575,8 @@
     <MESSAGE value="added extra rooks to fix 3 and 6 player starting positions having kings in check" />
     <MESSAGE value="started working on adjusting pawn logic for 6 player mode" />
     <MESSAGE value="adjusted movement order to work with 3/6 player and adjusted pawn starting position logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="adjusted movement order to work with 3/6 player and adjusted pawn starting position logic" />
+    <MESSAGE value="fixed en passant and pawn promotion logic for 3/6 player" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed en passant and pawn promotion logic for 3/6 player" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

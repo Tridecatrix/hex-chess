@@ -6,7 +6,6 @@ import model.piece.Piece;
 
 import java.lang.Math;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 /**
@@ -581,7 +580,7 @@ public class Board {
         Set<Move> moves = new HashSet<>();
         for (Move move : potentialMoves) {
             Board boardcopy = new Board(this);
-            boardcopy.applyMove(move);
+            boardcopy.applyMoveMinimal(move);
 
             // apply the move tentatively and check if the king is in check afterwards, then revert the move
             if (!boardcopy.isKingInCheck(piece.color)) {
@@ -594,7 +593,7 @@ public class Board {
 
     // helper for getLegalMoves, used to check that the king is not in check after a move is done
     // need to skip the legality check for this to avoid infinite recursion in getLegalMoves
-    Piece applyMove(Move move) {
+    void applyMoveMinimal(Move move) {
         Piece movedPiece = this.getPos(move.fromPos);
 
         this.setPos(move.fromPos, null);
@@ -612,10 +611,9 @@ public class Board {
             piecePositions.get(capturedPiece.color).remove(move.toPos);
         }
 
-        return capturedPiece;
     }
 
-    public MoveResult applyMoveWithLegalityCheck(Move move, Piece.Color playerColor) {
+    public MoveResult applyMove(Move move, Piece.Color playerColor) {
         if (!isLegalMove(move, playerColor))
             return new MoveResult(false);
 

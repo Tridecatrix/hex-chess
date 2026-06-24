@@ -88,6 +88,8 @@ public class Pawn extends Piece {
         for (Piece.Color passantableColor : board.getPassantablePawns().keySet()) {
             Position passantablePawn = board.getPassantablePawns().get(passantableColor);
 
+            // the passanted pawn had to have made 2 steps in the last turn; get the position
+            // it would be at if it only made one step (and hence could be captured)
             Position singleStepForPassantablePawn = Pawn.getDirections(passantableColor).get(Direction.BACKWARD)
                     .apply(passantablePawn, board.getBoardDiameter());
             

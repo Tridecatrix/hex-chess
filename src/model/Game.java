@@ -1,7 +1,5 @@
 package model;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
 import model.piece.Pawn;
 import model.piece.Piece;
 
@@ -103,32 +101,13 @@ public class Game {
         return board.getLegalMovesFromPos(pos);
     }
 
-    public enum MoveStatus {
-        ILLEGAL_OPPONENT_PIECE,
-        ILLEGAL_NO_PIECE,
-        ILLEGAL_INVALID_PIECE_MOVEMENT,
-        LEGAL;
-    }
-
-    public MoveStatus isLegalMove(Move move) {
-        if (board.getPos(move.fromPos) == null) {
-            return MoveStatus.ILLEGAL_NO_PIECE;
-        } else if (board.getPos(move.fromPos).color != currentPlayer) {
-            return MoveStatus.ILLEGAL_OPPONENT_PIECE;
-        } else if (!board.isLegalMove(move, currentPlayer)) {
-            return MoveStatus.ILLEGAL_INVALID_PIECE_MOVEMENT;
-        } else {
-            return MoveStatus.LEGAL;
-        }
-    }
-
     public MoveResult applyMove(Move move) {
         boolean pawnMovementOrCapture = board.getPos(move.fromPos) instanceof Pawn || board.getPos(move.toPos) != null;
 
         // before applying the move, save the board state
         Board boardStateCopy = new Board(this.board);
 
-        MoveResult result = board.applyMoveWithLegalityCheck(move, currentPlayer);
+        MoveResult result = board.applyMove(move, currentPlayer);
 
         if (result.validMove) {
             // update time since last pawn movement/capture
