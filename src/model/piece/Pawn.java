@@ -23,36 +23,38 @@ public class Pawn extends Piece {
             Position::oneStepLeftAndForward
     );
 
-    enum Direction {
+    public enum Direction {
         FORWARD,
         CAPTURE_LEFT,
         CAPTURE_RIGHT,
-        PASSANT_LEFT,
-        PASSANT_RIGHT
+        BACK_LEFT,
+        BACK_RIGHT,
+        BACKWARD
     }
 
     // helper for getLegalMoves; returns a map of functions corresponding to each direction relevant to the pawn
-    Map<Direction, BiFunction<Position, Integer, Position>> getDirections(Color color) {
+    public static Map<Direction, BiFunction<Position, Integer, Position>> getDirections(Color color) {
         int forwardDirIndex = switch(color) {
             case WHITE -> 0;
-            case YELLOW -> 1;
+            case GREEN -> 1;
             case RED -> 2;
-            case BLACK, GREEN -> 3;
+            case BLACK, YELLOW -> 3;
             case BLUE -> 4;
             case PURPLE -> 5;
         };
 
         Map<Direction, BiFunction<Position, Integer, Position>> result = new HashMap<>();
 
-        for (int offset = -2; offset <= 2; offset++) {
+        for (int offset = -2; offset <= 3; offset++) {
             int index = (forwardDirIndex + offset + 6) % 6;
 
             Direction dir = switch(offset) {
-                case -2 -> Direction.PASSANT_LEFT;
+                case -2 -> Direction.BACK_LEFT;
                 case -1 -> Direction.CAPTURE_LEFT;
                 case 0 -> Direction.FORWARD;
                 case 1 -> Direction.CAPTURE_RIGHT;
-                case 2 -> Direction.PASSANT_RIGHT;
+                case 2 -> Direction.BACK_RIGHT;
+                case 3 -> Direction.BACKWARD;
                 default -> throw new IllegalStateException("Unexpected value: " + offset);
             };
 
@@ -62,15 +64,49 @@ public class Pawn extends Piece {
         return result;
     }
 
-    public boolean isStartingPosition(Position pos, Piece.Color color, Board board) {
-        return distanceFromFinalRank(pos, color, board) == board.getBoardDiameter() - 4;
+    public static boolean isStartingPosition(Position pos, Piece.Color color, Board board) {
+        return distanceFromFinalRank(pos, color, board) == board.getBoardDiameter() - 5;
+    }
+
+    public static boolean isInPromotionPosition(Position pos, Piece.Color color, Board board) {
+        // Note: two options here
+        // - distanceFromFinalRank == 0                               (must be final rank)
+        // - distanceFromFinalRank == distanceFromStartingPos - 6     (same distance as 2 player)
+        //                         == boardDiameter - 5 - 6
+        return distanceFromFinalRank(pos, color, board) == 0;
+    }
+
+    public static boolean isStartingPawnMove(Move move,  Piece.Color playerColor, Board board) {
+        Position forwardPos = Pawn.getDirections(playerColor).get(Direction.FORWARD).apply(move.fromPos, board.getBoardDiameter());
+        Position doubleForwardPos = Pawn.getDirections(playerColor).get(Direction.FORWARD).apply(forwardPos, board.getBoardDiameter());
+        return move.toPos.equals(doubleForwardPos);
+    }
+
+    public static Position getPassantedPawnIfExists(Move move, Piece.Color playerColor, Board board) {
+        Position leftCapturePos = Pawn.getDirections(playerColor).get(Direction.CAPTURE_LEFT).apply(move.fromPos, board.getBoardDiameter());
+        Position rightCapturePos = Pawn.getDirections(playerColor).get(Direction.CAPTURE_RIGHT).apply(move.fromPos, board.getBoardDiameter());
+        for (Piece.Color passantableColor : board.getPassantablePawns().keySet()) {
+            Position passantablePawn = board.getPassantablePawns().get(passantableColor);
+
+            Position singleStepForPassantablePawn = Pawn.getDirections(passantableColor).get(Direction.BACKWARD)
+                    .apply(passantablePawn, board.getBoardDiameter());
+            
+            if (leftCapturePos.equals(singleStepForPassantablePawn)) {
+                return passantablePawn;
+            } else if (rightCapturePos.equals(singleStepForPassantablePawn)) {
+                return passantablePawn;
+            }
+        }
+
+        return null;
     }
 
     // distance from the final rank for this pawn
-    public int distanceFromFinalRank(Position fromPos, Piece.Color color, Board board) {
+    public static int distanceFromFinalRank(Position fromPos, Piece.Color color, Board board) {
         BiFunction<Position, Integer, Position> forwardDir = getDirections(color).get(Direction.FORWARD);
 
         int result = 0;
+        fromPos = forwardDir.apply(fromPos, board.getBoardDiameter());
         while (board.isInBounds(fromPos)) {
             fromPos = forwardDir.apply(fromPos, board.getBoardDiameter());
             result++;
@@ -123,15 +159,15 @@ public class Pawn extends Piece {
         // Pawn logic: en passant
         // If the enemy pawn has moved 2 spaces in the immediate last turn, and you are attacking the space that it
         // would have moved to if it moved 1 space, then you can still capture it
-        // TODO: fix for 3 and 6 player
-        if (board.passantablePawn != null) {
-            Position leftPassantPosition, rightPassantPosition;
-            leftPassantPosition = directions.get(Direction.PASSANT_LEFT).apply(fromPos, board.getBoardDiameter());
-            rightPassantPosition = directions.get(Direction.PASSANT_RIGHT).apply(fromPos, board.getBoardDiameter());
+        for (Color passantableColor : board.getPassantablePawns().keySet()) {
+            Position passantablePawn = board.getPassantablePawns().get(passantableColor);
 
-            if (board.passantablePawn.equals(leftPassantPosition)) {
+            Position singleStepForPassantablePawn = Pawn.getDirections(passantableColor).get(Direction.BACKWARD)
+                                                        .apply(passantablePawn, board.getBoardDiameter());
+
+            if (leftCapturePos.equals(singleStepForPassantablePawn)) {
                 moves.add(new Move(fromPos, leftCapturePos));
-            } else if (board.passantablePawn.equals(rightPassantPosition)) {
+            } else if (rightCapturePos.equals(singleStepForPassantablePawn)) {
                 moves.add(new Move(fromPos, rightCapturePos));
             }
         }

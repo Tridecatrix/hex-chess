@@ -1,10 +1,13 @@
 package model;
 
+import model.piece.Pawn;
+
 import java.util.Objects;
 
 public class Move {
     public Position fromPos;
     public Position toPos;
+
 
     public Move(Position fromPos, Position toPos) {
         this.fromPos = fromPos;

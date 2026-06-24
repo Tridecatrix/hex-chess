@@ -15,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import model.*;
+import model.piece.Pawn;
 import model.piece.Piece;
 
 import java.util.List;
@@ -603,32 +604,17 @@ public class Main extends Application {
         int d = game.getBoard().getBoardDiameter();
 
         Position promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos;
-        if (playerColor == Piece.Color.WHITE) {
-            promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndBackward(promoteablePawn, d);
-            promotionKnightPos = Position.oneStepRightAndBackward(promoteablePawn, d);
-            promotionRookPos = Position.oneStepBackward(promoteablePawn, d);
+        promotionQueenPos = promoteablePawn;
+        promotionBishopPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACK_LEFT).apply(promoteablePawn, d);
+        promotionKnightPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACK_RIGHT).apply(promoteablePawn, d);
+        promotionRookPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACKWARD).apply(promoteablePawn, d);
 
-            if (!promotionBishopPos.isInBounds(d)) {
-                promotionBishopPos = Position.oneStepRightAndForward(promoteablePawn, d);
-            }
-            if (!promotionKnightPos.isInBounds(d)) {
-                promotionKnightPos = Position.oneStepLeftAndForward(promoteablePawn, d);
-            }
-        } else {
-            promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndForward(promoteablePawn, d);
-            promotionKnightPos = Position.oneStepRightAndForward(promoteablePawn, d);
-            promotionRookPos = Position.oneStepForward(promoteablePawn, d);
-
-            if (!promotionBishopPos.isInBounds(d)) {
-                promotionBishopPos = Position.oneStepRightAndBackward(promoteablePawn, d);
-            }
-            if (!promotionKnightPos.isInBounds(d)) {
-                promotionKnightPos = Position.oneStepLeftAndBackward(promoteablePawn, d);
-            }
+        if (!promotionBishopPos.isInBounds(d)) {
+            promotionBishopPos = Pawn.getDirections(playerColor).get(Pawn.Direction.CAPTURE_RIGHT).apply(promoteablePawn, d);
         }
-
+        if (!promotionKnightPos.isInBounds(d)) {
+            promotionKnightPos = Pawn.getDirections(playerColor).get(Pawn.Direction.CAPTURE_LEFT).apply(promoteablePawn, d);
+        }
 
         PieceView promotionQueen = new PieceView(PieceType.QUEEN, playerColor, promotionQueenPos);
         PieceView promotionBishop = new PieceView(PieceType.BISHOP, playerColor, promotionBishopPos);
@@ -662,30 +648,16 @@ public class Main extends Application {
         int d = this.game.getBoard().getBoardDiameter();
 
         Position promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos;
-        if (playerColor == Piece.Color.WHITE) {
-            promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndBackward(promoteablePawn, d);
-            promotionKnightPos = Position.oneStepRightAndBackward(promoteablePawn, d);
-            promotionRookPos = Position.oneStepBackward(promoteablePawn, d);
+        promotionQueenPos = promoteablePawn;
+        promotionBishopPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACK_LEFT).apply(promoteablePawn, d);
+        promotionKnightPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACK_RIGHT).apply(promoteablePawn, d);
+        promotionRookPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACKWARD).apply(promoteablePawn, d);
 
-            if (!promotionBishopPos.isInBounds(d)) {
-                promotionBishopPos = Position.oneStepRightAndForward(promoteablePawn, d);
-            }
-            if (!promotionKnightPos.isInBounds(d)) {
-                promotionKnightPos = Position.oneStepLeftAndForward(promoteablePawn, d);
-            }
-        } else {
-            promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndForward(promoteablePawn, d);
-            promotionKnightPos = Position.oneStepRightAndForward(promoteablePawn, d);
-            promotionRookPos = Position.oneStepForward(promoteablePawn, d);
-
-            if (!promotionBishopPos.isInBounds(d)) {
-                promotionBishopPos = Position.oneStepRightAndBackward(promoteablePawn, d);
-            }
-            if (!promotionKnightPos.isInBounds(d)) {
-                promotionKnightPos = Position.oneStepLeftAndBackward(promoteablePawn, d);
-            }
+        if (!promotionBishopPos.isInBounds(d)) {
+            promotionBishopPos = Pawn.getDirections(playerColor).get(Pawn.Direction.CAPTURE_RIGHT).apply(promoteablePawn, d);
+        }
+        if (!promotionKnightPos.isInBounds(d)) {
+            promotionKnightPos = Pawn.getDirections(playerColor).get(Pawn.Direction.CAPTURE_LEFT).apply(promoteablePawn, d);
         }
 
         for (Position pos : List.of(promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos)) {

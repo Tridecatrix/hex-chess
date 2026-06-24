@@ -6,6 +6,7 @@ import model.piece.Piece;
 
 import java.lang.Math;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 /**
@@ -23,7 +24,11 @@ public class Board {
     Map<Piece.Color, Position> kingPositions = new HashMap<>();
 
     // for tracking en passant
-    public Position passantablePawn;
+    public Map<Piece.Color, Position> passantablePawns = new HashMap<>();
+
+    public Map<Piece.Color, Position> getPassantablePawns() {
+        return passantablePawns;
+    }
 
     public int getBoardDim() {
         return boardDim;
@@ -154,7 +159,7 @@ public class Board {
             this.setPos(new Position("i1"), PieceFactory.createPiece("knight", "white"));
             this.setPos(new Position("j1"), PieceFactory.createPiece("rook", "white"));
             piecePositions.get(Piece.Color.WHITE).addAll(Stream.of(
-                    "d1", "e1", "f1", "f3", "g1", "g2", "g3", "h1", "h3", "i1", "j1").map(Position::new).toList());
+                    "d1", "e1", "f1", "f3", "e2", "i2", "g1", "g2", "g3", "h1", "h3", "i1", "j1").map(Position::new).toList());
 
             this.setPos(new Position("d10"), PieceFactory.createPiece("rook", "red"));
             this.setPos(new Position("c9"), PieceFactory.createPiece("knight", "red"));
@@ -170,7 +175,7 @@ public class Board {
             this.setPos(new Position("a5"), PieceFactory.createPiece("knight", "red"));
             this.setPos(new Position("a4"), PieceFactory.createPiece("rook", "red"));
             piecePositions.get(Piece.Color.RED).addAll(Stream.of(
-                    "d10", "c9", "b8", "d8", "a7", "b7", "c7", "a6", "c6", "a5", "a4").map(Position::new).toList());
+                    "d10", "c9", "b8", "d8", "b5", "d9", "a7", "b7", "c7", "a6", "c6", "a5", "a4").map(Position::new).toList());
 
             this.setPos(new Position("m4"), PieceFactory.createPiece("rook", "blue"));
             this.setPos(new Position("m5"), PieceFactory.createPiece("knight", "blue"));
@@ -186,7 +191,7 @@ public class Board {
             this.setPos(new Position("k9"), PieceFactory.createPiece("knight", "blue"));
             this.setPos(new Position("j10"), PieceFactory.createPiece("rook", "blue"));
             piecePositions.get(Piece.Color.BLUE).addAll(Stream.of(
-                    "m4", "m5", "m6", "k6", "m7", "l7", "k7", "l8", "j8", "k9", "j10").map(Position::new).toList());
+                    "m4", "m5", "m6", "k6", "j9", "l5", "m7", "l7", "k7", "l8", "j8", "k9", "j10").map(Position::new).toList());
 
             kingPositions.put(Piece.Color.WHITE, new Position("h1"));
             kingPositions.put(Piece.Color.RED, new Position("a6"));
@@ -232,7 +237,7 @@ public class Board {
             this.setPos(new Position("m1"), PieceFactory.createPiece("knight", "white"));
             this.setPos(new Position("n1"), PieceFactory.createPiece("rook", "white"));
             piecePositions.get(Piece.Color.WHITE).addAll(Stream.of(
-                    "h1", "i1", "j1", "j3", "k1", "k2", "k3", "l1", "m3", "n1", "o1").map(Position::new).toList());
+                    "h1", "i1", "j1", "j3", "i2", "m2", "k1", "k2", "k3", "l1", "l3", "m1", "n1").map(Position::new).toList());
 
             for (String pos : List.of("a5", "b5", "c5", "d5", "e5", "e4", "e3", "e2", "e1")) {
                 Piece pawn = PieceFactory.createPiece("pawn", "green");
@@ -255,7 +260,7 @@ public class Board {
             this.setPos(new Position("c1"), PieceFactory.createPiece("knight", "green"));
             this.setPos(new Position("d1"), PieceFactory.createPiece("rook", "green"));
             piecePositions.get(Piece.Color.GREEN).addAll(Stream.of(
-                    "a4", "a3", "a2", "c4", "a1", "b2", "c3", "b1", "d3", "c1", "d1").map(Position::new).toList());
+                    "a4", "a3", "a2", "c4", "b4", "d2", "a1", "b2", "c3", "b1", "d3", "c1", "d1").map(Position::new).toList());
 
             for (String pos : List.of("e15", "e14", "e13", "e12", "e11", "d10", "c9", "b8", "a7")) {
                 Piece pawn = PieceFactory.createPiece("pawn", "red");
@@ -278,7 +283,7 @@ public class Board {
             this.setPos(new Position("a9"), PieceFactory.createPiece("knight", "red"));
             this.setPos(new Position("a8"), PieceFactory.createPiece("rook", "red"));
             piecePositions.get(Piece.Color.RED).addAll(Stream.of(
-                    "d14", "c13", "b12", "d12", "a11", "b11", "c11", "a10", "c10", "a9", "a8").map(Position::new).toList());
+                    "d14", "c13", "b12", "d12", "b9", "d13", "a11", "b11", "c11", "a10", "c10", "a9", "a8").map(Position::new).toList());
 
             for (String pos : List.of("g17", "h17", "i17", "j17", "k17", "l17", "m17", "n17", "o17")) {
                 Piece pawn = PieceFactory.createPiece("pawn", "yellow");
@@ -301,7 +306,7 @@ public class Board {
             this.setPos(new Position("i19"), PieceFactory.createPiece("knight", "yellow"));
             this.setPos(new Position("h18"), PieceFactory.createPiece("rook", "yellow"));
             piecePositions.get(Piece.Color.YELLOW).addAll(Stream.of(
-                    "o18", "n19", "m20", "m18", "l21", "l20", "l19", "k20", "k18", "j19", "i18").map(Position::new).toList());
+                    "n18", "m19", "l20", "l18", "i18", "m18", "k21", "k20", "k19", "j20", "j18", "i19", "h18").map(Position::new).toList());
 
             for (String pos : List.of("u7", "t8", "s9", "r10", "q11", "q12", "q13", "q14", "q15")) {
                 Piece pawn = PieceFactory.createPiece("pawn", "blue");
@@ -324,7 +329,7 @@ public class Board {
             this.setPos(new Position("s13"), PieceFactory.createPiece("knight", "blue"));
             this.setPos(new Position("r14"), PieceFactory.createPiece("rook", "blue"));
             piecePositions.get(Piece.Color.BLUE).addAll(Stream.of(
-                    "u8", "u9", "u10", "s10", "u11", "t11", "s11", "t12", "r12", "s13", "r14").map(Position::new).toList());
+                    "u8", "u9", "u10", "s10", "r13", "t9", "u11", "t11", "s11", "t12", "r12", "s13", "r14").map(Position::new).toList());
 
             for (String pos : List.of("q1", "q2", "q3", "q4", "q5", "r5", "s5", "t5", "u5")) {
                 Piece pawn = PieceFactory.createPiece("pawn", "purple");
@@ -347,7 +352,14 @@ public class Board {
             this.setPos(new Position("u3"), PieceFactory.createPiece("knight", "purple"));
             this.setPos(new Position("u4"), PieceFactory.createPiece("rook", "purple"));
             piecePositions.get(Piece.Color.PURPLE).addAll(Stream.of(
-                    "r1", "s1", "r3", "t1", "u1", "t2", "s3", "u2", "s4", "u3", "u4").map(Position::new).toList());
+                    "r1", "s1", "t1", "r3", "r2", "t4", "u1", "t2", "s3", "u2", "s4", "u3", "u4").map(Position::new).toList());
+
+            kingPositions.put(Piece.Color.WHITE, new Position("l1"));
+            kingPositions.put(Piece.Color.GREEN, new Position("b1"));
+            kingPositions.put(Piece.Color.RED, new Position("a10"));
+            kingPositions.put(Piece.Color.YELLOW, new Position("j20"));
+            kingPositions.put(Piece.Color.BLUE, new Position("t12"));
+            kingPositions.put(Piece.Color.PURPLE, new Position("u2"));
         }
     }
 
@@ -620,13 +632,10 @@ public class Board {
         this.setPos(move.toPos, movedPiece);
         piecePositions.get(movedPiece.color).add(move.toPos);
 
-        Position promotedPawn = null;
-
         // Promotion check; the promotion action is handled in handlePromotion
+        Position promotedPawn = null;
         if (movedPiece instanceof Pawn) {
-            if (movedPiece.color == Piece.Color.WHITE
-                    && move.toPos.rank == boardDiameter - Position.distanceFromCenter(move.toPos, boardDiameter) - 1
-               || movedPiece.color == Piece.Color.BLACK && move.toPos.rank == 0) {
+            if (Pawn.isInPromotionPosition(move.toPos, movedPiece.color, this)) {
                 promotedPawn = move.toPos;
             }
         }
@@ -636,24 +645,21 @@ public class Board {
             kingPositions.put(movedPiece.color, move.toPos);
         }
 
-        // If this is a pawn capturing another pawn with en passant, remove the passantable pawn
-        int forwardStep = movedPiece.color == Piece.Color.WHITE ? 1 : -1;
-        if (passantablePawn != null && movedPiece instanceof Pawn
-                && move.fromPos.file != move.toPos.file // this is a capturing move
-                && move.toPos.file == passantablePawn.file && move.toPos.rank == passantablePawn.rank + forwardStep) {
-                // the passantable pawn is in the capture position
-            Piece passantedPawn = this.getPos(passantablePawn);
-
-            this.capturedPieces.get(movedPiece.color).add(passantedPawn);
-            this.piecePositions.get(passantedPawn.color).remove(passantablePawn);
-            this.setPos(passantablePawn, null);
+        // If this is a pawn move that delivers en passant, handle capturing the passanted pawn
+        if (movedPiece instanceof Pawn &&
+                Pawn.getPassantedPawnIfExists(move, playerColor, this) != null) {
+            Position passantedPawnPos = Pawn.getPassantedPawnIfExists(move, playerColor, this);
+            Piece passantedPawn = this.getPos(passantedPawnPos);
+            piecePositions.get(passantedPawn.color).remove(passantedPawnPos);
+            capturedPieces.get(playerColor).addFirst(passantedPawn);
+            this.setPos(passantedPawnPos, null);
         }
 
-        // If this is a pawn making its starting move, update passantable pawn; else, clear passantable pawn
-        if (movedPiece instanceof Pawn && Math.abs(move.toPos.rank - move.fromPos.rank) == 2) {
-            passantablePawn = move.toPos;
+        // If this is a pawn making its starting move, update passantable pawn; else, clear this color's passantable pawn
+        if (movedPiece instanceof Pawn && Pawn.isStartingPawnMove(move, playerColor, this)) {
+            passantablePawns.put(playerColor, move.toPos);
         } else {
-            passantablePawn = null;
+            passantablePawns.remove(playerColor);
         }
 
 
