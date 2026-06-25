@@ -41,6 +41,7 @@ public class Pawn extends Piece {
             case BLACK, YELLOW -> 3;
             case BLUE -> 4;
             case PURPLE -> 5;
+            case DISABLED -> 0;
         };
 
         Map<Direction, BiFunction<Position, Integer, Position>> result = new HashMap<>();

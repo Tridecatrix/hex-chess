@@ -27,7 +27,8 @@ public abstract class Piece {
         BLUE, // for 3 player
         YELLOW, // for 6 player
         GREEN, // for 6 player
-        PURPLE; // for 6 player
+        PURPLE, // for 6 player
+        DISABLED; // for eliminated players in multiplayer mode
 
         public String toStringCapitalised() {
             return this.toString().substring(0, 1).toUpperCase() + this.toString().substring(1).toLowerCase();
@@ -42,6 +43,7 @@ public abstract class Piece {
                 case YELLOW -> "0xCCCC00";
                 case GREEN -> "0x00CC00";
                 case PURPLE -> "0xB056FF";
+                case DISABLED -> "0x888888";
             };
         }
     }

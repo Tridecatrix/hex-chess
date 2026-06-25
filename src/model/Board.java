@@ -500,7 +500,7 @@ public class Board {
 
                     Piece piece = board[xBoard][(int) yBoard];
 
-                    if (piece == null) {
+                    if (piece == null || piece.color == Piece.Color.DISABLED) {
                         string.append(' ');
                         continue;
                     }
@@ -607,7 +607,7 @@ public class Board {
             kingPositions.put(movedPiece.color, move.toPos);
         }
 
-        if (capturedPiece != null) {
+        if (capturedPiece != null && capturedPiece.color != Piece.Color.DISABLED) {
             piecePositions.get(capturedPiece.color).remove(move.toPos);
         }
 
@@ -622,7 +622,7 @@ public class Board {
         piecePositions.get(movedPiece.color).remove(move.fromPos); // note: need to do this because the piece's position changed
 
         Piece capturedPiece = this.getPos(move.toPos);
-        if (capturedPiece != null) {
+        if (capturedPiece != null && capturedPiece.color != Piece.Color.DISABLED) {
             piecePositions.get(capturedPiece.color).remove(move.toPos);
             capturedPieces.get(playerColor).add(capturedPiece);
             capturedPieces.get(playerColor).sort(Piece::compareTo);
@@ -759,7 +759,7 @@ public class Board {
      */
     public void eliminatePlayer(Piece.Color player) {
         for (Position pos : piecePositions.get(player)) {
-            this.setPos(pos, null);
+            this.getPos(pos).color = Piece.Color.DISABLED;
         }
         piecePositions.remove(player);
         kingPositions.remove(player);

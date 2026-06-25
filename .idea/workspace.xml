@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="adjusted the piece capture text to support different colors">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="refactored game end logic to continue until only 1 player remains">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/TerminalGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/TerminalGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/PieceView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/PieceView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/piece/Pawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Pawn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/piece/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Piece.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,14 +146,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779682179881</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Fixed up all tests and piece movement logic; passing all tests!">
-      <option name="closed" value="true" />
-      <created>1780988600347</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1780988600347</updated>
     </task>
     <task id="LOCAL-00010" summary="Minor change (refactored logic for Knight + fixed commas in terminal GUI moves list)">
       <option name="closed" value="true" />
@@ -539,7 +531,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782280746265</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="refactored game end logic to continue until only 1 player remains">
+      <option name="closed" value="true" />
+      <created>1782359756094</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1782359756095</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -555,7 +555,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="working towards gluing together frontend and backend logic" />
     <MESSAGE value="Finished frontend v0.9 (only missing promotion logic)" />
     <MESSAGE value="Fixed incorrect logic for moving king into check" />
     <MESSAGE value="begun working on promotion logic" />
@@ -580,7 +579,8 @@
     <MESSAGE value="fixed en passant and pawn promotion logic for 3/6 player" />
     <MESSAGE value="small refactor (apply move methods)" />
     <MESSAGE value="adjusted the piece capture text to support different colors" />
-    <option name="LAST_COMMIT_MESSAGE" value="adjusted the piece capture text to support different colors" />
+    <MESSAGE value="refactored game end logic to continue until only 1 player remains" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactored game end logic to continue until only 1 player remains" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

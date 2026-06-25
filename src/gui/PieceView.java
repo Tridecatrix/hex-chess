@@ -19,6 +19,7 @@ public class PieceView extends ImageView {
             case YELLOW -> 'y';
             case GREEN -> 'g';
             case PURPLE -> 'p';
+            case DISABLED -> 'm';
         };
         this("gui/assets/Chess_" + type.getChar() + colorChar + "t45.png", xBoard, yBoard);
         this.type = type;
