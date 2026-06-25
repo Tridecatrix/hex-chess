@@ -7,8 +7,7 @@ import java.util.*;
 
 public class Game {
     // points for each player, tracked across several matches
-    double whitePoints = 0;
-    double blackPoints = 0;
+    Map<Piece.Color, Double> points = new HashMap<>();
     int movesSinceCaptureOrPawnMovement = 0;
     int moveNumberForCurrentSide = 1;
 
@@ -20,10 +19,15 @@ public class Game {
 
     Board board;
     Mode mode;
-    List<Piece.Color> activeColors;
+    List<Piece.Color> activeColors = new ArrayList<>();
+    Map<Piece.Color, PlayerStatus> eliminatedColors = new HashMap<>();
 
     public List<Piece.Color> getActiveColors() {
         return activeColors;
+    }
+
+    public Map<Piece.Color, PlayerStatus> getEliminatedColors() {
+        return eliminatedColors;
     }
 
     // for checking repetition
@@ -45,30 +49,42 @@ public class Game {
     }
 
     public enum GameResult {
+        CONTINUING,
+        DRAW,
+        FINISHED
+    }
+
+    public enum PlayerStatus {
+        ACTIVE,
         STALEMATE,
         CHECKMATE,
-        DRAW,
-        RESIGNED,
         FLAGGED,
-        CONTINUING
+        RESIGNED
     }
 
     public Game() {
         board = new Board();
+        mode = Mode.TWO_PLAYER;
         currentGameState = GameResult.CONTINUING;
-        activeColors = List.of(Piece.Color.WHITE, Piece.Color.BLACK);
+        activeColors.addAll(List.of(Piece.Color.WHITE, Piece.Color.BLACK));
+        for (Piece.Color color : activeColors) {
+            points.put(color, 0.0);
+        }
     }
 
     public Game(Mode mode) {
         this.mode = mode;
         board = new Board(mode);
         currentGameState = GameResult.CONTINUING;
-        activeColors = switch(mode) {
+        activeColors.addAll(switch(mode) {
             case TWO_PLAYER -> List.of(Piece.Color.WHITE, Piece.Color.BLACK);
             case THREE_PLAYER -> List.of(Piece.Color.WHITE, Piece.Color.RED, Piece.Color.BLUE);
             case SIX_PLAYER -> List.of(Piece.Color.WHITE, Piece.Color.GREEN, Piece.Color.RED,
                                        Piece.Color.YELLOW, Piece.Color.BLUE, Piece.Color.PURPLE);
-        };
+        });
+        for (Piece.Color color : activeColors) {
+            points.put(color, 0.0);
+        }
     }
 
     // testing constructors
@@ -79,7 +95,15 @@ public class Game {
     public Game(List<String> pieces, int boarddim, List<Piece.Color> activeColors) {
         board = new Board(pieces, boarddim);
         currentGameState = GameResult.CONTINUING;
-        this.activeColors = activeColors;
+        this.activeColors.addAll(activeColors);
+        for (Piece.Color color : activeColors) {
+            points.put(color, 0.0);
+        }
+        switch (activeColors.size()) {
+            case 2 -> { mode = Mode.TWO_PLAYER; }
+            case 3 -> { mode = Mode.THREE_PLAYER; }
+            case 6 -> { mode = Mode.SIX_PLAYER; }
+        }
     }
 
     public int getMoveNumberForCurrentSide() {
@@ -92,7 +116,7 @@ public class Game {
 
         string.append("Current board:\n");
         string.append(board);
-        string.append("Current player: " + (currentPlayer.equals(Piece.Color.WHITE) ? "White" : "Black\n"));
+        string.append("Current player: " + (currentPlayer.toStringCapitalised()));
         //string.append("Points are white: " + whitePoints + " and Black: " + blackPoints);
         if (this.board.isKingInCheck(currentPlayer)) {
             string.append("You are in check!\n");
@@ -131,12 +155,9 @@ public class Game {
 
                 // detect loss due to flagging (running out of time)
                 if (gameTimer.isOutOfTime(previousPlayer)) {
-                    currentGameState = GameResult.FLAGGED;
-                    if (previousPlayer == Piece.Color.WHITE) {
-                        blackPoints += 1;
-                    } else if (previousPlayer == Piece.Color.BLACK) {
-                        whitePoints += 1;
-                    }
+                    activeColors.remove(previousPlayer);
+                    eliminatedColors.put(previousPlayer, PlayerStatus.FLAGGED);
+                    if (activeColors.size() != 1) board.eliminatePlayer(previousPlayer);
                 }
             }
 
@@ -154,35 +175,54 @@ public class Game {
         this.board.handlePromotion(promotetablePawn, promotionChoice);
     }
 
-    public GameResult checkIfGameEnd() {
-        double winPoints;
-        GameResult result;
+    // check for player elimination
+    public PlayerStatus checkIfCurrentPlayerEliminated() {
+        PlayerStatus result;
 
         if (board.isInCheckmate(currentPlayer)) {
-            winPoints = 1;
-            result = GameResult.CHECKMATE;
+            result = PlayerStatus.CHECKMATE;
         } else if (board.isInStalemate(currentPlayer)) {
-            winPoints = 0.75;
-            result = GameResult.STALEMATE;
-        } else if (this.checkIfForcedDraw()) {
-            winPoints = 0.5;
-            result = GameResult.DRAW;
+            result = PlayerStatus.STALEMATE;
         } else {
-            return GameResult.CONTINUING;
+            return PlayerStatus.ACTIVE;
+        }
+
+        // fall through means that the current player is eliminated
+        activeColors.remove(currentPlayer);
+        eliminatedColors.put(currentPlayer, result);
+        if (activeColors.size() != 1) board.eliminatePlayer(currentPlayer);
+        return result;
+    }
+
+    // check if game end
+    public GameResult checkIfGameEnd() {
+        GameResult result;
+        Piece.Color winningPlayer;
+
+        if (activeColors.size() == 1) {
+            result = GameResult.FINISHED;
+            winningPlayer = activeColors.getFirst();
+
+            // if timer enabled, stop the timing
+            if (this.gameTimer != null) {
+                this.gameTimer.stopTimer();
+            }
+
+            points.put(winningPlayer, points.get(winningPlayer)+1);
+
+            currentGameState = result;
+            return result;
+        } else if (checkIfForcedDraw()) {
+            result = GameResult.DRAW;
+            handleDraw();
+        } else {
+            result = GameResult.CONTINUING;
+            return result;
         }
 
         // if timer enabled, stop the timing
         if (this.gameTimer != null) {
             this.gameTimer.stopTimer();
-        }
-
-        // current player is white => white is checkmated => black wins
-        if (currentPlayer == Piece.Color.WHITE) {
-            blackPoints += winPoints;
-            whitePoints += 1 - winPoints;
-        } else if (currentPlayer == Piece.Color.BLACK) {
-            whitePoints += winPoints;
-            blackPoints += 1 - winPoints;
         }
 
         currentGameState = result;
@@ -194,25 +234,32 @@ public class Game {
             gameTimer.updateTimers(now, this.currentPlayer);
 
             // detect loss due to flagging (running out of time)
-            if (gameTimer.isOutOfTime(this.currentPlayer) && currentGameState != GameResult.FLAGGED) {
-                currentGameState = GameResult.FLAGGED;
-                if (currentPlayer == Piece.Color.WHITE) {
-                    blackPoints += 1;
-                } else if (currentPlayer == Piece.Color.BLACK) {
-                    whitePoints += 1;
-                }
+            if (gameTimer.isOutOfTime(this.currentPlayer)) {
+                activeColors.remove(currentPlayer);
+                eliminatedColors.put(currentPlayer, PlayerStatus.FLAGGED);
+                if (activeColors.size() != 1) board.eliminatePlayer(currentPlayer);
             }
         }
     }
 
     public void resetPoints() {
-        whitePoints = 0;
-        blackPoints = 0;
+        for (Piece.Color color : points.keySet()) {
+            points.put(color, 0.0);
+        }
     }
 
     public void restartGame() {
         currentPlayer = Piece.Color.WHITE;
+        activeColors = new ArrayList<>();
+        activeColors.addAll(switch(mode) {
+            case TWO_PLAYER -> List.of(Piece.Color.WHITE, Piece.Color.BLACK);
+            case THREE_PLAYER -> List.of(Piece.Color.WHITE, Piece.Color.RED, Piece.Color.BLUE);
+            case SIX_PLAYER -> List.of(Piece.Color.WHITE, Piece.Color.GREEN, Piece.Color.RED,
+                    Piece.Color.YELLOW, Piece.Color.BLUE, Piece.Color.PURPLE);
+        });
+        eliminatedColors = new HashMap<>();
         this.board = new Board(this.mode);
+
         movesSinceCaptureOrPawnMovement = 0;
         while (!previousBoards.isEmpty()) {
             previousBoards.remove();
@@ -225,18 +272,16 @@ public class Game {
     }
 
     public void resign() {
-        if (currentPlayer == Piece.Color.WHITE) {
-            blackPoints += 1;
-        } else {
-            whitePoints += 1;
-        }
+        int index = activeColors.indexOf(currentPlayer);
+        boolean lastPlayerInSequence = index == activeColors.size()-1;
+        activeColors.remove(currentPlayer);
+        eliminatedColors.put(currentPlayer, PlayerStatus.RESIGNED);
+        if (activeColors.size() != 1) board.eliminatePlayer(currentPlayer);
 
-        currentGameState = GameResult.RESIGNED;
-        if (this.gameTimer != null) {
-            this.gameTimer.stopTimer();
-        }
+        // change player to next player
+        currentPlayer = activeColors.get(lastPlayerInSequence ? 0 : index);
 
-        // note: restartGame has to be called seperately
+        // note: checkIfGameEnd and restartGame have to be called seperately
     }
 
     // forced draws include:
@@ -255,38 +300,6 @@ public class Game {
         }
 
         if (repTimes >= 4) return true;
-//
-//        // insufficient material: build sets of all types of pieces for white and black
-//        Multiset<PieceType> whitePieceTypes = HashMultiset.create();
-//        Multiset<PieceType> blackPieceTypes = HashMultiset.create();
-//        for (Position pos : this.board.get) {
-//            whitePieceTypes.add(this.board.getPos(pos).getPieceType());
-//        }
-//        for (Position pos : this.board.blackPiecePositions) {
-//            blackPieceTypes.add(this.board.getPos(pos).getPieceType());
-//        }
-//
-//        // insufficient material: king vs king
-//        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
-//                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))) {
-//            return true;
-//        }
-//
-//        // insufficient material: king & knight vs king
-//        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.KNIGHT)))
-//                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
-//           || whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
-//                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.KNIGHT)))) {
-//            return true;
-//        }
-//
-//        // insufficient material: king and bishop v king
-//        if (whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.BISHOP)))
-//                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
-//                || whitePieceTypes.equals(HashMultiset.create(List.of(PieceType.KING)))
-//                && blackPieceTypes.equals(HashMultiset.create(List.of(PieceType.KING, PieceType.BISHOP)))) {
-//            return true;
-//        }
 
         return false;
     }
@@ -298,12 +311,7 @@ public class Game {
     // - draw by 50 moves without captures or pawn movements
     public boolean claimDraw() {
         if (movesSinceCaptureOrPawnMovement >= 2*50) {
-            this.currentGameState = GameResult.DRAW;
-            whitePoints += 0.5;
-            blackPoints += 0.5;
-            if (this.gameTimer != null) {
-                this.gameTimer.stopTimer();
-            }
+            handleDraw();
             return true;
         }
 
@@ -314,21 +322,25 @@ public class Game {
         }
 
         if (repTimes >= 2) {
-            this.currentGameState = GameResult.DRAW;
-            whitePoints += 0.5;
-            blackPoints += 0.5;
+            handleDraw();
             return true;
         }
 
         return false;
     }
 
-    public double getWhitePoints() {
-        return whitePoints;
+    public void handleDraw() {
+        this.currentGameState = GameResult.DRAW;
+        for (Piece.Color remainingColor : activeColors) {
+            points.put(remainingColor, points.get(remainingColor)+0.5);
+        }
+        if (this.gameTimer != null) {
+            this.gameTimer.stopTimer();
+        }
     }
 
-    public double getBlackPoints() {
-        return blackPoints;
+    public Map<Piece.Color, Double> getPoints() {
+        return points;
     }
 
     public Board getBoard() {
@@ -347,8 +359,13 @@ public class Game {
     public boolean undo() {
         if (previousBoards.isEmpty()) { return false; }
 
+        moveNumberForCurrentSide += currentPlayer == activeColors.getLast() ? 1 : 0;
+
         this.board = previousBoards.removeLast();
-        this.currentPlayer = this.currentPlayer == Piece.Color.WHITE ? Piece.Color.BLACK : Piece.Color.WHITE;
+
+        // update current player (cycle to next player)
+        Piece.Color previousPlayer = currentPlayer;
+        currentPlayer = activeColors.get((activeColors.indexOf(previousPlayer) - 1 + activeColors.size()) % activeColors.size());
 
         // update move number
         moveNumberForCurrentSide -= currentPlayer == Piece.Color.WHITE ? 0 : 1;
@@ -362,7 +379,8 @@ public class Game {
     }
 
     public void restartScores() {
-        whitePoints = 0;
-        blackPoints = 0;
+        for (Piece.Color color : points.keySet()) {
+            points.put(color, 0.0);
+        }
     }
 }

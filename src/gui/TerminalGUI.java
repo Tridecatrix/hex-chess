@@ -104,12 +104,8 @@ public class TerminalGUI {
                 switch (gameResult) {
                     case CONTINUING -> {
                     }
-                    case CHECKMATE -> {
-                        System.out.println("Checkmate; " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "white" : "black") + " wins!");
-                        break gameLoop;
-                    }
-                    case STALEMATE -> {
-                        System.out.println("Stalemate; " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "white" : "black") + " partially wins!");
+                    case FINISHED -> {
+                        System.out.println("Game finished; " + game.getActiveColors().get(0).toStringCapitalised() + " wins");
                         break gameLoop;
                     }
                     case DRAW -> {

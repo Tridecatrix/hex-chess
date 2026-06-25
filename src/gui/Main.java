@@ -53,7 +53,9 @@ public class Main extends Application {
     Text currentPlayer;
     Text gameStatus;
     Map<Piece.Color, TextFlow> capturedPiecesTexts = new HashMap<>();
+    Text gameWinsHeader;
     Text gameWins;
+    VBox eliminatedPlayersStatus;
     Text timerSettingsDesc;
     Text timeRemainingWhite;
     Text timeRemainingBlack;
@@ -387,16 +389,18 @@ public class Main extends Application {
             timeRemainingBlack.setFont(Font.font(16));
         }
 
-//        VBox wins = new VBox(5);
-//        Text heading1 = new Text("Games won by:");
-//        Text heading2 = new Text("White   Black");
-//        gameWins = new Text();
-//        heading1.setFont(Font.font(22));
-//        heading2.setFont(Font.font(16));
-//        gameWins.setFont(Font.font(16));
-//        wins.getChildren().addAll(heading1, heading2, gameWins);
-//
-//        sidebar.getChildren().add(wins);
+        VBox wins = new VBox(5);
+        Text heading1 = new Text("Games won by:");
+        gameWinsHeader = new Text();
+        gameWins = new Text();
+        heading1.setFont(Font.font(22));
+        gameWinsHeader.setFont(Font.font(16));
+        gameWins.setFont(Font.font(16));
+        wins.getChildren().addAll(heading1, gameWinsHeader, gameWins);
+        sidebar.getChildren().add(wins);
+
+        eliminatedPlayersStatus = new VBox(5);
+        sidebar.getChildren().add(eliminatedPlayersStatus);
 
         renderGameInfo();
 
@@ -424,6 +428,7 @@ public class Main extends Application {
         resign.setOnAction(e -> {
             if (game.getCurrentGameState() == Game.GameResult.CONTINUING) {
                 game.resign();
+                renderPieces();
                 renderGameInfo();
             }
         });
@@ -531,24 +536,17 @@ public class Main extends Application {
         currentPlayer.setText("Current player: " + game.getCurrentPlayer().toStringCapitalised());
         moveNumber.setText((String.format("%-28s", "Move number: " + game.getMoveNumberForCurrentSide())));
 
+        game.checkIfGameEnd();
+
         switch (game.getCurrentGameState()) {
-            case STALEMATE -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by stalemate!");
-            }
-            case CHECKMATE -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by checkmate!");
-            }
             case DRAW -> {
                 gameStatus.setText("Game status: draw");
             }
-            case RESIGNED -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by resignation!");
-            }
-            case FLAGGED -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by timeout!");
-            }
             case CONTINUING -> {
                 gameStatus.setText("Game status: continuing");
+            }
+            case FINISHED -> {
+                gameStatus.setText("Game status: " + game.getActiveColors().get(0).toStringCapitalised() + " wins!");
             }
         }
 
@@ -580,7 +578,34 @@ public class Main extends Application {
             capturedPieceText.getChildren().add(new Text(" "));
         }
 
-//        gameWins.setText(game.getWhitePoints() + "        " + game.getBlackPoints());
+        // render game wins
+        StringBuilder gameWinsHeaderStr = new StringBuilder();
+        StringBuilder gameWinsStr = new StringBuilder();
+        for (Piece.Color color : game.getPoints().keySet()) {
+            gameWinsHeaderStr.append(String.format("%-10.10s", color.toStringCapitalised()));
+            gameWinsStr.append(String.format("%-12.12s", game.getPoints().get(color)));
+        }
+        gameWinsHeader.setText(gameWinsHeaderStr.toString());
+        gameWins.setText(gameWinsStr.toString());
+
+        // render eliminated players
+        while (!eliminatedPlayersStatus.getChildren().isEmpty()) {
+            eliminatedPlayersStatus.getChildren().removeFirst();
+        }
+        Text eliminatedPlayersHeading = new Text("Eliminated players: ");
+        eliminatedPlayersHeading.setFont(Font.font(22));
+        eliminatedPlayersStatus.getChildren().add(eliminatedPlayersHeading);
+        if (game.getEliminatedColors().isEmpty()) {
+            Text noneText = new Text("None");
+            noneText.setFont(Font.font(16));
+            eliminatedPlayersStatus.getChildren().add(noneText);
+        }
+        for (Piece.Color eliminatedColor : game.getEliminatedColors().keySet()) {
+            Text eliminatedPlayerDesc = new Text(eliminatedColor.toStringCapitalised() + " // "
+                    + game.getEliminatedColors().get(eliminatedColor).toString().toLowerCase());
+            eliminatedPlayerDesc.setFont(Font.font(16));
+            eliminatedPlayersStatus.getChildren().add(eliminatedPlayerDesc);
+        }
 
         if (timerEnabled) {
             timeRemainingWhite.setText("White time remaining: " + game.getGameTimer().getTimeRemainingAsString(Piece.Color.WHITE));
@@ -727,10 +752,12 @@ public class Main extends Application {
             renderGameInfo();
 
             // highlight the king if it is in check after the move
-            if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
-                Position kingPos = game.getBoard().getKingPositions().get(game.getCurrentPlayer());
+            for (Piece.Color color : game.getActiveColors()) {
+                if (game.getBoard().isKingInCheck(color)) {
+                    Position kingPos = game.getBoard().getKingPositions().get(color);
 
-                boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+                    boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+                }
             }
         }
         else if (game.getBoard().getPos(clickedTilePos) != null && game.getBoard().getPos(clickedTilePos).color == game.getCurrentPlayer()) {
@@ -766,10 +793,12 @@ public class Main extends Application {
 
     public void clearHighlightingAndRehighlightCheck() {
         clearHighlightingAll();
-        if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
-            Position kingPos = game.getBoard().getKingPositions().get(game.getCurrentPlayer());
+        for (Piece.Color color : game.getActiveColors()) {
+            if (game.getBoard().isKingInCheck(color)) {
+                Position kingPos = game.getBoard().getKingPositions().get(color);
 
-            boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+                boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+            }
         }
     }
 

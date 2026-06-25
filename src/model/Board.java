@@ -754,6 +754,18 @@ public class Board {
         return isInStalemate(playerColor) && isKingInCheck(playerColor);
     }
 
+    /**
+     * Handles eliminating a player (setting their pieces to dead)
+     */
+    public void eliminatePlayer(Piece.Color player) {
+        for (Position pos : piecePositions.get(player)) {
+            this.setPos(pos, null);
+        }
+        piecePositions.remove(player);
+        kingPositions.remove(player);
+        passantablePawns.remove(player);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
