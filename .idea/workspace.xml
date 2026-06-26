@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="refactored game end logic to continue until only 1 player remains">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="added logic to disable a player's pieces if they lose">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/PieceView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/PieceView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Pawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Pawn.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Piece.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,14 +144,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779682179881</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Minor change (refactored logic for Knight + fixed commas in terminal GUI moves list)">
-      <option name="closed" value="true" />
-      <created>1780991301480</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1780991301480</updated>
     </task>
     <task id="LOCAL-00011" summary="Improved terminal GUI + fixed minor hashset bug with Set&lt;Move&gt;">
       <option name="closed" value="true" />
@@ -539,7 +529,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782359756095</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="added logic to disable a player's pieces if they lose">
+      <option name="closed" value="true" />
+      <created>1782384576804</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1782384576804</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -555,7 +553,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Finished frontend v0.9 (only missing promotion logic)" />
     <MESSAGE value="Fixed incorrect logic for moving king into check" />
     <MESSAGE value="begun working on promotion logic" />
     <MESSAGE value="promotion concept" />
@@ -580,7 +577,8 @@
     <MESSAGE value="small refactor (apply move methods)" />
     <MESSAGE value="adjusted the piece capture text to support different colors" />
     <MESSAGE value="refactored game end logic to continue until only 1 player remains" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored game end logic to continue until only 1 player remains" />
+    <MESSAGE value="added logic to disable a player's pieces if they lose" />
+    <option name="LAST_COMMIT_MESSAGE" value="added logic to disable a player's pieces if they lose" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

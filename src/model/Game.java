@@ -176,21 +176,21 @@ public class Game {
     }
 
     // check for player elimination
-    public PlayerStatus checkIfCurrentPlayerEliminated() {
+    public PlayerStatus checkIfPlayerEliminated(Piece.Color color) {
         PlayerStatus result;
 
-        if (board.isInCheckmate(currentPlayer)) {
+        if (board.isInCheckmate(color)) {
             result = PlayerStatus.CHECKMATE;
-        } else if (board.isInStalemate(currentPlayer)) {
+        } else if (board.isInStalemate(color)) {
             result = PlayerStatus.STALEMATE;
         } else {
             return PlayerStatus.ACTIVE;
         }
 
         // fall through means that the current player is eliminated
-        activeColors.remove(currentPlayer);
-        eliminatedColors.put(currentPlayer, result);
-        if (activeColors.size() != 1) board.eliminatePlayer(currentPlayer);
+        activeColors.remove(color);
+        eliminatedColors.put(color, result);
+        if (activeColors.size() != 1) board.eliminatePlayer(color);
         return result;
     }
 

@@ -16,10 +16,7 @@ import model.*;
 import model.piece.Pawn;
 import model.piece.Piece;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 import static java.lang.Thread.sleep;
@@ -536,6 +533,10 @@ public class Main extends Application {
         currentPlayer.setText("Current player: " + game.getCurrentPlayer().toStringCapitalised());
         moveNumber.setText((String.format("%-28s", "Move number: " + game.getMoveNumberForCurrentSide())));
 
+        List<Piece.Color> activeColors = new ArrayList<>(game.getActiveColors());
+        for (Piece.Color color : activeColors) {
+            game.checkIfPlayerEliminated(color);
+        }
         game.checkIfGameEnd();
 
         switch (game.getCurrentGameState()) {
@@ -745,7 +746,11 @@ public class Main extends Application {
                 return;
             }
 
-            // additional actions: check if game end
+            // additional actions: check if game end or if player eliminated
+            List<Piece.Color> activeColors = new ArrayList<>(game.getActiveColors());
+            for (Piece.Color color : activeColors) {
+                game.checkIfPlayerEliminated(color);
+            }
             game.checkIfGameEnd();
 
             renderPieces();
