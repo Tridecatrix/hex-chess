@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="added logic to disable a player's pieces if they lose">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="added checks for if player eliminated to main">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/piece/Pawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Pawn.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,8 +123,8 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.Main" />
       <item itemvalue="Application.Debug" />
+      <item itemvalue="Application.Main" />
       <item itemvalue="Application.TerminalGUI" />
       <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
     </list>
@@ -144,22 +145,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779682179881</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Improved terminal GUI + fixed minor hashset bug with Set&lt;Move&gt;">
-      <option name="closed" value="true" />
-      <created>1781005671690</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1781005671690</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Added logic for pawn promotions">
-      <option name="closed" value="true" />
-      <created>1781052652642</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1781052652642</updated>
     </task>
     <task id="LOCAL-00013" summary="Refactored pieces lists to instead be piece position lists">
       <option name="closed" value="true" />
@@ -537,7 +522,23 @@
       <option name="project" value="LOCAL" />
       <updated>1782384576804</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="added checks for if player eliminated to main">
+      <option name="closed" value="true" />
+      <created>1782436840504</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1782436840504</updated>
+    </task>
+    <task id="LOCAL-00061" summary="added checks for if player eliminated to main">
+      <option name="closed" value="true" />
+      <created>1782436869473</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1782436869473</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -553,7 +554,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Fixed incorrect logic for moving king into check" />
     <MESSAGE value="begun working on promotion logic" />
     <MESSAGE value="promotion concept" />
     <MESSAGE value="Finished game v1.0 (added pawn promotion)" />
@@ -578,7 +578,8 @@
     <MESSAGE value="adjusted the piece capture text to support different colors" />
     <MESSAGE value="refactored game end logic to continue until only 1 player remains" />
     <MESSAGE value="added logic to disable a player's pieces if they lose" />
-    <option name="LAST_COMMIT_MESSAGE" value="added logic to disable a player's pieces if they lose" />
+    <MESSAGE value="added checks for if player eliminated to main" />
+    <option name="LAST_COMMIT_MESSAGE" value="added checks for if player eliminated to main" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -610,12 +611,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/model/Board.java</url>
-          <line>571</line>
+          <line>359</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/model/Board.java</url>
-          <line>706</line>
+          <line>494</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>

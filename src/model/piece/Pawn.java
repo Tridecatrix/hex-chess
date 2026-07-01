@@ -25,8 +25,8 @@ public class Pawn extends Piece {
 
     public enum Direction {
         FORWARD,
-        CAPTURE_LEFT,
-        CAPTURE_RIGHT,
+        FORWARD_LEFT,
+        FORWARD_RIGHT,
         BACK_LEFT,
         BACK_RIGHT,
         BACKWARD
@@ -51,9 +51,9 @@ public class Pawn extends Piece {
 
             Direction dir = switch(offset) {
                 case -2 -> Direction.BACK_LEFT;
-                case -1 -> Direction.CAPTURE_LEFT;
+                case -1 -> Direction.FORWARD_LEFT;
                 case 0 -> Direction.FORWARD;
-                case 1 -> Direction.CAPTURE_RIGHT;
+                case 1 -> Direction.FORWARD_RIGHT;
                 case 2 -> Direction.BACK_RIGHT;
                 case 3 -> Direction.BACKWARD;
                 default -> throw new IllegalStateException("Unexpected value: " + offset);
@@ -84,8 +84,8 @@ public class Pawn extends Piece {
     }
 
     public static Position getPassantedPawnIfExists(Move move, Piece.Color playerColor, Board board) {
-        Position leftCapturePos = Pawn.getDirections(playerColor).get(Direction.CAPTURE_LEFT).apply(move.fromPos, board.getBoardDiameter());
-        Position rightCapturePos = Pawn.getDirections(playerColor).get(Direction.CAPTURE_RIGHT).apply(move.fromPos, board.getBoardDiameter());
+        Position leftCapturePos = Pawn.getDirections(playerColor).get(Direction.FORWARD_LEFT).apply(move.fromPos, board.getBoardDiameter());
+        Position rightCapturePos = Pawn.getDirections(playerColor).get(Direction.FORWARD_RIGHT).apply(move.fromPos, board.getBoardDiameter());
         for (Piece.Color passantableColor : board.getPassantablePawns().keySet()) {
             if (passantableColor == playerColor) continue;
 
@@ -136,8 +136,8 @@ public class Pawn extends Piece {
         Position forwardPos, doubleForwardPos, leftCapturePos, rightCapturePos;
         forwardPos = directions.get(Direction.FORWARD).apply(fromPos, board.getBoardDiameter());
         doubleForwardPos = directions.get(Direction.FORWARD).apply(forwardPos, board.getBoardDiameter());
-        leftCapturePos = directions.get(Direction.CAPTURE_LEFT).apply(fromPos, board.getBoardDiameter());
-        rightCapturePos = directions.get(Direction.CAPTURE_RIGHT).apply(fromPos, board.getBoardDiameter());
+        leftCapturePos = directions.get(Direction.FORWARD_LEFT).apply(fromPos, board.getBoardDiameter());
+        rightCapturePos = directions.get(Direction.FORWARD_RIGHT).apply(fromPos, board.getBoardDiameter());
 
         // Pawn basic logic: able to move one space ahead into an empty square
         if (board.isInBounds(forwardPos) && board.getPos(forwardPos) == null)
@@ -190,8 +190,8 @@ public class Pawn extends Piece {
         Map<Direction, BiFunction<Position, Integer, Position>> directions = getDirections(pawn.color);
 
         Position leftCapturePos, rightCapturePos;
-        leftCapturePos = directions.get(Direction.CAPTURE_LEFT).apply(fromPos, board.getBoardDiameter());
-        rightCapturePos = directions.get(Direction.CAPTURE_RIGHT).apply(fromPos, board.getBoardDiameter());
+        leftCapturePos = directions.get(Direction.FORWARD_LEFT).apply(fromPos, board.getBoardDiameter());
+        rightCapturePos = directions.get(Direction.FORWARD_RIGHT).apply(fromPos, board.getBoardDiameter());
 
         if (board.isInBounds(leftCapturePos))
             moves.add(new Move(fromPos, leftCapturePos));

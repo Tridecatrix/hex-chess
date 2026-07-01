@@ -6,7 +6,7 @@ import model.piece.Piece;
 
 import java.lang.Math;
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.function.BiFunction;
 
 /**
  * Class for tracking the board and the pieces on the board
@@ -59,306 +59,108 @@ public class Board {
 
     // default constructor; initialise board in starting position
     public Board(Game.Mode mode) {
+        List<Piece.Color> colors;
+        boolean extraPieces = false;
+
         if (mode == Game.Mode.TWO_PLAYER) {
             boardDim = 6;
             boardDiameter = 2*boardDim - 1;
 
             board = new Piece[boardDiameter][boardDiameter];
 
-            piecePositions.put(Piece.Color.WHITE, new HashSet<>());
-            piecePositions.put(Piece.Color.BLACK, new HashSet<>());
+            colors = List.of(Piece.Color.WHITE, Piece.Color.BLACK);
 
-            capturedPieces.put(Piece.Color.WHITE, new ArrayList<>());
-            capturedPieces.put(Piece.Color.BLACK, new ArrayList<>());
-
-            for (String pos : List.of("b1", "c2", "d3", "e4", "f5", "g4", "h3", "i2", "j1")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "white");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.WHITE).add(posAsObj);
-                this.setPos(posAsObj, pawn);
-            }
-
-            for (String pos : List.of("b7", "c7", "d7", "e7", "f7", "g7", "h7", "i7", "j7")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "black");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.BLACK).add(posAsObj);
-                this.setPos(new Position(pos), pawn);
-            }
-
-            this.setPos(new Position("c1"), PieceFactory.createPiece("rook", "white"));
-            this.setPos(new Position("d1"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("e1"), PieceFactory.createPiece("queen", "white"));
-            this.setPos(new Position("f1"), PieceFactory.createPiece("bishop", "white"));
-            this.setPos(new Position("f2"), PieceFactory.createPiece("bishop", "white"));
-            this.setPos(new Position("f3"), PieceFactory.createPiece("bishop", "white"));
-            this.setPos(new Position("g1"), PieceFactory.createPiece("king", "white"));
-            this.setPos(new Position("h1"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("i1"), PieceFactory.createPiece("rook", "white"));
-            piecePositions.get(Piece.Color.WHITE).addAll(Stream.of("c1", "d1", "e1", "f1", "f2", "f3", "g1", "h1", "i1").map(Position::new).toList());
-
-            this.setPos(new Position("c8"), PieceFactory.createPiece("rook", "black"));
-            this.setPos(new Position("d9"), PieceFactory.createPiece("knight", "black"));
-            this.setPos(new Position("e10"), PieceFactory.createPiece("queen", "black"));
-            this.setPos(new Position("f11"), PieceFactory.createPiece("bishop", "black"));
-            this.setPos(new Position("f10"), PieceFactory.createPiece("bishop", "black"));
-            this.setPos(new Position("f9"), PieceFactory.createPiece("bishop", "black"));
-            this.setPos(new Position("g10"), PieceFactory.createPiece("king", "black"));
-            this.setPos(new Position("h9"), PieceFactory.createPiece("knight", "black"));
-            this.setPos(new Position("i8"), PieceFactory.createPiece("rook", "black"));
-            piecePositions.get(Piece.Color.BLACK).addAll(Stream.of("c8", "d9", "e10", "f11", "f10", "f9", "g10", "h9", "i8").map(Position::new).toList());
-
-            kingPositions.put(Piece.Color.WHITE, new Position("g1"));
-            kingPositions.put(Piece.Color.BLACK, new Position("g10"));
         } else if (mode == Game.Mode.THREE_PLAYER) {
-            boardDim = 7;
+            boardDim = 8;
             boardDiameter = 2*boardDim - 1;
 
             board = new Piece[boardDiameter][boardDiameter];
 
-            piecePositions.put(Piece.Color.WHITE, new HashSet<>());
-            piecePositions.put(Piece.Color.RED, new HashSet<>());
-            piecePositions.put(Piece.Color.BLUE, new HashSet<>());
+            colors = List.of(Piece.Color.WHITE, Piece.Color.RED, Piece.Color.BLUE);
+            extraPieces = true;
 
-            capturedPieces.put(Piece.Color.WHITE, new ArrayList<>());
-            capturedPieces.put(Piece.Color.RED, new ArrayList<>());
-            capturedPieces.put(Piece.Color.BLUE, new ArrayList<>());
-
-            for (String pos : List.of("c1", "d2", "e3", "f4", "g5", "h4", "i3", "j2", "k1")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "white");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.WHITE).add(posAsObj);
-                this.setPos(posAsObj, pawn);
-            }
-
-            for (String pos : List.of("a3", "b4", "c5", "d6", "e7", "e8", "e9", "e10", "e11")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "red");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.RED).add(posAsObj);
-                this.setPos(new Position(pos), pawn);
-            }
-
-            for (String pos : List.of("m3", "l4", "k5", "j6", "i7", "i8", "i9", "i10", "i11")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "blue");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.BLUE).add(posAsObj);
-                this.setPos(new Position(pos), pawn);
-            }
-
-            this.setPos(new Position("d1"), PieceFactory.createPiece("rook", "white"));
-            this.setPos(new Position("e1"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("f1"), PieceFactory.createPiece("queen", "white"));
-            this.setPos(new Position("f3"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("e2"), PieceFactory.createPiece("rook", "white"));
-            this.setPos(new Position("i2"), PieceFactory.createPiece("rook", "white"));
-            this.setPos(new Position("g1"), PieceFactory.createPiece("bishop", "white"));
-            this.setPos(new Position("g2"), PieceFactory.createPiece("bishop", "white"));
-            this.setPos(new Position("g3"), PieceFactory.createPiece("bishop", "white"));
-            this.setPos(new Position("h1"), PieceFactory.createPiece("king", "white"));
-            this.setPos(new Position("h3"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("i1"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("j1"), PieceFactory.createPiece("rook", "white"));
-            piecePositions.get(Piece.Color.WHITE).addAll(Stream.of(
-                    "d1", "e1", "f1", "f3", "e2", "i2", "g1", "g2", "g3", "h1", "h3", "i1", "j1").map(Position::new).toList());
-
-            this.setPos(new Position("d10"), PieceFactory.createPiece("rook", "red"));
-            this.setPos(new Position("c9"), PieceFactory.createPiece("knight", "red"));
-            this.setPos(new Position("b8"), PieceFactory.createPiece("queen", "red"));
-            this.setPos(new Position("d8"), PieceFactory.createPiece("knight", "red"));
-            this.setPos(new Position("b5"), PieceFactory.createPiece("rook", "red"));
-            this.setPos(new Position("d9"), PieceFactory.createPiece("rook", "red"));
-            this.setPos(new Position("a7"), PieceFactory.createPiece("bishop", "red"));
-            this.setPos(new Position("b7"), PieceFactory.createPiece("bishop", "red"));
-            this.setPos(new Position("c7"), PieceFactory.createPiece("bishop", "red"));
-            this.setPos(new Position("a6"), PieceFactory.createPiece("king", "red"));
-            this.setPos(new Position("c6"), PieceFactory.createPiece("knight", "red"));
-            this.setPos(new Position("a5"), PieceFactory.createPiece("knight", "red"));
-            this.setPos(new Position("a4"), PieceFactory.createPiece("rook", "red"));
-            piecePositions.get(Piece.Color.RED).addAll(Stream.of(
-                    "d10", "c9", "b8", "d8", "b5", "d9", "a7", "b7", "c7", "a6", "c6", "a5", "a4").map(Position::new).toList());
-
-            this.setPos(new Position("m4"), PieceFactory.createPiece("rook", "blue"));
-            this.setPos(new Position("m5"), PieceFactory.createPiece("knight", "blue"));
-            this.setPos(new Position("m6"), PieceFactory.createPiece("queen", "blue"));
-            this.setPos(new Position("k6"), PieceFactory.createPiece("knight", "blue"));
-            this.setPos(new Position("j9"), PieceFactory.createPiece("rook", "blue"));
-            this.setPos(new Position("l5"), PieceFactory.createPiece("rook", "blue"));
-            this.setPos(new Position("m7"), PieceFactory.createPiece("bishop", "blue"));
-            this.setPos(new Position("l7"), PieceFactory.createPiece("bishop", "blue"));
-            this.setPos(new Position("k7"), PieceFactory.createPiece("bishop", "blue"));
-            this.setPos(new Position("l8"), PieceFactory.createPiece("king", "blue"));
-            this.setPos(new Position("j8"), PieceFactory.createPiece("knight", "blue"));
-            this.setPos(new Position("k9"), PieceFactory.createPiece("knight", "blue"));
-            this.setPos(new Position("j10"), PieceFactory.createPiece("rook", "blue"));
-            piecePositions.get(Piece.Color.BLUE).addAll(Stream.of(
-                    "m4", "m5", "m6", "k6", "j9", "l5", "m7", "l7", "k7", "l8", "j8", "k9", "j10").map(Position::new).toList());
-
-            kingPositions.put(Piece.Color.WHITE, new Position("h1"));
-            kingPositions.put(Piece.Color.RED, new Position("a6"));
-            kingPositions.put(Piece.Color.BLUE, new Position("l8"));
-        } else if (mode == Game.Mode.SIX_PLAYER) {
+        } else { // (mode == Game.Mode.SIX_PLAYER)
             boardDim = 11;
             boardDiameter = 2*boardDim - 1;
 
             board = new Piece[boardDiameter][boardDiameter];
 
-            piecePositions.put(Piece.Color.WHITE, new HashSet<>());
-            piecePositions.put(Piece.Color.GREEN, new HashSet<>());
-            piecePositions.put(Piece.Color.RED, new HashSet<>());
-            piecePositions.put(Piece.Color.YELLOW, new HashSet<>());
-            piecePositions.put(Piece.Color.BLUE, new HashSet<>());
-            piecePositions.put(Piece.Color.PURPLE, new HashSet<>());
+            colors = List.of(Piece.Color.WHITE, Piece.Color.GREEN, Piece.Color.RED,
+                    Piece.Color.YELLOW, Piece.Color.BLUE, Piece.Color.PURPLE);
+            extraPieces = true;
+        }
 
-            capturedPieces.put(Piece.Color.WHITE, new ArrayList<>());
-            capturedPieces.put(Piece.Color.GREEN, new ArrayList<>());
-            capturedPieces.put(Piece.Color.RED, new ArrayList<>());
-            capturedPieces.put(Piece.Color.YELLOW, new ArrayList<>());
-            capturedPieces.put(Piece.Color.BLUE, new ArrayList<>());
-            capturedPieces.put(Piece.Color.PURPLE, new ArrayList<>());
+        // generate the pieces for each color
+        for (Piece.Color color : colors) {
+            Position boardCenter = new Position(this.boardDim-1, this.boardDim-1);
 
-            for (String pos : List.of("g1", "h2", "i3", "j4", "k5", "l4", "m3", "n2", "o1")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "white");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.WHITE).add(posAsObj);
-                this.setPos(posAsObj, pawn);
+            Map<Pawn.Direction, BiFunction<Position, Integer, Position>> directions = Pawn.getDirections(color);
+
+            // get the position which is the bottom corner of the formation
+            Position cornerPos = boardCenter;
+            Position nextPos = directions.get(Pawn.Direction.BACKWARD).apply(cornerPos, boardDiameter);
+            while (nextPos.isInBounds(boardDiameter)) {
+                cornerPos = nextPos;
+                nextPos = directions.get(Pawn.Direction.BACKWARD).apply(cornerPos, boardDiameter);
             }
 
-            this.setPos(new Position("h1"), PieceFactory.createPiece("rook", "white"));
-            this.setPos(new Position("i1"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("j1"), PieceFactory.createPiece("queen", "white"));
-            this.setPos(new Position("j3"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("i2"), PieceFactory.createPiece("rook", "white"));
-            this.setPos(new Position("m2"), PieceFactory.createPiece("rook", "white"));
-            this.setPos(new Position("k1"), PieceFactory.createPiece("bishop", "white"));
-            this.setPos(new Position("k2"), PieceFactory.createPiece("bishop", "white"));
-            this.setPos(new Position("k3"), PieceFactory.createPiece("bishop", "white"));
-            this.setPos(new Position("l1"), PieceFactory.createPiece("king", "white"));
-            this.setPos(new Position("l3"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("m1"), PieceFactory.createPiece("knight", "white"));
-            this.setPos(new Position("n1"), PieceFactory.createPiece("rook", "white"));
-            piecePositions.get(Piece.Color.WHITE).addAll(Stream.of(
-                    "h1", "i1", "j1", "j3", "i2", "m2", "k1", "k2", "k3", "l1", "l3", "m1", "n1").map(Position::new).toList());
+            // derive all other piece positions as offsets from the bottom corner
+            Position bishop1Pos = cornerPos;
+            Position bishop2Pos = directions.get(Pawn.Direction.FORWARD).apply(bishop1Pos, boardDiameter);
+            Position bishop3Pos = directions.get(Pawn.Direction.FORWARD).apply(bishop2Pos, boardDiameter);
+            Position queenPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(bishop1Pos, boardDiameter);
+            Position lknightPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(queenPos, boardDiameter);
+            Position lrookPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(lknightPos, boardDiameter);
+            Position kingPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(bishop1Pos, boardDiameter);
+            Position rknightPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(kingPos, boardDiameter);
+            Position rrookPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(rknightPos, boardDiameter);
 
-            for (String pos : List.of("a5", "b5", "c5", "d5", "e5", "e4", "e3", "e2", "e1")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "green");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.GREEN).add(posAsObj);
-                this.setPos(posAsObj, pawn);
+            Position extraLKnightPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(bishop3Pos, boardDiameter);
+            Position extraLRookPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(lrookPos, boardDiameter);
+            Position extraRKnightPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(bishop3Pos, boardDiameter);
+            Position extraRRookPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(rrookPos, boardDiameter);
+
+            // get pawn positions, starting from leftmost pawn and working inwards
+            Position leftPawn = directions.get(Pawn.Direction.FORWARD_LEFT).apply(lrookPos, boardDiameter);
+            Position rightPawn = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(rrookPos, boardDiameter);
+            List<Position> pawnPositions = new ArrayList<>(List.of(leftPawn, rightPawn));
+            for (int i = 0; i < 4; i++) {
+                leftPawn = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(leftPawn, boardDiameter);
+                rightPawn = directions.get(Pawn.Direction.FORWARD_LEFT).apply(rightPawn, boardDiameter);
+                pawnPositions.addAll(List.of(leftPawn, rightPawn));
             }
 
-            this.setPos(new Position("a4"), PieceFactory.createPiece("rook", "green"));
-            this.setPos(new Position("a3"), PieceFactory.createPiece("knight", "green"));
-            this.setPos(new Position("a2"), PieceFactory.createPiece("queen", "green"));
-            this.setPos(new Position("c4"), PieceFactory.createPiece("knight", "green"));
-            this.setPos(new Position("b4"), PieceFactory.createPiece("rook", "green"));
-            this.setPos(new Position("d2"), PieceFactory.createPiece("rook", "green"));
-            this.setPos(new Position("a1"), PieceFactory.createPiece("bishop", "green"));
-            this.setPos(new Position("b2"), PieceFactory.createPiece("bishop", "green"));
-            this.setPos(new Position("c3"), PieceFactory.createPiece("bishop", "green"));
-            this.setPos(new Position("b1"), PieceFactory.createPiece("king", "green"));
-            this.setPos(new Position("d3"), PieceFactory.createPiece("knight", "green"));
-            this.setPos(new Position("c1"), PieceFactory.createPiece("knight", "green"));
-            this.setPos(new Position("d1"), PieceFactory.createPiece("rook", "green"));
-            piecePositions.get(Piece.Color.GREEN).addAll(Stream.of(
-                    "a4", "a3", "a2", "c4", "b4", "d2", "a1", "b2", "c3", "b1", "d3", "c1", "d1").map(Position::new).toList());
+            this.setPos(bishop1Pos, PieceFactory.createPiece(PieceType.BISHOP, color));
+            this.setPos(bishop2Pos, PieceFactory.createPiece(PieceType.BISHOP, color));
+            this.setPos(bishop3Pos, PieceFactory.createPiece(PieceType.BISHOP, color));
+            this.setPos(queenPos, PieceFactory.createPiece(PieceType.QUEEN, color));
+            this.setPos(lknightPos, PieceFactory.createPiece(PieceType.KNIGHT, color));
+            this.setPos(lrookPos, PieceFactory.createPiece(PieceType.ROOK, color));
+            this.setPos(kingPos, PieceFactory.createPiece(PieceType.KING, color));
+            this.setPos(rknightPos, PieceFactory.createPiece(PieceType.KNIGHT, color));
+            this.setPos(rrookPos, PieceFactory.createPiece(PieceType.ROOK, color));
 
-            for (String pos : List.of("e15", "e14", "e13", "e12", "e11", "d10", "c9", "b8", "a7")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "red");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.RED).add(posAsObj);
-                this.setPos(posAsObj, pawn);
+            if (extraPieces) {
+                this.setPos(extraLKnightPos, PieceFactory.createPiece(PieceType.KNIGHT, color));
+                this.setPos(extraLRookPos, PieceFactory.createPiece(PieceType.ROOK, color));
+                this.setPos(extraRKnightPos, PieceFactory.createPiece(PieceType.KNIGHT, color));
+                this.setPos(extraRRookPos, PieceFactory.createPiece(PieceType.ROOK, color));
             }
 
-            this.setPos(new Position("d14"), PieceFactory.createPiece("rook", "red"));
-            this.setPos(new Position("c13"), PieceFactory.createPiece("knight", "red"));
-            this.setPos(new Position("b12"), PieceFactory.createPiece("queen", "red"));
-            this.setPos(new Position("d12"), PieceFactory.createPiece("knight", "red"));
-            this.setPos(new Position("b9"), PieceFactory.createPiece("rook", "red"));
-            this.setPos(new Position("d13"), PieceFactory.createPiece("rook", "red"));
-            this.setPos(new Position("a11"), PieceFactory.createPiece("bishop", "red"));
-            this.setPos(new Position("b11"), PieceFactory.createPiece("bishop", "red"));
-            this.setPos(new Position("c11"), PieceFactory.createPiece("bishop", "red"));
-            this.setPos(new Position("a10"), PieceFactory.createPiece("king", "red"));
-            this.setPos(new Position("c10"), PieceFactory.createPiece("knight", "red"));
-            this.setPos(new Position("a9"), PieceFactory.createPiece("knight", "red"));
-            this.setPos(new Position("a8"), PieceFactory.createPiece("rook", "red"));
-            piecePositions.get(Piece.Color.RED).addAll(Stream.of(
-                    "d14", "c13", "b12", "d12", "b9", "d13", "a11", "b11", "c11", "a10", "c10", "a9", "a8").map(Position::new).toList());
-
-            for (String pos : List.of("g17", "h17", "i17", "j17", "k17", "l17", "m17", "n17", "o17")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "yellow");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.YELLOW).add(posAsObj);
-                this.setPos(posAsObj, pawn);
+            for (Position pawnPos : pawnPositions) {
+                this.setPos(pawnPos, PieceFactory.createPiece(PieceType.PAWN, color));
             }
 
-            this.setPos(new Position("n18"), PieceFactory.createPiece("rook", "yellow"));
-            this.setPos(new Position("m19"), PieceFactory.createPiece("knight", "yellow"));
-            this.setPos(new Position("l20"), PieceFactory.createPiece("queen", "yellow"));
-            this.setPos(new Position("l18"), PieceFactory.createPiece("knight", "yellow"));
-            this.setPos(new Position("i18"), PieceFactory.createPiece("rook", "yellow"));
-            this.setPos(new Position("m18"), PieceFactory.createPiece("rook", "yellow"));
-            this.setPos(new Position("k21"), PieceFactory.createPiece("bishop", "yellow"));
-            this.setPos(new Position("k20"), PieceFactory.createPiece("bishop", "yellow"));
-            this.setPos(new Position("k19"), PieceFactory.createPiece("bishop", "yellow"));
-            this.setPos(new Position("j20"), PieceFactory.createPiece("king", "yellow"));
-            this.setPos(new Position("j18"), PieceFactory.createPiece("knight", "yellow"));
-            this.setPos(new Position("i19"), PieceFactory.createPiece("knight", "yellow"));
-            this.setPos(new Position("h18"), PieceFactory.createPiece("rook", "yellow"));
-            piecePositions.get(Piece.Color.YELLOW).addAll(Stream.of(
-                    "n18", "m19", "l20", "l18", "i18", "m18", "k21", "k20", "k19", "j20", "j18", "i19", "h18").map(Position::new).toList());
+            Set<Position> piecePositionsForThisColor = new HashSet<>(List.of(bishop1Pos, bishop2Pos, bishop3Pos,
+                    queenPos, lknightPos, lrookPos, kingPos, rknightPos, rrookPos));
+            piecePositionsForThisColor.addAll(pawnPositions);
+            if (extraPieces) piecePositionsForThisColor.addAll(List.of(extraLKnightPos, extraLRookPos, extraRKnightPos, extraRRookPos));
 
-            for (String pos : List.of("u7", "t8", "s9", "r10", "q11", "q12", "q13", "q14", "q15")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "blue");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.BLUE).add(posAsObj);
-                this.setPos(posAsObj, pawn);
-            }
+            this.piecePositions.put(color, piecePositionsForThisColor);
 
-            this.setPos(new Position("u8"), PieceFactory.createPiece("rook", "blue"));
-            this.setPos(new Position("u9"), PieceFactory.createPiece("knight", "blue"));
-            this.setPos(new Position("u10"), PieceFactory.createPiece("queen", "blue"));
-            this.setPos(new Position("s10"), PieceFactory.createPiece("knight", "blue"));
-            this.setPos(new Position("r13"), PieceFactory.createPiece("rook", "blue"));
-            this.setPos(new Position("t9"), PieceFactory.createPiece("rook", "blue"));
-            this.setPos(new Position("u11"), PieceFactory.createPiece("bishop", "blue"));
-            this.setPos(new Position("t11"), PieceFactory.createPiece("bishop", "blue"));
-            this.setPos(new Position("s11"), PieceFactory.createPiece("bishop", "blue"));
-            this.setPos(new Position("t12"), PieceFactory.createPiece("king", "blue"));
-            this.setPos(new Position("r12"), PieceFactory.createPiece("knight", "blue"));
-            this.setPos(new Position("s13"), PieceFactory.createPiece("knight", "blue"));
-            this.setPos(new Position("r14"), PieceFactory.createPiece("rook", "blue"));
-            piecePositions.get(Piece.Color.BLUE).addAll(Stream.of(
-                    "u8", "u9", "u10", "s10", "r13", "t9", "u11", "t11", "s11", "t12", "r12", "s13", "r14").map(Position::new).toList());
+            capturedPieces.put(color, new ArrayList<>());
 
-            for (String pos : List.of("q1", "q2", "q3", "q4", "q5", "r5", "s5", "t5", "u5")) {
-                Piece pawn = PieceFactory.createPiece("pawn", "purple");
-                Position posAsObj = new Position(pos);
-                piecePositions.get(Piece.Color.PURPLE).add(posAsObj);
-                this.setPos(posAsObj, pawn);
-            }
-
-            this.setPos(new Position("r1"), PieceFactory.createPiece("rook", "purple"));
-            this.setPos(new Position("s1"), PieceFactory.createPiece("knight", "purple"));
-            this.setPos(new Position("t1"), PieceFactory.createPiece("queen", "purple"));
-            this.setPos(new Position("r3"), PieceFactory.createPiece("knight", "purple"));
-            this.setPos(new Position("r2"), PieceFactory.createPiece("rook", "purple"));
-            this.setPos(new Position("t4"), PieceFactory.createPiece("rook", "purple"));
-            this.setPos(new Position("u1"), PieceFactory.createPiece("bishop", "purple"));
-            this.setPos(new Position("t2"), PieceFactory.createPiece("bishop", "purple"));
-            this.setPos(new Position("s3"), PieceFactory.createPiece("bishop", "purple"));
-            this.setPos(new Position("u2"), PieceFactory.createPiece("king", "purple"));
-            this.setPos(new Position("s4"), PieceFactory.createPiece("knight", "purple"));
-            this.setPos(new Position("u3"), PieceFactory.createPiece("knight", "purple"));
-            this.setPos(new Position("u4"), PieceFactory.createPiece("rook", "purple"));
-            piecePositions.get(Piece.Color.PURPLE).addAll(Stream.of(
-                    "r1", "s1", "t1", "r3", "r2", "t4", "u1", "t2", "s3", "u2", "s4", "u3", "u4").map(Position::new).toList());
-
-            kingPositions.put(Piece.Color.WHITE, new Position("l1"));
-            kingPositions.put(Piece.Color.GREEN, new Position("b1"));
-            kingPositions.put(Piece.Color.RED, new Position("a10"));
-            kingPositions.put(Piece.Color.YELLOW, new Position("j20"));
-            kingPositions.put(Piece.Color.BLUE, new Position("t12"));
-            kingPositions.put(Piece.Color.PURPLE, new Position("u2"));
+            kingPositions.put(color, kingPos);
         }
     }
 
