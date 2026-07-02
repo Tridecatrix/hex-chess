@@ -11,7 +11,16 @@ public class PieceView extends ImageView {
     PieceType type;
 
     public PieceView(PieceType type, Piece.Color color, int xBoard, int yBoard) {
-        char colorChar = color == Piece.Color.WHITE ? 'l' : 'd';
+        char colorChar = switch (color) {
+            case WHITE -> 'l';
+            case BLACK -> 'd';
+            case RED -> 'r';
+            case BLUE -> 'b';
+            case YELLOW -> 'y';
+            case GREEN -> 'g';
+            case PURPLE -> 'p';
+            case DISABLED -> 'm';
+        };
         this("gui/assets/Chess_" + type.getChar() + colorChar + "t45.png", xBoard, yBoard);
         this.type = type;
     }

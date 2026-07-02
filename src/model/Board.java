@@ -1,41 +1,41 @@
 package model;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
 import model.piece.King;
 import model.piece.Pawn;
 import model.piece.Piece;
 
 import java.lang.Math;
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.function.BiFunction;
 
 /**
  * Class for tracking the board and the pieces on the board
  */
 public class Board {
-    public final int boarddim = 11;
+    int boardDim; // side length of the board in tiles
+    int boardDiameter; // most importantly, determines the max height and width of the board
 
-    // for 91 space board; there are 11 files going vertically and 11 ranks going skew-horizontally.
-    // for files on the outer edges of the board, some of the ranks don't exist, e.g. only a1-7 exist
-    // file f, or file 6, is the middle of the board
-    Piece[][] board = new Piece[boarddim][boarddim];
+    Piece[][] board;
 
     // references to all pieces in the game (for check/checkmate detection)
-    Set<Position> whitePiecePositions = new HashSet<>();
-    Set<Position> blackPiecePositions = new HashSet<>();
-
-    // types of captured pieces, for use in displaying captured piece lists on GUI
-    List<PieceType> whiteCapturedPieces = new ArrayList<>(18);
-    List<PieceType> blackCapturedPieces = new ArrayList<>(18);
-
-    Position whiteKingPos;
-    Position blackKingPos;
+    Map<Piece.Color, Set<Position>> piecePositions = new HashMap<>();
+    Map<Piece.Color, List<Piece>> capturedPieces = new HashMap<>();
+    Map<Piece.Color, Position> kingPositions = new HashMap<>();
 
     // for tracking en passant
-    public Position passantablePawn;
+    public Map<Piece.Color, Position> passantablePawns = new HashMap<>();
 
-    public static final int centerFile = 5;
+    public Map<Piece.Color, Position> getPassantablePawns() {
+        return passantablePawns;
+    }
+
+    public int getBoardDim() {
+        return boardDim;
+    }
+
+    public int getBoardDiameter() {
+        return boardDiameter;
+    }
 
     public Piece getPos(Position pos) {
         return this.board[pos.file][pos.rank];
@@ -45,88 +45,164 @@ public class Board {
         this.board[pos.file][pos.rank] = piece;
     }
 
-    public Position getWhiteKingPos() {
-        return whiteKingPos;
+    public Map<Piece.Color, Position> getKingPositions() {
+        return kingPositions;
     }
 
-    public Position getBlackKingPos() {
-        return blackKingPos;
+    public Map<Piece.Color, List<Piece>> getCapturedPieces() {
+        return capturedPieces;
     }
 
-    public List<PieceType> getWhiteCapturedPieces() {
-        return whiteCapturedPieces;
-    }
-
-    public List<PieceType> getBlackCapturedPieces() {
-        return blackCapturedPieces;
+    public Board() {
+        this(Game.Mode.TWO_PLAYER);
     }
 
     // default constructor; initialise board in starting position
-    public Board() {
-        for (String pos : List.of("b1", "c2", "d3", "e4", "f5", "g4", "h3", "i2", "j1")) {
-            Piece pawn = PieceFactory.createPiece("pawn", "white");
-            Position posAsObj = new Position(pos);
-            whitePiecePositions.add(posAsObj);
-            this.setPos(posAsObj, pawn);
+    public Board(Game.Mode mode) {
+        List<Piece.Color> colors;
+        boolean extraPieces = false;
+
+        if (mode == Game.Mode.TWO_PLAYER) {
+            boardDim = 6;
+            boardDiameter = 2*boardDim - 1;
+
+            board = new Piece[boardDiameter][boardDiameter];
+
+            colors = List.of(Piece.Color.WHITE, Piece.Color.BLACK);
+
+        } else if (mode == Game.Mode.THREE_PLAYER) {
+            boardDim = 8;
+            boardDiameter = 2*boardDim - 1;
+
+            board = new Piece[boardDiameter][boardDiameter];
+
+            colors = List.of(Piece.Color.WHITE, Piece.Color.RED, Piece.Color.BLUE);
+            extraPieces = true;
+
+        } else { // (mode == Game.Mode.SIX_PLAYER)
+            boardDim = 11;
+            boardDiameter = 2*boardDim - 1;
+
+            board = new Piece[boardDiameter][boardDiameter];
+
+            colors = List.of(Piece.Color.WHITE, Piece.Color.GREEN, Piece.Color.RED,
+                    Piece.Color.YELLOW, Piece.Color.BLUE, Piece.Color.PURPLE);
+            extraPieces = true;
         }
 
-        for (String pos : List.of("b7", "c7", "d7", "e7", "f7", "g7", "h7", "i7", "j7")) {
-            Piece pawn = PieceFactory.createPiece("pawn", "black");
-            Position posAsObj = new Position(pos);
-            blackPiecePositions.add(posAsObj);
-            this.setPos(new Position(pos), pawn);
+        // generate the pieces for each color
+        for (Piece.Color color : colors) {
+            Position boardCenter = new Position(this.boardDim-1, this.boardDim-1);
+
+            Map<Pawn.Direction, BiFunction<Position, Integer, Position>> directions = Pawn.getDirections(color);
+
+            // get the position which is the bottom corner of the formation
+            Position cornerPos = boardCenter;
+            Position nextPos = directions.get(Pawn.Direction.BACKWARD).apply(cornerPos, boardDiameter);
+            while (nextPos.isInBounds(boardDiameter)) {
+                cornerPos = nextPos;
+                nextPos = directions.get(Pawn.Direction.BACKWARD).apply(cornerPos, boardDiameter);
+            }
+
+            // derive all other piece positions as offsets from the bottom corner
+            Position bishop1Pos = cornerPos;
+            Position bishop2Pos = directions.get(Pawn.Direction.FORWARD).apply(bishop1Pos, boardDiameter);
+            Position bishop3Pos = directions.get(Pawn.Direction.FORWARD).apply(bishop2Pos, boardDiameter);
+            Position queenPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(bishop1Pos, boardDiameter);
+            Position lknightPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(queenPos, boardDiameter);
+            Position lrookPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(lknightPos, boardDiameter);
+            Position kingPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(bishop1Pos, boardDiameter);
+            Position rknightPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(kingPos, boardDiameter);
+            Position rrookPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(rknightPos, boardDiameter);
+
+            Position extraLKnightPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(bishop3Pos, boardDiameter);
+            Position extraLRookPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(lrookPos, boardDiameter);
+            Position extraRKnightPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(bishop3Pos, boardDiameter);
+            Position extraRRookPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(rrookPos, boardDiameter);
+
+            // get pawn positions, starting from leftmost pawn and working inwards
+            Position leftPawn = directions.get(Pawn.Direction.FORWARD_LEFT).apply(lrookPos, boardDiameter);
+            Position rightPawn = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(rrookPos, boardDiameter);
+            List<Position> pawnPositions = new ArrayList<>(List.of(leftPawn, rightPawn));
+            for (int i = 0; i < 4; i++) {
+                leftPawn = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(leftPawn, boardDiameter);
+                rightPawn = directions.get(Pawn.Direction.FORWARD_LEFT).apply(rightPawn, boardDiameter);
+                pawnPositions.addAll(List.of(leftPawn, rightPawn));
+            }
+
+            this.setPos(bishop1Pos, PieceFactory.createPiece(PieceType.BISHOP, color));
+            this.setPos(bishop2Pos, PieceFactory.createPiece(PieceType.BISHOP, color));
+            this.setPos(bishop3Pos, PieceFactory.createPiece(PieceType.BISHOP, color));
+            this.setPos(queenPos, PieceFactory.createPiece(PieceType.QUEEN, color));
+            this.setPos(lknightPos, PieceFactory.createPiece(PieceType.KNIGHT, color));
+            this.setPos(lrookPos, PieceFactory.createPiece(PieceType.ROOK, color));
+            this.setPos(kingPos, PieceFactory.createPiece(PieceType.KING, color));
+            this.setPos(rknightPos, PieceFactory.createPiece(PieceType.KNIGHT, color));
+            this.setPos(rrookPos, PieceFactory.createPiece(PieceType.ROOK, color));
+
+            if (extraPieces) {
+                this.setPos(extraLKnightPos, PieceFactory.createPiece(PieceType.KNIGHT, color));
+                this.setPos(extraLRookPos, PieceFactory.createPiece(PieceType.ROOK, color));
+                this.setPos(extraRKnightPos, PieceFactory.createPiece(PieceType.KNIGHT, color));
+                this.setPos(extraRRookPos, PieceFactory.createPiece(PieceType.ROOK, color));
+            }
+
+            for (Position pawnPos : pawnPositions) {
+                this.setPos(pawnPos, PieceFactory.createPiece(PieceType.PAWN, color));
+            }
+
+            Set<Position> piecePositionsForThisColor = new HashSet<>(List.of(bishop1Pos, bishop2Pos, bishop3Pos,
+                    queenPos, lknightPos, lrookPos, kingPos, rknightPos, rrookPos));
+            piecePositionsForThisColor.addAll(pawnPositions);
+            if (extraPieces) piecePositionsForThisColor.addAll(List.of(extraLKnightPos, extraLRookPos, extraRKnightPos, extraRRookPos));
+
+            this.piecePositions.put(color, piecePositionsForThisColor);
+
+            capturedPieces.put(color, new ArrayList<>());
+
+            kingPositions.put(color, kingPos);
         }
+    }
 
-        Piece lrook = PieceFactory.createPiece("rook", "white"); this.setPos(new Position("c1"), lrook);
-        Piece lknight = PieceFactory.createPiece("knight", "white"); this.setPos(new Position("d1"), lknight);
-        Piece queen = PieceFactory.createPiece("queen", "white"); this.setPos(new Position("e1"), queen);
-        Piece bishop1 = PieceFactory.createPiece("bishop", "white"); this.setPos(new Position("f1"), bishop1);
-        Piece bishop2 = PieceFactory.createPiece("bishop", "white"); this.setPos(new Position("f2"), bishop2);
-        Piece bishop3 = PieceFactory.createPiece("bishop", "white"); this.setPos(new Position("f3"), bishop3);
-        Piece king = PieceFactory.createPiece("king", "white"); this.setPos(new Position("g1"), king);
-        Piece rknight = PieceFactory.createPiece("knight", "white"); this.setPos(new Position("h1"), rknight);
-        Piece rrook = PieceFactory.createPiece("rook", "white"); this.setPos(new Position("i1"), rrook);
-        whitePiecePositions.addAll(Stream.of("c1", "d1", "e1", "f1", "f2", "f3", "g1", "h1", "i1").map(Position::new).toList());
 
-        Piece blrook = PieceFactory.createPiece("rook", "black"); this.setPos(new Position("c8"), blrook);
-        Piece blknight = PieceFactory.createPiece("knight", "black"); this.setPos(new Position("d9"), blknight);
-        Piece bqueen = PieceFactory.createPiece("queen", "black"); this.setPos(new Position("e10"), bqueen);
-        Piece bbishop1 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f11"), bbishop1);
-        Piece bbishop2 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f10"), bbishop2);
-        Piece bbishop3 = PieceFactory.createPiece("bishop", "black"); this.setPos(new Position("f9"), bbishop3);
-        Piece bking = PieceFactory.createPiece("king", "black"); this.setPos(new Position("g10"), bking);
-        Piece brknight = PieceFactory.createPiece("knight", "black"); this.setPos(new Position("h9"), brknight);
-        Piece brrook = PieceFactory.createPiece("rook", "black"); this.setPos(new Position("i8"), brrook);
-        blackPiecePositions.addAll(Stream.of("c8", "d9", "e10", "f11", "f10", "f9", "g10", "h9", "i8").map(Position::new).toList());
-
-        whiteKingPos = new Position("g1");
-        blackKingPos = new Position("g10");
+    public Board(List<String> pieces) {
+        this(pieces, 6);
     }
 
     // testing constructor; intiialises a board with the pieces given as strings, e.g.:
     // Nh6 is a white knight at position h6
     // pc7 is a black pawn at position c7
-    public Board(List<String> pieces) {
-        for (String piece : pieces) {
-            boolean isWhite = Character.isUpperCase(piece.charAt(0));
-            String pieceType = Character.toString(piece.charAt(0));
-            String piecePos = piece.substring(1);
+    public Board(List<String> pieces, int boardDim) {
+        this.boardDim = boardDim;
+        this.boardDiameter = 2*boardDim - 1;
 
-            if (isWhite) {
-                Piece pieceAsObj = PieceFactory.createPiece(pieceType, "w");
-                Position posAsObj = new Position(piecePos);
-                this.setPos(posAsObj, pieceAsObj);
-                whitePiecePositions.add(posAsObj);
-                if (pieceAsObj instanceof King)
-                    whiteKingPos = posAsObj;
+        board = new Piece[boardDiameter][boardDiameter];
+
+        for (Piece.Color color : Piece.allColors) {
+            piecePositions.put(color, new HashSet<>());
+
+            capturedPieces.put(color, new ArrayList<>());
+        }
+
+        for (String piece : pieces) {
+            String color, pieceType, piecePos;
+            String pieceWithoutNumber = piece.replaceAll("[0-9]", "");
+            if (pieceWithoutNumber.length() == 2) {
+                color = Character.isUpperCase(piece.charAt(0)) ? "w" : "b";
+                pieceType = Character.toString(piece.charAt(0));
+                piecePos = piece.substring(1);
             } else {
-                Piece pieceAsObj = PieceFactory.createPiece(pieceType, "b");
-                Position posAsObj = new Position(piecePos);
-                this.setPos(posAsObj, pieceAsObj);
-                blackPiecePositions.add(posAsObj);
-                if (pieceAsObj instanceof King)
-                    blackKingPos = posAsObj;
+                color = Character.toString(piece.charAt(0));
+                pieceType = Character.toString(piece.charAt(1));
+                piecePos = piece.substring(2);
             }
+
+            Piece pieceAsObj = PieceFactory.createPiece(pieceType, color);
+            Position posAsObj = new Position(piecePos);
+            this.setPos(posAsObj, pieceAsObj);
+            piecePositions.get(pieceAsObj.color).add(posAsObj);
+            if (pieceAsObj instanceof King)
+                kingPositions.put(pieceAsObj.color, posAsObj);
         }
     }
 
@@ -134,8 +210,12 @@ public class Board {
     // explicitly create the fields with new/createPiece to avoid just having a reference to the object referred to
     // by the original fields
     public Board(Board boardOriginal) {
-        for (int x = 0; x < this.boarddim; x++) {
-            for (int y = 0; y < this.boarddim; y++) {
+        boardDim = boardOriginal.boardDim;
+        boardDiameter = boardOriginal.boardDiameter;
+        board = new Piece[boardOriginal.boardDiameter][boardOriginal.boardDiameter];
+
+        for (int x = 0; x < this.boardDiameter; x++) {
+            for (int y = 0; y < this.boardDiameter; y++) {
                 Position pos = new Position(x, y);
                 Piece originalPiece = boardOriginal.getPos(pos);
 
@@ -146,25 +226,24 @@ public class Board {
             }
         }
 
-        for (Position pos : boardOriginal.whitePiecePositions) {
-            this.whitePiecePositions.add(new Position(pos.file, pos.rank));
+        for (Piece.Color color : boardOriginal.piecePositions.keySet()) {
+            Set<Position> piecePositionsForColor = boardOriginal.piecePositions.get(color);
+            List<Piece> capturedPiecesForColor = boardOriginal.capturedPieces.get(color);
+
+            this.piecePositions.put(color, new HashSet<>());
+            this.capturedPieces.put(color, new ArrayList<>());
+
+            for (Position pos : piecePositionsForColor) {
+                this.piecePositions.get(color).add(new Position(pos));
+            }
+            for (Piece piece : capturedPiecesForColor) {
+                this.capturedPieces.get(color).add(PieceFactory.createPiece(piece.getPieceType(), piece.color));
+            }
+
+            if (boardOriginal.kingPositions.containsKey(color)) {
+                this.kingPositions.put(color, new Position(boardOriginal.kingPositions.get(color)));
+            }
         }
-        for (Position pos : boardOriginal.blackPiecePositions) {
-            this.blackPiecePositions.add(new Position(pos.file, pos.rank));
-        }
-
-        this.whiteCapturedPieces.addAll(boardOriginal.whiteCapturedPieces);
-        this.blackCapturedPieces.addAll(boardOriginal.blackCapturedPieces);
-
-        if (boardOriginal.whiteKingPos == null)
-            this.whiteKingPos = null;
-        else
-            this.whiteKingPos = new Position(boardOriginal.whiteKingPos.file, boardOriginal.whiteKingPos.rank);
-
-        if (boardOriginal.blackKingPos == null)
-            this.blackKingPos = null;
-        else
-            this.blackKingPos = new Position(boardOriginal.blackKingPos.file, boardOriginal.blackKingPos.rank);
     }
 
     @Override
@@ -172,15 +251,27 @@ public class Board {
         StringBuilder string = new StringBuilder();
         int xScale = 6;
 
-        string.append("   a     b     c     d     e     f     g     h     i     j     k\n");
+        // print coordinates at top of board
+        for (int c = 0; c < boardDiameter; c++) {
+            if (c == 0) string.repeat(" ", xScale/2);
+            else string.repeat(" ", xScale-1);
 
-        for (int y = 21; y >= 0; y--) {
-            for (int x = 0; x < 11*xScale; x++) {
+            string.append((char) ('a' + c));
+
+            if (c == boardDiameter - 1) string.repeat(" ", xScale/2);
+        }
+        string.append('\n');
+
+        // main loop
+        for (int y = boardDiameter*2 - 1; y >= 0; y--) { // go in reverse so that white is at bottom of board
+            for (int x = 0; x < boardDiameter * xScale; x++) {
                 int xBoard = x/xScale;
-                float yBoard = ((float) (y - Math.abs(xBoard - centerFile)))/2;
+                float yBoard = ((float) (y - Math.abs(xBoard - (boardDim-1))))/2; // if this isn't a float,
+                                                                                  // there ends up being half-cells
+                                                                                  // at the bottom of the board for some reason
 
                 // if yBoard is off the bounds of the board, print blank
-                if (yBoard < 0 || yBoard >= 11 - Math.abs(xBoard - centerFile)) {
+                if (yBoard < 0 || yBoard >= boardDiameter - Math.abs(xBoard - (boardDim-1))) {
                     string.append(' ');
                     continue;
                 }
@@ -188,13 +279,13 @@ public class Board {
                 // NOTE THAT THE BELOW ONLY WORKS FOR xScale == 6
                 // get the coordinate within each 2x6 size hexagon cell. how y % 2 corresponds to the bottom/top
                 // of the cell alternates with each cell going horizontally, hence why both y % 2 and xBoard % 2
-                // are involved in the calculation.
+                // are involved in the calculation. the parity also depends on if boardDim is odd or even.
                 int xCell = x % xScale;
-                boolean isBottomOfCell = (y % 2 == 1) ^ (xBoard % 2 == 1);
+                boolean isBottomOfCell = ((y % 2 == 1) ^ (xBoard % 2 == 1)) ^ (boardDim % 2 == 1);
 
                 // for x coordinates in the cell that aren't the left/right walls, print an underscore or overline
                 // to indicate the tops/bottoms of cells
-                if (xCell == 1 || xCell == 2 || xCell == 4 || xCell == 5) {
+                if (xCell != 0 && xCell != xScale/2) {
                     if (isBottomOfCell) string.append('_');
                     else string.append('‾');
                     continue;
@@ -206,49 +297,55 @@ public class Board {
                 if (xCell == 0) {
                     if (isBottomOfCell) string.append('\\');
                     else string.append('/');
-                    continue;
+                } else {
+                    // else xCell = xScale/2, i.e. the middle of the cell
+
+                    Piece piece = board[xBoard][(int) yBoard];
+
+                    if (piece == null || piece.color == Piece.Color.DISABLED) {
+                        string.append(' ');
+                        continue;
+                    }
+
+                    char charToAppend = piece.getChar();
+                    string.append(charToAppend);
                 }
-
-                Piece piece = board[xBoard][(int) yBoard];
-
-                if (piece == null) {
-                    string.append(' ');
-                    continue;
-                }
-
-                char charToAppend = piece.getChar();
-                charToAppend = piece.color == Piece.Color.WHITE ? Character.toUpperCase(charToAppend) : charToAppend;
-                string.append(charToAppend);
             }
 
             string.append('\n');
         }
 
-        // go back through the string and add in the rightmost walls
-        //
-        // (the first for loop does the \ wall on the rightmost cell in the top 5 rows,
-        // the second for loop does the / wall on the rightmost cell in the bottom 5 rows,
-        // and the final for loop does alternating \ and / to make the two rightmost walls
-        // of the middle 6 rows of hexagons. the offset calculations are somewhat bespoke
-        // and are the result of experimentation)
-        for (int y = 1; y < 6; y++) {
-            int x = 6*6 + (y-1)*8 - 1;
-            string.insert(y*11*6 + x, '\\');
+        // go back through and add the rightmost wall to each row of cells
+        // first loop does the top boardDim-1 rows (which all end in \), second loop does alternating \ and /
+        // on the middle 2*boardDim rows and the third loop does the bottom boardDim-1 rows (which all end in /)
+
+        // the row length is boardDiameter*xScale+2 to account for the extra \ added to previous lines as well
+        // as the \n newline character
+        int rowLen = boardDiameter*xScale+2;
+
+        for (int y = 1; y < boardDim; y++) {
+            int x = (boardDim + y-1) * xScale;
+            string.insert(y * rowLen + x, '\\');
         }
-        for (int y = 23; y > 18; y--) {
-            int x = 4*6 - (y-17)*5 + 1;
-            string.insert(y*11*6 + x, '/');
+
+        for (int y = boardDim; y < boardDim*3; y++) {
+            int yRelative = y - boardDim;
+            int x = boardDiameter * xScale;
+            string.insert(y * rowLen + x, yRelative % 2 == 0 ? '\\' : '/');
         }
-        for (int y = 0; y < 12; y++) {
-            string.insert(6*11+3 + (6*11+1)*6 + y*(6*11+2), y % 2 == 1 ? '/' : '\\');
+
+        for (int y = boardDim*3; y < boardDiameter*2+1; y++) {
+            int yRelative = y - boardDim*3;
+            int x = (boardDiameter - yRelative-1) * xScale;
+            string.insert(y * rowLen + x, '/');
         }
 
         return string.toString();
     }
 
     public boolean isInBounds(Position pos) {
-        boolean isFileInBounds = pos.file >= 0 && pos.file < 11;
-        boolean isRankInBounds = pos.rank >= 0 && pos.rank < 11 - Math.abs(pos.file - centerFile);
+        boolean isFileInBounds = pos.file >= 0 && pos.file < boardDiameter;
+        boolean isRankInBounds = pos.rank >= 0 && pos.rank < boardDiameter - Math.abs(pos.file - (boardDim-1));
         return isFileInBounds && isRankInBounds;
     }
 
@@ -276,7 +373,7 @@ public class Board {
         // delegate calculation of legal moves to the specific class which the Piece belongs to
         Set<Move> potentialMoves = piece.getMovesFromPos(this, fromPos);
 
-        Position playerKingPos = piece.color == Piece.Color.WHITE ? this.whiteKingPos : this.blackKingPos;
+        Position playerKingPos = kingPositions.get(piece.color);
 
         // if there is no king, do not need the below
         if (playerKingPos == null) return potentialMoves;
@@ -285,7 +382,7 @@ public class Board {
         Set<Move> moves = new HashSet<>();
         for (Move move : potentialMoves) {
             Board boardcopy = new Board(this);
-            boardcopy.applyMoveTentatively(move);
+            boardcopy.applyMoveMinimal(move);
 
             // apply the move tentatively and check if the king is in check afterwards, then revert the move
             if (!boardcopy.isKingInCheck(piece.color)) {
@@ -297,117 +394,72 @@ public class Board {
     }
 
     // helper for getLegalMoves, used to check that the king is not in check after a move is done
-    // returns captured piece, so that it isn't lost
-    Piece applyMoveTentatively(Move move) {
+    // need to skip the legality check for this to avoid infinite recursion in getLegalMoves
+    void applyMoveMinimal(Move move) {
         Piece movedPiece = this.getPos(move.fromPos);
-        Piece.Color playerColor = movedPiece.color;
-
-        Set<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
-        Set<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
 
         this.setPos(move.fromPos, null);
-        playerPositionsList.remove(move.fromPos);
+        piecePositions.get(movedPiece.color).remove(move.fromPos);
 
         Piece capturedPiece = this.getPos(move.toPos);
         this.setPos(move.toPos, movedPiece);
-        playerPositionsList.add(move.toPos);
+        piecePositions.get(movedPiece.color).add(move.toPos);
 
         if (movedPiece instanceof King) {
-            if (movedPiece.color == Piece.Color.WHITE) {
-                this.whiteKingPos = move.toPos;
-            } else {
-                this.blackKingPos = move.toPos;
-            }
+            kingPositions.put(movedPiece.color, move.toPos);
         }
 
-        if (capturedPiece != null)
-            enemyPositionsList.remove(move.toPos);
-
-        return capturedPiece;
-    }
-
-    // helper for getLegalMoves; reverts a tentative move
-    void revertTentativeMove(Move move, Piece capturedPiece) {
-        Piece movedPiece = this.getPos(move.toPos);
-        Piece.Color playerColor = movedPiece.color;
-
-        Set<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
-        Set<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
-
-        this.setPos(move.toPos, capturedPiece);
-        if (capturedPiece != null)
-            enemyPositionsList.add(move.toPos);
-        playerPositionsList.remove(move.toPos);
-
-        this.setPos(move.fromPos, movedPiece);
-        playerPositionsList.add(move.fromPos);
-
-        if (movedPiece instanceof King) {
-            if (movedPiece.color == Piece.Color.WHITE) {
-                this.whiteKingPos = move.fromPos;
-            } else {
-                this.blackKingPos = move.fromPos;
-            }
+        if (capturedPiece != null && capturedPiece.color != Piece.Color.DISABLED) {
+            piecePositions.get(capturedPiece.color).remove(move.toPos);
         }
+
     }
 
-    public MoveResult applyMoveWithLegalityCheck(Move move, Piece.Color playerColor) {
+    public MoveResult applyMove(Move move, Piece.Color playerColor) {
         if (!isLegalMove(move, playerColor))
             return new MoveResult(false);
 
-        Set<Position> playerPositionsList = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
-        Set<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
-        List<PieceType> enemyCapturedList = playerColor == Piece.Color.WHITE ? blackCapturedPieces : whiteCapturedPieces;
-
         Piece movedPiece = this.getPos(move.fromPos);
         this.setPos(move.fromPos, null);
-        playerPositionsList.remove(move.fromPos); // note: need to do this because the piece's position changed
+        piecePositions.get(movedPiece.color).remove(move.fromPos); // note: need to do this because the piece's position changed
 
         Piece capturedPiece = this.getPos(move.toPos);
-        if (capturedPiece != null) {
-            enemyPositionsList.remove(move.toPos);
-            enemyCapturedList.add(capturedPiece.getPieceType());
-            enemyCapturedList.sort(PieceType::compareTo);
+        if (capturedPiece != null && capturedPiece.color != Piece.Color.DISABLED) {
+            piecePositions.get(capturedPiece.color).remove(move.toPos);
+            capturedPieces.get(playerColor).add(capturedPiece);
+            capturedPieces.get(playerColor).sort(Piece::compareTo);
         }
         this.setPos(move.toPos, movedPiece);
-        playerPositionsList.add(move.toPos);
-
-        Position promotedPawn = null;
+        piecePositions.get(movedPiece.color).add(move.toPos);
 
         // Promotion check; the promotion action is handled in handlePromotion
+        Position promotedPawn = null;
         if (movedPiece instanceof Pawn) {
-            if (movedPiece.color == Piece.Color.WHITE
-                    && move.toPos.rank == boarddim - Position.distanceFromCenter(move.toPos, boarddim) - 1
-               || movedPiece.color == Piece.Color.BLACK && move.toPos.rank == 0) {
+            if (Pawn.isInPromotionPosition(move.toPos, movedPiece.color, this)) {
                 promotedPawn = move.toPos;
             }
         }
 
         // Update the king position if the moved piece is a king
         if (movedPiece instanceof King) {
-            if (playerColor == Piece.Color.WHITE)
-                whiteKingPos = move.toPos;
-            else {
-                blackKingPos = move.toPos;
-            }
+            kingPositions.put(movedPiece.color, move.toPos);
         }
 
-        // If this is a pawn capturing another pawn with en passant, remove the passantable pawn
-        int forwardStep = movedPiece.color == Piece.Color.WHITE ? 1 : -1;
-        if (passantablePawn != null && movedPiece instanceof Pawn
-                && move.fromPos.file != move.toPos.file // this is a capturing move
-                && move.toPos.file == passantablePawn.file && move.toPos.rank == passantablePawn.rank + forwardStep) {
-                // the passantable pawn is in the capture position
-            enemyCapturedList.addFirst(PieceType.PAWN);
-            enemyPositionsList.remove(passantablePawn);
-            this.setPos(passantablePawn, null);
+        // If this is a pawn move that delivers en passant, handle capturing the passanted pawn
+        if (movedPiece instanceof Pawn &&
+                Pawn.getPassantedPawnIfExists(move, playerColor, this) != null) {
+            Position passantedPawnPos = Pawn.getPassantedPawnIfExists(move, playerColor, this);
+            Piece passantedPawn = this.getPos(passantedPawnPos);
+            piecePositions.get(passantedPawn.color).remove(passantedPawnPos);
+            capturedPieces.get(playerColor).addFirst(passantedPawn);
+            this.setPos(passantedPawnPos, null);
         }
 
-        // If this is a pawn making its starting move, update passantable pawn; else, clear passantable pawn
-        if (movedPiece instanceof Pawn && Math.abs(move.toPos.rank - move.fromPos.rank) == 2) {
-            passantablePawn = move.toPos;
+        // If this is a pawn making its starting move, update passantable pawn; else, clear this color's passantable pawn
+        if (movedPiece instanceof Pawn && Pawn.isStartingPawnMove(move, playerColor, this)) {
+            passantablePawns.put(playerColor, move.toPos);
         } else {
-            passantablePawn = null;
+            passantablePawns.remove(playerColor);
         }
 
 
@@ -428,13 +480,19 @@ public class Board {
      * Helper for checking checks/checkmates: calculate the set of positions which are under attack
      */
     public boolean[][] getSpacesUnderThreat(Piece.Color playerColor) {
-        Set<Position> enemyPositionsList = playerColor == Piece.Color.WHITE ?  blackPiecePositions : whitePiecePositions;
-        boolean[][] underAttack = new boolean[boarddim][boarddim];
+        Set<Position> enemyPositionsList = new HashSet<>();
+        for (Piece.Color color : piecePositions.keySet()) {
+            if (color != playerColor)
+                enemyPositionsList.addAll(piecePositions.get(color));
+        }
+
+
+        boolean[][] underAttack = new boolean[boardDiameter][boardDiameter];
         // note: the above could easily be a bit vector instead, but will avoid premature optimisation
 
         // initially set all entries to false
-        for (int x = 0; x < boarddim; x++) {
-            for (int y = 0; y < boarddim; y++) {
+        for (int x = 0; x < boardDiameter; x++) {
+            for (int y = 0; y < boardDiameter; y++) {
                 underAttack[x][y] = false;
             }
         }
@@ -476,7 +534,7 @@ public class Board {
      * Checks stalemate (player has no legal moves)
      */
     public boolean isInStalemate(Piece.Color playerColor) {
-        Set<Position> playerPiecePositions = playerColor == Piece.Color.WHITE ? whitePiecePositions : blackPiecePositions;
+        Set<Position> playerPiecePositions = piecePositions.get(playerColor);
         for (Position pos : playerPiecePositions) {
             if (!this.getLegalMovesFromPos(pos).isEmpty()) return false;
         }
@@ -487,7 +545,7 @@ public class Board {
      * Checks if the king is in check
      */
     public boolean isKingInCheck(Piece.Color playerColor) {
-        Position kingPos = playerColor == Piece.Color.WHITE ? whiteKingPos : blackKingPos;
+        Position kingPos = kingPositions.get(playerColor);
         return isSpaceUnderThreat(playerColor, kingPos);
     }
 
@@ -498,15 +556,27 @@ public class Board {
         return isInStalemate(playerColor) && isKingInCheck(playerColor);
     }
 
+    /**
+     * Handles eliminating a player (setting their pieces to dead)
+     */
+    public void eliminatePlayer(Piece.Color player) {
+        for (Position pos : piecePositions.get(player)) {
+            this.getPos(pos).color = Piece.Color.DISABLED;
+        }
+        piecePositions.remove(player);
+        kingPositions.remove(player);
+        passantablePawns.remove(player);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Board board1)) return false;
-        return boarddim == board1.boarddim && Objects.deepEquals(board, board1.board);
+        return boardDiameter == board1.boardDiameter && Objects.deepEquals(board, board1.board);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(boarddim, Arrays.deepHashCode(board));
+        return Objects.hash(boardDim, Arrays.deepHashCode(board));
     }
 }

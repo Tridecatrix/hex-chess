@@ -10,16 +10,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
 import model.*;
+import model.piece.Pawn;
 import model.piece.Piece;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 import static java.lang.Thread.sleep;
@@ -27,23 +24,22 @@ import static java.lang.Thread.sleep;
 public class Main extends Application {
     Stage primaryStage;
 
-    // list of GUI elements and variables associated with game settings
+    // list of GUI elements and variables associated with game settings on the main menu
     boolean timerEnabled;
     VBox timerSettings;
     CheckBox enableTimer;
     ComboBox<String> timerPresetDropdown;
     HBox timerSelect;
     List<HBox> customTimerFieldsWithText;
-    TextField customTimerStartingTimeWhite;
-    TextField customTimerIncrementWhite;
-    TextField customTimerStartingTimeBlack;
-    TextField customTimerIncrementBlack;
+    Map<Piece.Color, TextField> customTimerStartingTime = new HashMap<>();
+    Map<Piece.Color, TextField> customTimerIncrement = new HashMap<>();
     boolean customTimerSettingsEnabled;
+    ComboBox<String> gameModeDropdown;
 
     // list of GUI elements that are printed on the board side
-    BoardTile[][] boardTilesAsArray = new BoardTile[11][11];
-    PieceView[][] pieceViewsAsArray = new PieceView[11][11];
-    StackPane[][] tileStacksAsArray = new StackPane[11][11];
+    BoardTile[][] boardTilesAsArray;
+    PieceView[][] pieceViewsAsArray;
+    StackPane[][] tileStacksAsArray;
     Group boardAndCoordinatesView;
 
     // list of GUI elements printed on the sidebar
@@ -51,12 +47,12 @@ public class Main extends Application {
     Text moveNumber;
     Text currentPlayer;
     Text gameStatus;
-    Text capturedPiecesWhite;
-    Text capturedPiecesBlack;
+    Map<Piece.Color, TextFlow> capturedPiecesTexts = new HashMap<>();
+    Text gameWinsHeader;
     Text gameWins;
+    VBox eliminatedPlayersStatus;
     Text timerSettingsDesc;
-    Text timeRemainingWhite;
-    Text timeRemainingBlack;
+    Map<Piece.Color, Text> timeRemaining = new HashMap<>();;
     Text temporaryMessage;
 
     // timer
@@ -94,6 +90,7 @@ public class Main extends Application {
 
         VBox settings = new VBox(5);
         settings.setAlignment(Pos.CENTER);
+        settings.setPrefWidth(200);
 
         Text settingsHeader = new Text("Settings:");
         settingsHeader.setFont(Font.font(24));
@@ -107,6 +104,22 @@ public class Main extends Application {
         timerSettings.getChildren().add(enableTimer);
         enableTimer.setOnAction(e -> { expandTimerOptions(); });
         settings.getChildren().add(timerSettings);
+
+        HBox gameModeSettings = new HBox(5);
+        gameModeSettings.setAlignment(Pos.CENTER);
+        Text gameModeText = new Text("Game mode:");
+        gameModeText.setFont(Font.font(16));
+        gameModeDropdown = new ComboBox<>();
+        gameModeDropdown.getItems().addAll("2 player", "3 player", "6 player");
+        gameModeDropdown.setValue("2 player");
+        gameModeDropdown.setOnAction(e -> {
+            if (timerEnabled && customTimerSettingsEnabled) {
+                timerSettings.getChildren().removeAll(customTimerFieldsWithText);
+                createCustomTimerOptions();
+            }
+        });
+        gameModeSettings.getChildren().addAll(gameModeText, gameModeDropdown);
+        settings.getChildren().add(gameModeSettings);
 
         Button playButton = new Button("Play");
         playButton.setFont(new Font(48));
@@ -125,49 +138,17 @@ public class Main extends Application {
     private void expandTimerOptions() {
         this.timerEnabled = enableTimer.isSelected();
         if (timerEnabled) {
-            timerSelect = new HBox(10);
+            timerSelect = new HBox(16);
             timerSelect.getChildren().add(new Text("Timing: "));
             timerSelect.setAlignment(Pos.CENTER);
 
             timerPresetDropdown = new ComboBox<>();
             timerPresetDropdown.getItems().addAll("Bullet", "Blitz", "Rapid", "Classical", "Custom");
             timerPresetDropdown.setValue("Rapid");
-            gameTimer = new GameTimer(GameTimer.TimingSetting.RAPID);
             timerPresetDropdown.setOnAction(e2 -> {
                 if (Objects.equals(timerPresetDropdown.getValue(), "Custom")) {
                     customTimerSettingsEnabled = true;
-
-                    customTimerStartingTimeWhite = new TextField();
-                    customTimerIncrementWhite = new TextField();
-                    customTimerStartingTimeBlack = new TextField();
-                    customTimerIncrementBlack = new TextField();
-
-                    HBox hbox1 = new HBox(5, new Text("Start time for White (sec):"), customTimerStartingTimeWhite);
-                    HBox hbox2 = new HBox(5, new Text("Increment for White (sec):"), customTimerIncrementWhite);
-                    HBox hbox3 = new HBox(5, new Text("Start time for Black (sec):"), customTimerStartingTimeBlack);
-                    HBox hbox4 = new HBox(5, new Text("Increment for Black (sec):"), customTimerIncrementBlack);
-                    customTimerFieldsWithText = List.of(hbox1, hbox2, hbox3, hbox4);
-
-                    // set numeric filter on the textfields
-                    UnaryOperator<TextFormatter.Change> filter = change -> {
-                        String text = change.getControlNewText();
-                        if (text.matches("\\d*")) {
-                            return change; // Accept the change
-                        }
-                        return null; // Reject the change
-                    };
-
-
-                    for (TextField field : List.of(customTimerIncrementWhite, customTimerStartingTimeWhite,
-                            customTimerIncrementBlack, customTimerIncrementBlack)) {
-                        field.setTextFormatter(new TextFormatter<>(filter));
-                    }
-
-                    for (HBox box : customTimerFieldsWithText) {
-                        box.setAlignment(Pos.CENTER);
-                    }
-
-                    timerSettings.getChildren().addAll(customTimerFieldsWithText);
+                    createCustomTimerOptions();
                 } else if (customTimerSettingsEnabled) {
                     customTimerSettingsEnabled = false;
                     timerSettings.getChildren().removeAll(customTimerFieldsWithText);
@@ -183,6 +164,50 @@ public class Main extends Application {
         }
     }
 
+    private void createCustomTimerOptions() {
+        List<Piece.Color> activeColors = switch (gameModeDropdown.getValue()) {
+            case "2 player" -> List.of(Piece.Color.WHITE, Piece.Color.BLACK);
+            case "3 player" -> List.of(Piece.Color.WHITE, Piece.Color.RED, Piece.Color.BLUE);
+            case "6 player" -> List.of(Piece.Color.WHITE, Piece.Color.GREEN, Piece.Color.RED,
+                    Piece.Color.YELLOW, Piece.Color.BLUE, Piece.Color.PURPLE);
+            default -> throw new IllegalArgumentException("Illegal game mode");
+        };
+
+        customTimerFieldsWithText = new ArrayList<>();
+
+        for (Piece.Color color : activeColors) {
+            TextField customTimerStartingTimeForColor = new TextField();
+            TextField customTimerIncrementForColor = new TextField();
+
+            customTimerStartingTime.put(color, customTimerStartingTimeForColor);
+            customTimerIncrement.put(color, customTimerIncrementForColor);
+
+            HBox hbox1 = new HBox(5, new Text("Start time for " + color.toStringCapitalised() + " (sec):"), customTimerStartingTimeForColor);
+            HBox hbox2 = new HBox(5, new Text("Increment for " + color.toStringCapitalised() + " (sec):"), customTimerIncrementForColor);
+            customTimerFieldsWithText.addAll(List.of(hbox1, hbox2));
+
+            // set numeric filter on the textfields
+            UnaryOperator<TextFormatter.Change> filter = change -> {
+                String text = change.getControlNewText();
+                if (text.matches("\\d*")) {
+                    return change; // Accept the change
+                }
+                return null; // Reject the change
+            };
+
+
+            for (TextField field : List.of(customTimerIncrementForColor, customTimerStartingTimeForColor)) {
+                field.setTextFormatter(new TextFormatter<>(filter));
+            }
+
+            for (HBox box : customTimerFieldsWithText) {
+                box.setAlignment(Pos.CENTER);
+            }
+        }
+
+        timerSettings.getChildren().addAll(customTimerFieldsWithText);
+    }
+
     private Parent createGameScreen() {
         HBox root = new HBox(16);
         root.setPrefSize(1920, 1080);
@@ -190,23 +215,33 @@ public class Main extends Application {
         root.setSpacing(100);
 
         // initialise the backend (game object)
-        game = new Game();
+        Game.Mode gamemode = switch (gameModeDropdown.getValue()) {
+            case "2 player" -> Game.Mode.TWO_PLAYER;
+            case "3 player" -> Game.Mode.THREE_PLAYER;
+            case "6 player" -> Game.Mode.SIX_PLAYER;
+            default -> throw new IllegalArgumentException("Illegal game mode");
+        };
+        game = new Game(gamemode);
 
         // initialise the backend (game timer)
         if (timerEnabled) {
             GameTimer timer;
 
             switch (timerPresetDropdown.getValue()) {
-                case "Bullet" -> { timer = new GameTimer(GameTimer.TimingSetting.BULLET); }
-                case "Blitz" -> { timer = new GameTimer(GameTimer.TimingSetting.BLITZ); }
-                case "Rapid" -> { timer = new GameTimer(GameTimer.TimingSetting.RAPID); }
-                case "Classical" -> { timer = new GameTimer(GameTimer.TimingSetting.CLASSICAL); }
+                case "Bullet" -> { timer = new GameTimer(GameTimer.TimingSetting.BULLET, game.getActiveColors()); }
+                case "Blitz" -> { timer = new GameTimer(GameTimer.TimingSetting.BLITZ, game.getActiveColors()); }
+                case "Rapid" -> { timer = new GameTimer(GameTimer.TimingSetting.RAPID, game.getActiveColors()); }
+                case "Classical" -> { timer = new GameTimer(GameTimer.TimingSetting.CLASSICAL, game.getActiveColors()); }
                 case "Custom" -> {
-                    timer = new GameTimer(
-                            Integer.parseInt(customTimerStartingTimeWhite.getText()),
-                            Integer.parseInt(customTimerStartingTimeBlack.getText()),
-                            Integer.parseInt(customTimerIncrementWhite.getText()),
-                            Integer.parseInt(customTimerIncrementBlack.getText()));
+                    Map<Piece.Color, Integer> startingTimes = new HashMap<>();
+                    Map<Piece.Color, Integer> increments = new HashMap<>();
+
+                    for (Piece.Color color : game.getActiveColors()) {
+                        startingTimes.put(color, Integer.parseInt(customTimerStartingTime.get(color).getText()));
+                        increments.put(color, Integer.parseInt(customTimerIncrement.get(color).getText()));
+                    }
+
+                    timer = new GameTimer(startingTimes, increments);
                 }
                 default -> {
                     throw new IllegalArgumentException("Illegal timing option");
@@ -220,7 +255,9 @@ public class Main extends Application {
             animationTimer = new AnimationTimer() {
                 @Override
                 public void handle(long l) {
-                    game.updateTimer(l);
+                    if (game.updateTimerAndCheckForFlagging(l)) {
+                        renderPieces();
+                    }
                     renderGameInfo();
                 }
             };
@@ -230,20 +267,25 @@ public class Main extends Application {
         // begin setting up the board view
         boardAndCoordinatesView = new Group();
         root.getChildren().add(boardAndCoordinatesView);
-        double h = BOARD_SIZE/11;                       // tile height
+        int d = game.getBoard().getBoardDiameter();
+        double h = BOARD_SIZE/d;                       // tile height
         double s = BoardTile.fullHeightToSideLength(h); // tile side length
 
+        tileStacksAsArray = new StackPane[d][d];
+        boardTilesAsArray = new BoardTile[d][d];
+        pieceViewsAsArray = new PieceView[d][d];
+
         // create board tile stacks, pieces and boards
-        for (int xBoard = 0; xBoard < 11; xBoard++) {
-            for (int yBoard = 0; yBoard < 11; yBoard++) {
-                if (new Position(xBoard, yBoard).isInBounds(11)) {
+        for (int xBoard = 0; xBoard < d; xBoard++) {
+            for (int yBoard = 0; yBoard < d; yBoard++) {
+                if (new Position(xBoard, yBoard).isInBounds(d)) {
                     // calculate the x and y pixel position of the hexagon center from hexagon side length s, hexagon height h,
-                    // xBoard and yBoard (i.e. position on the 11x11 board array)
+                    // xBoard and yBoard (i.e. position on the dxd board array)
                     double x = 1.5 * s * xBoard;
-                    double y = -(-h / 2 * Position.distanceFromEdge(new Position(xBoard, yBoard), 11) + h * yBoard);
+                    double y = -(-h / 2 * Position.distanceFromEdge(new Position(xBoard, yBoard), d) + h * yBoard);
 
                     // get the hexagon color based on its position on the board
-                    int colorIndex = (yBoard + Position.distanceFromEdge(new Position(xBoard, yBoard), 11)) % 3;
+                    int colorIndex = (yBoard + Position.distanceFromEdge(new Position(xBoard, yBoard), d)) % 3;
                     BoardTile.TileColor color = List.of(BoardTile.TileColor.BLACK, BoardTile.TileColor.GREY, BoardTile.TileColor.WHITE).get(colorIndex);
 
                     // create hexagon tile stack
@@ -268,18 +310,18 @@ public class Main extends Application {
         }
 
         // create coordinate markings: x markings
-        for (int xBoard = 0; xBoard < 11; xBoard++) {
+        for (int xBoard = 0; xBoard < d; xBoard++) {
             char file = (char) ((int) 'a' + xBoard);
             Text coordinateMarking = new Text(Character.toString(file));
             coordinateMarking.setFont(Font.font(24));
-            coordinateMarking.setX(s + 1.5 * s * xBoard);
-            coordinateMarking.setY(h * 1.5 + h / 2 * Position.distanceFromEdge(new Position(xBoard, 0), 11));
-            boardAndCoordinatesView.getChildren().add(coordinateMarking);
+            coordinateMarking.setX(s + 1.5 * s * xBoard - 6);
+            coordinateMarking.setY(h * 1.5 + h / 2 * Position.distanceFromEdge(new Position(xBoard, 0), d));
             coordinateMarking.setTextAlignment(TextAlignment.CENTER);
+            boardAndCoordinatesView.getChildren().add(coordinateMarking);
         }
 
         // create coordinate markings: y markings
-        for (int yBoard = 0; yBoard < 11; yBoard++) {
+        for (int yBoard = 0; yBoard < d; yBoard++) {
             Text leftCoordinateMarking = new Text(Integer.toString(yBoard + 1));
             Text rightCoordinateMarking = new Text(Integer.toString(yBoard + 1));
             leftCoordinateMarking.setFont(Font.font(24));
@@ -287,19 +329,26 @@ public class Main extends Application {
             leftCoordinateMarking.setTextAlignment(TextAlignment.RIGHT); // for some reason this doesn't work
             rightCoordinateMarking.setTextAlignment(TextAlignment.LEFT);
 
-            if (yBoard <= 5) {
-                leftCoordinateMarking.setX(s - 1.25 * s);
+            int dim = game.getBoard().getBoardDim();
+
+            if (yBoard <= dim-1) {
+                if (yBoard <= 8)
+                    leftCoordinateMarking.setX(-12);
+                else
+                    leftCoordinateMarking.setX(-24);
                 leftCoordinateMarking.setY(h * 0.25 - h * yBoard);
-                rightCoordinateMarking.setX(1.9 * s + 1.5 * s * 10);
+
+                rightCoordinateMarking.setX(0.4 * s + 1.5 * s * d);
                 rightCoordinateMarking.setY(h * 0.25 - h * yBoard);
             } else {
                 if (yBoard <= 8)
-                    leftCoordinateMarking.setX(-0.25 * s + (yBoard - 5) * (s * 1.5));
+                    leftCoordinateMarking.setX(-12 + (yBoard - (dim-1)) * (s * 1.5));
                 else
-                    leftCoordinateMarking.setX(-12 - 0.25 * s + (yBoard - 5) * (s * 1.5));
-                leftCoordinateMarking.setY(h * 0.25 - h * 2.5 - h/2 * yBoard);
-                rightCoordinateMarking.setX(1.9 * s + 1.5 * s * 10   - (yBoard - 5) * (s * 1.5));
-                rightCoordinateMarking.setY(h * 0.25 - h * 2.5 - h/2 * yBoard);
+                    leftCoordinateMarking.setX(-24 + (yBoard - (dim-1)) * (s * 1.5));
+                leftCoordinateMarking.setY(h * 0.25 - h * (dim-1) - h/2 * (yBoard - (dim-1)));
+
+                rightCoordinateMarking.setX(0.4 * s + 1.5 * s * d - (yBoard - (dim-1)) * (s * 1.5));
+                rightCoordinateMarking.setY(h * 0.25 - h * (dim-1) - h/2 * (yBoard - (dim-1)));
             }
 
             boardAndCoordinatesView.getChildren().add(leftCoordinateMarking);
@@ -312,7 +361,7 @@ public class Main extends Application {
         // build sidebar with background
         sidebar = new VBox(16);
         sidebar.setAlignment(Pos.CENTER_LEFT);
-        sidebar.setMaxHeight(500);
+        sidebar.setMaxHeight(200);
         sidebar.setBackground(new Background(new BackgroundFill(Color.web("#e3e3e3"), new CornerRadii(20), new Insets(-20))));
         root.getChildren().add(sidebar);
 
@@ -326,50 +375,66 @@ public class Main extends Application {
         gameStatus = new Text();
         gameStatus.setFont(Font.font(22));
 
-        Text whiteCapturesHeading = new Text("White captures:");
-        whiteCapturesHeading.setFont(Font.font(22));
-        capturedPiecesWhite = new Text();
-        capturedPiecesWhite.setFont(Font.font(16));
+        sidebar.getChildren().addAll(moveNumber, currentPlayer, gameStatus);
 
-        Text blackCapturesHeading = new Text("Black captures:");
-        blackCapturesHeading.setFont(Font.font(22));
-        capturedPiecesBlack = new Text();
-        capturedPiecesBlack.setFont(Font.font(16));
+        Text capturesHeading = new Text("Captures:");
+        capturesHeading.setFont(Font.font(22));
+        sidebar.getChildren().add(capturesHeading);
+
+        for (Piece.Color color : game.getActiveColors()) {
+            Text capturedPiecesColor = new Text(color.toStringCapitalised() + ":");
+            capturedPiecesColor.setFont(Font.font(16));
+
+            TextFlow capturedPiecesText = new TextFlow(capturedPiecesColor);
+            capturedPiecesText.setTextAlignment(TextAlignment.LEFT);
+            capturedPiecesText.setMaxWidth(250);
+            capturedPiecesTexts.put(color, capturedPiecesText);
+            sidebar.getChildren().add(capturedPiecesText);
+        }
 
         if (timerEnabled) {
-            if (game.getGameTimer().getIncrementSecWhite() == game.getGameTimer().getIncrementSecBlack() &&
-                game.getGameTimer().getStartingTimeSecWhite() == game.getGameTimer().getStartingTimeSecBlack())
-                timerSettingsDesc = new Text("Time setting: " + game.getGameTimer().getStartingTimeSecWhite()/60 + "m+" + game.getGameTimer().getIncrementSecWhite() + "s");
+            if (game.getGameTimer().getStartingTimeSec().values().stream().distinct().count() == 1 &&
+                    game.getGameTimer().getIncrementSec().values().stream().distinct().count() == 1)
+                timerSettingsDesc = new Text("Time setting: " + game.getGameTimer().getStartingTimeSec().get(Piece.Color.WHITE)/60
+                        + "m+" + game.getGameTimer().getIncrementSec().get(Piece.Color.WHITE) + "s");
             else {
-                timerSettingsDesc = new Text("Time setting: " + game.getGameTimer().getStartingTimeSecWhite()/60 + "m+" + game.getGameTimer().getIncrementSecWhite() + "s"
-                    + "/" + game.getGameTimer().getStartingTimeSecBlack()/60 + "m+" + game.getGameTimer().getIncrementSecBlack() + "s");
+                timerSettingsDesc = new Text("Time setting: Custom");
             }
             timerSettingsDesc.setFont(Font.font(22));
-            timeRemainingWhite = new Text();
-            timeRemainingWhite.setFont(Font.font(22));
-            timeRemainingBlack = new Text();
-            timeRemainingBlack.setFont(Font.font(22));
+
+            for (Piece.Color color : game.getActiveColors()) {
+                Text timeRemainingForColor = new Text();
+                timeRemainingForColor.setFont(Font.font(16));
+                timeRemaining.put(color, timeRemainingForColor);
+            }
         }
 
         VBox wins = new VBox(5);
         Text heading1 = new Text("Games won by:");
-        Text heading2 = new Text("White   Black");
+        gameWinsHeader = new Text();
         gameWins = new Text();
         heading1.setFont(Font.font(22));
-        heading2.setFont(Font.font(16));
+        gameWinsHeader.setFont(Font.font(16));
         gameWins.setFont(Font.font(16));
-        wins.getChildren().addAll(heading1, heading2, gameWins);
+        wins.getChildren().addAll(heading1, gameWinsHeader, gameWins);
+        sidebar.getChildren().add(wins);
+
+        eliminatedPlayersStatus = new VBox(5);
+        sidebar.getChildren().add(eliminatedPlayersStatus);
 
         renderGameInfo();
 
-        sidebar.getChildren().addAll(moveNumber, currentPlayer, gameStatus);
-        sidebar.getChildren().addAll(whiteCapturesHeading, capturedPiecesWhite, blackCapturesHeading, capturedPiecesBlack);
         if (timerEnabled) {
             sidebar.getChildren().add(timerSettingsDesc);
-            sidebar.getChildren().add(timeRemainingWhite);
-            sidebar.getChildren().add(timeRemainingBlack);
+
+            Text timeRemainingHeader = new Text("Time remaining: ");
+            timeRemainingHeader.setFont(Font.font(22));
+            sidebar.getChildren().add(timeRemainingHeader);
+
+            for (Piece.Color color : game.getActiveColors()) {
+                sidebar.getChildren().add(timeRemaining.get(color));
+            }
         }
-        sidebar.getChildren().add(wins);
 
         // add game buttons
         VBox gameButtons = new VBox(5);
@@ -389,6 +454,7 @@ public class Main extends Application {
         resign.setOnAction(e -> {
             if (game.getCurrentGameState() == Game.GameResult.CONTINUING) {
                 game.resign();
+                renderPieces();
                 renderGameInfo();
             }
         });
@@ -454,12 +520,13 @@ public class Main extends Application {
 
     // After an update to the underlying Game, i.e. piece position update, render pieces
     private void renderPieces() {
-        double h = BOARD_SIZE/11;                       // tile height
+        int d = game.getBoard().getBoardDiameter();
+        double h = BOARD_SIZE/d;                       // tile height
         double s = BoardTile.fullHeightToSideLength(h); // tile side length
 
         // Remove all current piece images
-        for (int xBoard = 0; xBoard < 11; xBoard++) {
-            for (int yBoard = 0; yBoard < 11; yBoard++) {
+        for (int xBoard = 0; xBoard < d; xBoard++) {
+            for (int yBoard = 0; yBoard < d; yBoard++) {
                 if (pieceViewsAsArray[xBoard][yBoard] != null)  {
                     tileStacksAsArray[xBoard][yBoard].getChildren().remove(pieceViewsAsArray[xBoard][yBoard]);
                     pieceViewsAsArray[xBoard][yBoard] = null;
@@ -468,8 +535,8 @@ public class Main extends Application {
         }
 
         // go back over the board and rebuild pieces array
-        for (int xBoard = 0; xBoard < 11; xBoard++) {
-            for (int yBoard = 0; yBoard < 11; yBoard++) {
+        for (int xBoard = 0; xBoard < d; xBoard++) {
+            for (int yBoard = 0; yBoard < d; yBoard++) {
                 Position pos = new Position(xBoard, yBoard);
 
                 Piece piece = game.getBoard().getPos(pos);
@@ -492,110 +559,109 @@ public class Main extends Application {
 
     // After an update to the underlying game, update the rendered game info
     private void renderGameInfo() {
-        currentPlayer.setText("Current player: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "White" : "Black"));
+        currentPlayer.setText("Current player: " + game.getCurrentPlayer().toStringCapitalised());
         moveNumber.setText((String.format("%-28s", "Move number: " + game.getMoveNumberForCurrentSide())));
 
+        List<Piece.Color> activeColors = new ArrayList<>(game.getActiveColors());
+        for (Piece.Color color : activeColors) {
+            game.checkIfPlayerEliminated(color);
+        }
+        game.checkIfGameEnd();
+
         switch (game.getCurrentGameState()) {
-            case STALEMATE -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by stalemate!");
-            }
-            case CHECKMATE -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by checkmate!");
-            }
             case DRAW -> {
                 gameStatus.setText("Game status: draw");
-            }
-            case RESIGNED -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by resignation!");
-            }
-            case FLAGGED -> {
-                gameStatus.setText("Game status: " + (game.getCurrentPlayer() == Piece.Color.WHITE ? "Black" : "White") + "\nwins by timeout!");
             }
             case CONTINUING -> {
                 gameStatus.setText("Game status: continuing");
             }
-        }
-
-        StringBuilder capturedPiecesWhiteStr = new StringBuilder();
-        if (game.getBoard().getBlackCapturedPieces().isEmpty()) {
-            capturedPiecesWhiteStr.append("None");
-        }
-        else {
-            for (int i = 0; i < game.getBoard().getBlackCapturedPieces().size(); i++) {
-                capturedPiecesWhiteStr.append(game.getBoard().getBlackCapturedPieces().get(i).getPieceIcon(Piece.Color.BLACK));
-                if (i != game.getBoard().getBlackCapturedPieces().size() - 1) {
-                    capturedPiecesWhiteStr.append(", ");
-                }
-                if (i == 8 && i !=  game.getBoard().getWhiteCapturedPieces().size() - 1) {
-                    // after 9 pieces, start printing on new line
-                    capturedPiecesWhiteStr.append('\n');
-                }
+            case FINISHED -> {
+                gameStatus.setText("Game status: " + game.getActiveColors().get(0).toStringCapitalised() + " wins!");
             }
         }
-        capturedPiecesWhite.setText(capturedPiecesWhiteStr.toString());
 
-        StringBuilder capturedPiecesBlackStr = new StringBuilder();
-        if (game.getBoard().getWhiteCapturedPieces().isEmpty()) {
-            capturedPiecesBlackStr.append("None");
-        }
-        else {
-            for (int i = 0; i < game.getBoard().getWhiteCapturedPieces().size(); i++) {
-                capturedPiecesBlackStr.append(game.getBoard().getWhiteCapturedPieces().get(i).getPieceIcon(Piece.Color.WHITE));
-                if (i != game.getBoard().getWhiteCapturedPieces().size() - 1) {
-                    capturedPiecesBlackStr.append(", ");
-                }
-                if (i == 8 && i !=  game.getBoard().getWhiteCapturedPieces().size() - 1) {
-                    // after 9 pieces, start printing on new line
-                    capturedPiecesBlackStr.append('\n');
+        for (Piece.Color color : game.getActiveColors()) {
+            TextFlow capturedPieceText = capturedPiecesTexts.get(color);
+
+            while (!capturedPieceText.getChildren().isEmpty())
+                capturedPieceText.getChildren().removeFirst();
+
+            Text capturedPiecesColor = new Text(color.toStringCapitalised() + ": ");
+            capturedPiecesColor.setFont(Font.font(16));
+            capturedPieceText.getChildren().add(capturedPiecesColor);
+
+            List<Piece> capturedPieces = game.getBoard().getCapturedPieces().get(color);
+            for (int i = 0; i < capturedPieces.size(); i++) {
+                Piece piece = capturedPieces.get(i);
+                Text capturedPieceIcon = new Text(Character.toString(piece.getPieceIcon()));
+                capturedPieceIcon.setFont(Font.font(16));
+                capturedPieceIcon.setFill(Color.web(piece.getColor().getPieceColorAsHex()));
+                capturedPieceText.getChildren().add(capturedPieceIcon);
+
+                if (i != capturedPieces.size()-1) {
+                    Text comma = new Text(", ");
+                    comma.setFont(Font.font(16));
+                    capturedPieceText.getChildren().add(comma);
                 }
             }
-        }
-        capturedPiecesBlack.setText(capturedPiecesBlackStr.toString());
 
-        gameWins.setText(game.getWhitePoints() + "        " + game.getBlackPoints());
+            capturedPieceText.getChildren().add(new Text(" "));
+        }
+
+        // render game wins
+        StringBuilder gameWinsHeaderStr = new StringBuilder();
+        StringBuilder gameWinsStr = new StringBuilder();
+        for (Piece.Color color : game.getPoints().keySet()) {
+            gameWinsHeaderStr.append(String.format("%-10.10s", color.toStringCapitalised()));
+            gameWinsStr.append(String.format("%-12.12s", game.getPoints().get(color)));
+        }
+        gameWinsHeader.setText(gameWinsHeaderStr.toString());
+        gameWins.setText(gameWinsStr.toString());
+
+        // render eliminated players
+        while (!eliminatedPlayersStatus.getChildren().isEmpty()) {
+            eliminatedPlayersStatus.getChildren().removeFirst();
+        }
+        Text eliminatedPlayersHeading = new Text("Eliminated players: ");
+        eliminatedPlayersHeading.setFont(Font.font(22));
+        eliminatedPlayersStatus.getChildren().add(eliminatedPlayersHeading);
+        if (game.getEliminatedColors().isEmpty()) {
+            Text noneText = new Text("None");
+            noneText.setFont(Font.font(16));
+            eliminatedPlayersStatus.getChildren().add(noneText);
+        }
+        for (Piece.Color eliminatedColor : game.getEliminatedColors().keySet()) {
+            Text eliminatedPlayerDesc = new Text(eliminatedColor.toStringCapitalised() + " // "
+                    + game.getEliminatedColors().get(eliminatedColor).toString().toLowerCase());
+            eliminatedPlayerDesc.setFont(Font.font(16));
+            eliminatedPlayersStatus.getChildren().add(eliminatedPlayerDesc);
+        }
 
         if (timerEnabled) {
-            timeRemainingWhite.setText("White time remaining: " + game.getGameTimer().getTimeRemainingAsString(Piece.Color.WHITE));
-            timeRemainingBlack.setText("Black time remaining: " + game.getGameTimer().getTimeRemainingAsString(Piece.Color.BLACK));
+            for (Piece.Color color : game.getGameTimer().getStartingTimeSec().keySet()) {
+                timeRemaining.get(color).setText(color.toStringCapitalised() + ": " + game.getGameTimer().getTimeRemainingAsString(color));
+            }
         }
-    }
-
-    private void renderTimers() {
-
     }
 
     private void renderPromotionMenu(Position promoteablePawn) {
         handlingPromotion = true;
 
         Piece.Color playerColor = this.game.getBoard().getPos(promoteablePawn).color;
+        int d = game.getBoard().getBoardDiameter();
 
         Position promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos;
-        if (playerColor == Piece.Color.WHITE) {
-            promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
-            promotionKnightPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
-            promotionRookPos = Position.oneStepBackward(promoteablePawn, 11);
+        promotionQueenPos = promoteablePawn;
+        promotionBishopPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACK_LEFT).apply(promoteablePawn, d);
+        promotionKnightPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACK_RIGHT).apply(promoteablePawn, d);
+        promotionRookPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACKWARD).apply(promoteablePawn, d);
 
-            if (!promotionBishopPos.isInBounds(11)) {
-                promotionBishopPos = Position.oneStepRightAndForward(promoteablePawn, 11);
-            }
-            if (!promotionKnightPos.isInBounds(11)) {
-                promotionKnightPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
-            }
-        } else {
-            promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
-            promotionKnightPos = Position.oneStepRightAndForward(promoteablePawn, 11);
-            promotionRookPos = Position.oneStepForward(promoteablePawn, 11);
-
-            if (!promotionBishopPos.isInBounds(11)) {
-                promotionBishopPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
-            }
-            if (!promotionKnightPos.isInBounds(11)) {
-                promotionKnightPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
-            }
+        if (!promotionBishopPos.isInBounds(d)) {
+            promotionBishopPos = Pawn.getDirections(playerColor).get(Pawn.Direction.FORWARD_RIGHT).apply(promoteablePawn, d);
         }
-
+        if (!promotionKnightPos.isInBounds(d)) {
+            promotionKnightPos = Pawn.getDirections(playerColor).get(Pawn.Direction.FORWARD_LEFT).apply(promoteablePawn, d);
+        }
 
         PieceView promotionQueen = new PieceView(PieceType.QUEEN, playerColor, promotionQueenPos);
         PieceView promotionBishop = new PieceView(PieceType.BISHOP, playerColor, promotionBishopPos);
@@ -604,7 +670,7 @@ public class Main extends Application {
 
         // highlight the promotion tiles and put the promotion objects on them
         for (PieceView piece : List.of(promotionQueen, promotionBishop, promotionKnight, promotionRook)) {
-            double h = BOARD_SIZE/11;
+            double h = BOARD_SIZE/d;
             double s = BoardTile.fullHeightToSideLength(h);
 
             piece.setFitHeight(s * 1.5);
@@ -626,32 +692,19 @@ public class Main extends Application {
         game.handlePromotion(promoteablePawn, type);
 
         Piece.Color playerColor = this.game.getBoard().getPos(promoteablePawn).color;
+        int d = this.game.getBoard().getBoardDiameter();
 
         Position promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos;
-        if (playerColor == Piece.Color.WHITE) {
-            promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
-            promotionKnightPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
-            promotionRookPos = Position.oneStepBackward(promoteablePawn, 11);
+        promotionQueenPos = promoteablePawn;
+        promotionBishopPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACK_LEFT).apply(promoteablePawn, d);
+        promotionKnightPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACK_RIGHT).apply(promoteablePawn, d);
+        promotionRookPos = Pawn.getDirections(playerColor).get(Pawn.Direction.BACKWARD).apply(promoteablePawn, d);
 
-            if (!promotionBishopPos.isInBounds(11)) {
-                promotionBishopPos = Position.oneStepRightAndForward(promoteablePawn, 11);
-            }
-            if (!promotionKnightPos.isInBounds(11)) {
-                promotionKnightPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
-            }
-        } else {
-            promotionQueenPos = promoteablePawn;
-            promotionBishopPos = Position.oneStepLeftAndForward(promoteablePawn, 11);
-            promotionKnightPos = Position.oneStepRightAndForward(promoteablePawn, 11);
-            promotionRookPos = Position.oneStepForward(promoteablePawn, 11);
-
-            if (!promotionBishopPos.isInBounds(11)) {
-                promotionBishopPos = Position.oneStepRightAndBackward(promoteablePawn, 11);
-            }
-            if (!promotionKnightPos.isInBounds(11)) {
-                promotionKnightPos = Position.oneStepLeftAndBackward(promoteablePawn, 11);
-            }
+        if (!promotionBishopPos.isInBounds(d)) {
+            promotionBishopPos = Pawn.getDirections(playerColor).get(Pawn.Direction.FORWARD_RIGHT).apply(promoteablePawn, d);
+        }
+        if (!promotionKnightPos.isInBounds(d)) {
+            promotionKnightPos = Pawn.getDirections(playerColor).get(Pawn.Direction.FORWARD_LEFT).apply(promoteablePawn, d);
         }
 
         for (Position pos : List.of(promotionQueenPos, promotionBishopPos, promotionKnightPos, promotionRookPos)) {
@@ -706,12 +759,7 @@ public class Main extends Application {
             // clear selection and highlighting (including king)
             this.selectedPos = null;
 
-            for (int x2 = 0; x2 < 11; x2++) {
-                for (int y2 = 0; y2 < 11; y2++) {
-                    if (boardTilesAsArray[x2][y2] != null)
-                        boardTilesAsArray[x2][y2].setHighlight(BoardTile.Highlight.NONE);
-                }
-            }
+            clearHighlightingAll();
 
             // apply the move
             Move move = new Move(fromPos, toPos);
@@ -724,18 +772,23 @@ public class Main extends Application {
                 return;
             }
 
-            // additional actions: check if game end
+            // additional actions: check if game end or if player eliminated
+            List<Piece.Color> activeColors = new ArrayList<>(game.getActiveColors());
+            for (Piece.Color color : activeColors) {
+                game.checkIfPlayerEliminated(color);
+            }
             game.checkIfGameEnd();
 
             renderPieces();
             renderGameInfo();
 
             // highlight the king if it is in check after the move
-            if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
-                Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
-                        : game.getBoard().getBlackKingPos();
+            for (Piece.Color color : game.getActiveColors()) {
+                if (game.getBoard().isKingInCheck(color)) {
+                    Position kingPos = game.getBoard().getKingPositions().get(color);
 
-                boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+                    boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+                }
             }
         }
         else if (game.getBoard().getPos(clickedTilePos) != null && game.getBoard().getPos(clickedTilePos).color == game.getCurrentPlayer()) {
@@ -759,8 +812,10 @@ public class Main extends Application {
     }
 
     public void clearHighlightingAll() {
-        for (int x2 = 0; x2 < 11; x2++) {
-            for (int y2 = 0; y2 < 11; y2++) {
+        int d = game.getBoard().getBoardDiameter();
+
+        for (int x2 = 0; x2 < d; x2++) {
+            for (int y2 = 0; y2 < d; y2++) {
                 if (boardTilesAsArray[x2][y2] != null)
                     boardTilesAsArray[x2][y2].setHighlight(BoardTile.Highlight.NONE);
             }
@@ -769,11 +824,12 @@ public class Main extends Application {
 
     public void clearHighlightingAndRehighlightCheck() {
         clearHighlightingAll();
-        if (game.getBoard().isKingInCheck(game.getCurrentPlayer())) {
-            Position kingPos = game.getCurrentPlayer() == Piece.Color.WHITE ? game.getBoard().getWhiteKingPos()
-                    : game.getBoard().getBlackKingPos();
+        for (Piece.Color color : game.getActiveColors()) {
+            if (game.getBoard().isKingInCheck(color)) {
+                Position kingPos = game.getBoard().getKingPositions().get(color);
 
-            boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+                boardTilesAsArray[kingPos.file][kingPos.rank].setHighlight(BoardTile.Highlight.CHECK);
+            }
         }
     }
 

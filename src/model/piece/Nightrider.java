@@ -40,14 +40,14 @@ public class Nightrider extends Piece {
         for (List<BiFunction<Position, Integer, Position>> stepsInDir : movementDirs) {
             Position nextPos = fromPos;
             for (BiFunction<Position, Integer, Position> step : stepsInDir) {
-                nextPos = step.apply(nextPos, board.boarddim);
+                nextPos = step.apply(nextPos, board.getBoardDiameter());
             }
 
             while (board.isInBounds(nextPos) && board.getPos(nextPos) == null) {
                 moves.add(new Move(fromPos, nextPos));
                 
                 for (BiFunction<Position, Integer, Position> step : stepsInDir) {
-                    nextPos = step.apply(nextPos, board.boarddim);
+                    nextPos = step.apply(nextPos, board.getBoardDiameter());
                 }
             }
 
@@ -60,7 +60,7 @@ public class Nightrider extends Piece {
     }
 
     @Override
-    public char getChar() {
+    public char getCharBase() {
         return 'm';
     }
 

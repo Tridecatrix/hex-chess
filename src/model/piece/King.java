@@ -34,7 +34,7 @@ public class King extends Piece {
 
         List<Position> possibleDestinations = new ArrayList<>(12);
         for (BiFunction<Position, Integer, Position> stepInDir : movementDirs) {
-            possibleDestinations.add(stepInDir.apply(fromPos, board.boarddim));
+            possibleDestinations.add(stepInDir.apply(fromPos, board.getBoardDiameter()));
         }
 
         List<Position> destinationsWithChecks = new ArrayList<>(12);
@@ -77,7 +77,7 @@ public class King extends Piece {
 
         List<Position> possibleDestinations = new ArrayList<>(12);
         for (BiFunction<Position, Integer, Position> stepInDir : movementDirs) {
-            possibleDestinations.add(stepInDir.apply(fromPos, board.boarddim));
+            possibleDestinations.add(stepInDir.apply(fromPos, board.getBoardDiameter()));
         }
 
         List<Position> destinationsWithChecks = new ArrayList<>(12);
@@ -91,7 +91,7 @@ public class King extends Piece {
     }
 
     @Override
-    public char getChar() {
+    public char getCharBase() {
         return 'k';
     }
 
