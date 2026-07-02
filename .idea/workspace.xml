@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="added checks for if player eliminated to main">
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="improved piece initialisation code to work flexibly with board dimensions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Pawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/piece/Pawn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/GameTimer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/GameTimer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,14 +145,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779682179881</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Refactored pieces lists to instead be piece position lists">
-      <option name="closed" value="true" />
-      <created>1781053817275</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1781053817275</updated>
     </task>
     <task id="LOCAL-00014" summary="Excluded positions under threat from king legal moves">
       <option name="closed" value="true" />
@@ -538,7 +530,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782436869473</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="improved piece initialisation code to work flexibly with board dimensions">
+      <option name="closed" value="true" />
+      <created>1782888246409</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1782888246410</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -554,7 +554,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="begun working on promotion logic" />
     <MESSAGE value="promotion concept" />
     <MESSAGE value="Finished game v1.0 (added pawn promotion)" />
     <MESSAGE value="small changes to avoid promotion menu sticking around after game restart" />
@@ -579,7 +578,8 @@
     <MESSAGE value="refactored game end logic to continue until only 1 player remains" />
     <MESSAGE value="added logic to disable a player's pieces if they lose" />
     <MESSAGE value="added checks for if player eliminated to main" />
-    <option name="LAST_COMMIT_MESSAGE" value="added checks for if player eliminated to main" />
+    <MESSAGE value="improved piece initialisation code to work flexibly with board dimensions" />
+    <option name="LAST_COMMIT_MESSAGE" value="improved piece initialisation code to work flexibly with board dimensions" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -601,22 +601,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/model/GameTimer.java</url>
-          <line>95</line>
+          <line>81</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/model/Game.java</url>
-          <line>251</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/model/Board.java</url>
-          <line>359</line>
+          <line>373</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/model/Board.java</url>
-          <line>494</line>
+          <line>508</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>

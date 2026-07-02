@@ -31,10 +31,8 @@ public class Main extends Application {
     ComboBox<String> timerPresetDropdown;
     HBox timerSelect;
     List<HBox> customTimerFieldsWithText;
-    TextField customTimerStartingTimeWhite;
-    TextField customTimerIncrementWhite;
-    TextField customTimerStartingTimeBlack;
-    TextField customTimerIncrementBlack;
+    Map<Piece.Color, TextField> customTimerStartingTime = new HashMap<>();
+    Map<Piece.Color, TextField> customTimerIncrement = new HashMap<>();
     boolean customTimerSettingsEnabled;
     ComboBox<String> gameModeDropdown;
 
@@ -54,8 +52,7 @@ public class Main extends Application {
     Text gameWins;
     VBox eliminatedPlayersStatus;
     Text timerSettingsDesc;
-    Text timeRemainingWhite;
-    Text timeRemainingBlack;
+    Map<Piece.Color, Text> timeRemaining = new HashMap<>();;
     Text temporaryMessage;
 
     // timer
@@ -115,6 +112,12 @@ public class Main extends Application {
         gameModeDropdown = new ComboBox<>();
         gameModeDropdown.getItems().addAll("2 player", "3 player", "6 player");
         gameModeDropdown.setValue("2 player");
+        gameModeDropdown.setOnAction(e -> {
+            if (timerEnabled && customTimerSettingsEnabled) {
+                timerSettings.getChildren().removeAll(customTimerFieldsWithText);
+                createCustomTimerOptions();
+            }
+        });
         gameModeSettings.getChildren().addAll(gameModeText, gameModeDropdown);
         settings.getChildren().add(gameModeSettings);
 
@@ -135,49 +138,17 @@ public class Main extends Application {
     private void expandTimerOptions() {
         this.timerEnabled = enableTimer.isSelected();
         if (timerEnabled) {
-            timerSelect = new HBox(10);
+            timerSelect = new HBox(16);
             timerSelect.getChildren().add(new Text("Timing: "));
             timerSelect.setAlignment(Pos.CENTER);
 
             timerPresetDropdown = new ComboBox<>();
             timerPresetDropdown.getItems().addAll("Bullet", "Blitz", "Rapid", "Classical", "Custom");
             timerPresetDropdown.setValue("Rapid");
-            gameTimer = new GameTimer(GameTimer.TimingSetting.RAPID);
             timerPresetDropdown.setOnAction(e2 -> {
                 if (Objects.equals(timerPresetDropdown.getValue(), "Custom")) {
                     customTimerSettingsEnabled = true;
-
-                    customTimerStartingTimeWhite = new TextField();
-                    customTimerIncrementWhite = new TextField();
-                    customTimerStartingTimeBlack = new TextField();
-                    customTimerIncrementBlack = new TextField();
-
-                    HBox hbox1 = new HBox(5, new Text("Start time for White (sec):"), customTimerStartingTimeWhite);
-                    HBox hbox2 = new HBox(5, new Text("Increment for White (sec):"), customTimerIncrementWhite);
-                    HBox hbox3 = new HBox(5, new Text("Start time for Black (sec):"), customTimerStartingTimeBlack);
-                    HBox hbox4 = new HBox(5, new Text("Increment for Black (sec):"), customTimerIncrementBlack);
-                    customTimerFieldsWithText = List.of(hbox1, hbox2, hbox3, hbox4);
-
-                    // set numeric filter on the textfields
-                    UnaryOperator<TextFormatter.Change> filter = change -> {
-                        String text = change.getControlNewText();
-                        if (text.matches("\\d*")) {
-                            return change; // Accept the change
-                        }
-                        return null; // Reject the change
-                    };
-
-
-                    for (TextField field : List.of(customTimerIncrementWhite, customTimerStartingTimeWhite,
-                            customTimerIncrementBlack, customTimerIncrementBlack)) {
-                        field.setTextFormatter(new TextFormatter<>(filter));
-                    }
-
-                    for (HBox box : customTimerFieldsWithText) {
-                        box.setAlignment(Pos.CENTER);
-                    }
-
-                    timerSettings.getChildren().addAll(customTimerFieldsWithText);
+                    createCustomTimerOptions();
                 } else if (customTimerSettingsEnabled) {
                     customTimerSettingsEnabled = false;
                     timerSettings.getChildren().removeAll(customTimerFieldsWithText);
@@ -191,6 +162,50 @@ public class Main extends Application {
             // get rid of the timer settings
             timerSettings.getChildren().remove(timerSelect);
         }
+    }
+
+    private void createCustomTimerOptions() {
+        List<Piece.Color> activeColors = switch (gameModeDropdown.getValue()) {
+            case "2 player" -> List.of(Piece.Color.WHITE, Piece.Color.BLACK);
+            case "3 player" -> List.of(Piece.Color.WHITE, Piece.Color.RED, Piece.Color.BLUE);
+            case "6 player" -> List.of(Piece.Color.WHITE, Piece.Color.GREEN, Piece.Color.RED,
+                    Piece.Color.YELLOW, Piece.Color.BLUE, Piece.Color.PURPLE);
+            default -> throw new IllegalArgumentException("Illegal game mode");
+        };
+
+        customTimerFieldsWithText = new ArrayList<>();
+
+        for (Piece.Color color : activeColors) {
+            TextField customTimerStartingTimeForColor = new TextField();
+            TextField customTimerIncrementForColor = new TextField();
+
+            customTimerStartingTime.put(color, customTimerStartingTimeForColor);
+            customTimerIncrement.put(color, customTimerIncrementForColor);
+
+            HBox hbox1 = new HBox(5, new Text("Start time for " + color.toStringCapitalised() + " (sec):"), customTimerStartingTimeForColor);
+            HBox hbox2 = new HBox(5, new Text("Increment for " + color.toStringCapitalised() + " (sec):"), customTimerIncrementForColor);
+            customTimerFieldsWithText.addAll(List.of(hbox1, hbox2));
+
+            // set numeric filter on the textfields
+            UnaryOperator<TextFormatter.Change> filter = change -> {
+                String text = change.getControlNewText();
+                if (text.matches("\\d*")) {
+                    return change; // Accept the change
+                }
+                return null; // Reject the change
+            };
+
+
+            for (TextField field : List.of(customTimerIncrementForColor, customTimerStartingTimeForColor)) {
+                field.setTextFormatter(new TextFormatter<>(filter));
+            }
+
+            for (HBox box : customTimerFieldsWithText) {
+                box.setAlignment(Pos.CENTER);
+            }
+        }
+
+        timerSettings.getChildren().addAll(customTimerFieldsWithText);
     }
 
     private Parent createGameScreen() {
@@ -213,16 +228,20 @@ public class Main extends Application {
             GameTimer timer;
 
             switch (timerPresetDropdown.getValue()) {
-                case "Bullet" -> { timer = new GameTimer(GameTimer.TimingSetting.BULLET); }
-                case "Blitz" -> { timer = new GameTimer(GameTimer.TimingSetting.BLITZ); }
-                case "Rapid" -> { timer = new GameTimer(GameTimer.TimingSetting.RAPID); }
-                case "Classical" -> { timer = new GameTimer(GameTimer.TimingSetting.CLASSICAL); }
+                case "Bullet" -> { timer = new GameTimer(GameTimer.TimingSetting.BULLET, game.getActiveColors()); }
+                case "Blitz" -> { timer = new GameTimer(GameTimer.TimingSetting.BLITZ, game.getActiveColors()); }
+                case "Rapid" -> { timer = new GameTimer(GameTimer.TimingSetting.RAPID, game.getActiveColors()); }
+                case "Classical" -> { timer = new GameTimer(GameTimer.TimingSetting.CLASSICAL, game.getActiveColors()); }
                 case "Custom" -> {
-                    timer = new GameTimer(
-                            Integer.parseInt(customTimerStartingTimeWhite.getText()),
-                            Integer.parseInt(customTimerStartingTimeBlack.getText()),
-                            Integer.parseInt(customTimerIncrementWhite.getText()),
-                            Integer.parseInt(customTimerIncrementBlack.getText()));
+                    Map<Piece.Color, Integer> startingTimes = new HashMap<>();
+                    Map<Piece.Color, Integer> increments = new HashMap<>();
+
+                    for (Piece.Color color : game.getActiveColors()) {
+                        startingTimes.put(color, Integer.parseInt(customTimerStartingTime.get(color).getText()));
+                        increments.put(color, Integer.parseInt(customTimerIncrement.get(color).getText()));
+                    }
+
+                    timer = new GameTimer(startingTimes, increments);
                 }
                 default -> {
                     throw new IllegalArgumentException("Illegal timing option");
@@ -236,7 +255,9 @@ public class Main extends Application {
             animationTimer = new AnimationTimer() {
                 @Override
                 public void handle(long l) {
-                    game.updateTimer(l);
+                    if (game.updateTimerAndCheckForFlagging(l)) {
+                        renderPieces();
+                    }
                     renderGameInfo();
                 }
             };
@@ -372,18 +393,20 @@ public class Main extends Application {
         }
 
         if (timerEnabled) {
-            if (game.getGameTimer().getIncrementSecWhite() == game.getGameTimer().getIncrementSecBlack() &&
-                game.getGameTimer().getStartingTimeSecWhite() == game.getGameTimer().getStartingTimeSecBlack())
-                timerSettingsDesc = new Text("Time setting: " + game.getGameTimer().getStartingTimeSecWhite()/60 + "m+" + game.getGameTimer().getIncrementSecWhite() + "s");
+            if (game.getGameTimer().getStartingTimeSec().values().stream().distinct().count() == 1 &&
+                    game.getGameTimer().getIncrementSec().values().stream().distinct().count() == 1)
+                timerSettingsDesc = new Text("Time setting: " + game.getGameTimer().getStartingTimeSec().get(Piece.Color.WHITE)/60
+                        + "m+" + game.getGameTimer().getIncrementSec().get(Piece.Color.WHITE) + "s");
             else {
-                timerSettingsDesc = new Text("Time setting: " + game.getGameTimer().getStartingTimeSecWhite()/60 + "m+" + game.getGameTimer().getIncrementSecWhite() + "s"
-                    + "/" + game.getGameTimer().getStartingTimeSecBlack()/60 + "m+" + game.getGameTimer().getIncrementSecBlack() + "s");
+                timerSettingsDesc = new Text("Time setting: Custom");
             }
             timerSettingsDesc.setFont(Font.font(22));
-            timeRemainingWhite = new Text();
-            timeRemainingWhite.setFont(Font.font(16));
-            timeRemainingBlack = new Text();
-            timeRemainingBlack.setFont(Font.font(16));
+
+            for (Piece.Color color : game.getActiveColors()) {
+                Text timeRemainingForColor = new Text();
+                timeRemainingForColor.setFont(Font.font(16));
+                timeRemaining.put(color, timeRemainingForColor);
+            }
         }
 
         VBox wins = new VBox(5);
@@ -403,8 +426,14 @@ public class Main extends Application {
 
         if (timerEnabled) {
             sidebar.getChildren().add(timerSettingsDesc);
-            sidebar.getChildren().add(timeRemainingWhite);
-            sidebar.getChildren().add(timeRemainingBlack);
+
+            Text timeRemainingHeader = new Text("Time remaining: ");
+            timeRemainingHeader.setFont(Font.font(22));
+            sidebar.getChildren().add(timeRemainingHeader);
+
+            for (Piece.Color color : game.getActiveColors()) {
+                sidebar.getChildren().add(timeRemaining.get(color));
+            }
         }
 
         // add game buttons
@@ -609,13 +638,10 @@ public class Main extends Application {
         }
 
         if (timerEnabled) {
-            timeRemainingWhite.setText("White time remaining: " + game.getGameTimer().getTimeRemainingAsString(Piece.Color.WHITE));
-            timeRemainingBlack.setText("Black time remaining: " + game.getGameTimer().getTimeRemainingAsString(Piece.Color.BLACK));
+            for (Piece.Color color : game.getGameTimer().getStartingTimeSec().keySet()) {
+                timeRemaining.get(color).setText(color.toStringCapitalised() + ": " + game.getGameTimer().getTimeRemainingAsString(color));
+            }
         }
-    }
-
-    private void renderTimers() {
-
     }
 
     private void renderPromotionMenu(Position promoteablePawn) {
