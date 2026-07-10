@@ -1,7 +1,5 @@
 package model;
 
-import model.piece.Pawn;
-
 import java.util.Objects;
 
 public class Move {

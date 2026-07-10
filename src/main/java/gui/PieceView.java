@@ -5,13 +5,15 @@ import model.PieceType;
 import model.Position;
 import model.piece.Piece;
 
+import java.io.File;
+
 public class PieceView extends ImageView {
     int xBoard;
     int yBoard;
     PieceType type;
 
     public PieceView(PieceType type, Piece.Color color, int xBoard, int yBoard) {
-        this("gui/assets/Chess_" + type.getChar() + switch (color) {
+        this("src/main/java/gui/assets/Chess_" + type.getChar() + switch (color) {
             case WHITE -> 'l';
             case BLACK -> 'd';
             case RED -> 'r';
@@ -29,7 +31,7 @@ public class PieceView extends ImageView {
     }
 
     public PieceView(String path, int xBoard, int yBoard) {
-        super(path);
+        super((new File(path)).toURI().toString());
         this.xBoard = xBoard;
         this.yBoard = yBoard;
     }

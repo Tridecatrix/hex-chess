@@ -1,7 +1,5 @@
 package model;
 
-import model.piece.Piece;
-
 public enum PieceType {
     PAWN,
     KNIGHT,

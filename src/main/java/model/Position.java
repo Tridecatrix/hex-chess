@@ -1,7 +1,5 @@
 package model;
 
-import model.piece.Piece;
-
 import java.util.Objects;
 
 public class Position {

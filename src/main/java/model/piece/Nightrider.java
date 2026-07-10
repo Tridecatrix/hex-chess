@@ -2,10 +2,9 @@ package model.piece;
 
 import model.Board;
 import model.Move;
-import model.PieceType;
 import model.Position;
+import model.PieceType;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

@@ -1,7 +1,5 @@
 package model;
 
-import model.piece.Pawn;
-
 public class MoveResult {
 
     public boolean validMove;

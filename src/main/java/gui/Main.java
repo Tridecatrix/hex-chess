@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import model.*;
+
 import model.piece.Pawn;
 import model.piece.Piece;
 

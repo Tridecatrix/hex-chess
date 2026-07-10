@@ -1,7 +1,6 @@
 package gui;
 
 import model.*;
-import model.piece.Piece;
 
 import java.util.ArrayList;
 import java.util.Scanner;

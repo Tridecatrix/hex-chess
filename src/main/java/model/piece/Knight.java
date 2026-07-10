@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 
-import static model.Position.*;
-
 public class Knight extends Piece {
     public Knight(Color color) {
         super(color);
