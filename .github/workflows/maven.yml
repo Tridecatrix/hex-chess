@@ -27,6 +27,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
+    - name: Install javafx dependencies
+      run: ./install-javafx-dependencies.sh
+        
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
