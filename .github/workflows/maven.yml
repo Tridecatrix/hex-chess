@@ -38,6 +38,6 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         # Artifact name
-        name: hexchess # optional
+        name: hexchess-1.0 # optional
         # Destination path
-        path: # optional
+        path: target/hexchess-1.0.jar # optional
