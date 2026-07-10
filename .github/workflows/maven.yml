@@ -33,11 +33,3 @@ jobs:
         
     - name: Package and run tests with Maven
       run: mvn -B package --file pom.xml
-
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v4
-      with:
-        # Artifact name
-        name: hexchess-1.0.jar # optional
-        # Destination path
-        path: # optional
