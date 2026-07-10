@@ -25,7 +25,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '23'
-        distribution: 'jetbrains'
+        distribution: 'oracle'
         cache: maven
 
     - name: Install javafx dependencies
