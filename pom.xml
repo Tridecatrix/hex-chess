@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>23</maven.compiler.release>
     </properties>
     <build>
         <plugins>
@@ -13,7 +13,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <target>17</target>
+                    <target>23</target>
                 </configuration>
             </plugin>
 
