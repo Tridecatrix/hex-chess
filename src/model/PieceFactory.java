@@ -1,9 +1,6 @@
 package model;
 
 import model.piece.*;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-
-import java.text.ParseException;
 
 public class PieceFactory {
     public static Piece createPiece(String type, String color) {

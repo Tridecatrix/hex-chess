@@ -10,13 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="improved piece initialisation code to work flexibly with board dimensions">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/HexChess_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HexChess.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/Launcher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/PieceView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/PieceView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/PieceFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/PieceFactory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +72,7 @@
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/adnan/Desktop/Side-projects/HexChess/src/gui/assets",
-    "project.structure.last.edited": "Artifacts",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.43970895",
     "settings.editor.selected.configurable": "project.propCompiler"
