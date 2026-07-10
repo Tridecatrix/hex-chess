@@ -1,0 +1,1 @@
+java --enable-preview --module-path lib/javafx-sdk-25.0.3/lib --add-modules javafx.controls,javafx.fxml -jar out/artifacts/HexChess.jar
