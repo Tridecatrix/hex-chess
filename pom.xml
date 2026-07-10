@@ -30,6 +30,13 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>javafx</id>
+            <url>file:///${project.basedir}/local-maven-repo</url>
+        </repository>
+    </repositories>
+
     <groupId>com.hexchess</groupId>
     <artifactId>hexchess</artifactId>
     <version>1.0</version>
@@ -77,11 +84,4 @@
             <version>25.0.3</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>javafx</id>
-            <url>file:///${project.basedir}/lib/javafx-sdk-25.0.3/lib</url>
-        </repository>
-    </repositories>
 </project>

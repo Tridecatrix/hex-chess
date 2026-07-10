@@ -7,15 +7,9 @@ pawn movements for 50 moves.
 
 ## How to run
 
-Prerequisites: JDK 17 or above. See https://openjdk.org/install/.
+Prerequisites: 
+JDK 17 or above. See https://openjdk.org/install/.
+Maven.
 
-Run the `build.sh` script to build a JAR executable:
-```
-./build.sh
-```
-
-Then run the `run.sh` script to run the executable (this is required since the Java command has to include the module path for JavaFX):
-```
-./run.sh
-```
+Run Maven package, then run the resulting JAR file with `./run.sh`.
 

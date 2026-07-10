@@ -9,114 +9,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="improved piece initialisation code to work flexibly with board dimensions">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/install-javafx-dependencies.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+    <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="reorganised repo and integrated maven into project">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HexChess.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/BoardTile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/BoardTile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/Launcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/Launcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/PieceView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/PieceView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/TerminalGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/TerminalGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_bbt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_bbt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_bdt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_bdt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_bgt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_bgt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_blt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_blt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_bmt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_bmt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_bpt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_bpt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_brt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_brt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_byt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_byt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_kbt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_kbt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_kdt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_kdt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_kgt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_kgt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_klt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_klt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_kmt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_kmt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_kpt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_kpt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_krt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_krt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_kyt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_kyt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_mbt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_mbt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_mdt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_mdt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_mgt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_mgt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_mlt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_mlt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_mmt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_mmt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_mpt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_mpt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_mrt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_mrt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_myt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_myt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_nbt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_nbt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_ndt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_ndt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_ngt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_ngt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_nlt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_nlt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_nmt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_nmt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_npt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_npt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_nrt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_nrt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_nyt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_nyt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_pbt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_pbt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_pdt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_pdt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_pgt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_pgt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_plt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_plt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_pmt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_pmt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_ppt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_ppt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_prt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_prt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_pyt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_pyt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_qbt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_qbt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_qdt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_qdt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_qgt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_qgt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_qlt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_qlt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_qmt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_qmt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_qpt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_qpt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_qrt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_qrt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_qyt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_qyt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_rbt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_rbt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_rdt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_rdt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_rgt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_rgt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_rlt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_rlt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_rmt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_rmt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_rpt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_rpt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_rrt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_rrt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/Chess_ryt45.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/Chess_ryt45.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/blank.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/blank.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_bdt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_bdt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_blt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_blt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_kdt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_kdt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_klt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_klt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_ndt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_ndt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_nlt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_nlt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_pdt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_pdt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_plt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_plt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_qdt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_qdt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_qlt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_qlt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_rdt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_rdt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/assets/svgs/Chess_rlt45.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/assets/svgs/Chess_rlt45.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/GameException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/GameException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/GameTimer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/GameTimer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Move.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Move.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/MoveResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/MoveResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/PieceFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/PieceFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/PieceType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/PieceType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Position.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Position.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Bishop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/piece/Bishop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/King.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/piece/King.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Knight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/piece/Knight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Nightrider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/piece/Nightrider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Pawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/piece/Pawn.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/piece/Piece.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Queen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/piece/Queen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/piece/Rook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/piece/Rook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/other/Debug.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/other/Debug.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/ChecksAndCheckmateTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ChecksAndCheckmateTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/DrawTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/DrawTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/LegalMovesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/LegalMovesTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/install-javafx-dependencies.sh" beforeDir="false" afterPath="$PROJECT_DIR$/install-javafx-dependencies.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,6 +33,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -149,43 +46,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Application.Debug.executor": "Run",
-    "Application.HelloFX.executor": "Run",
-    "Application.Main.executor": "Run",
-    "Application.TerminalGUI.executor": "Run",
-    "Application.Viewer.executor": "Run",
-    "Downloaded.Files.Path.Enabled": "true",
-    "JAR Application.HexChess.jar.executor": "Run",
-    "JUnit.ChecksAndCheckmate.executor": "Run",
-    "JUnit.ChecksAndCheckmateTest and 1 more.executor": "Run",
-    "JUnit.ChecksAndCheckmateTest and 2 more.executor": "Run",
-    "JUnit.ChecksAndCheckmateTest.executor": "Run",
-    "JUnit.DrawTest.executor": "Run",
-    "JUnit.LegalMovesTest.executor": "Debug",
-    "JUnit.LegalMovesTest.pawnStartingBlack.executor": "Debug",
-    "JUnit.MyFirstJUnitJupiterTests.executor": "Run",
-    "Maven.hexchess [clean].executor": "Run",
-    "Maven.hexchess [install].executor": "Run",
-    "Maven.hexchess [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
-    "Maven.hexchess [org.apache.maven.plugins:maven-jar-plugin:3.3.0:jar].executor": "Run",
-    "Maven.hexchess [package].executor": "Run",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/adnan/Desktop/Side-projects/HexChess/target/hexchess-1.0.jar",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.43970895",
-    "settings.editor.selected.configurable": "project.propCompiler"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Application.Debug.executor&quot;: &quot;Run&quot;,
+    &quot;Application.HelloFX.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TerminalGUI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Viewer.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
+    &quot;JAR Application.HexChess.jar.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ChecksAndCheckmate.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ChecksAndCheckmateTest and 1 more.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ChecksAndCheckmateTest and 2 more.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ChecksAndCheckmateTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DrawTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LegalMovesTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.LegalMovesTest.pawnStartingBlack.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.MyFirstJUnitJupiterTests.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.hexchess [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.hexchess [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.hexchess [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.hexchess [org.apache.maven.plugins:maven-jar-plugin:3.3.0:jar].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.hexchess [package].executor&quot;: &quot;Run&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/adnan/Desktop/Side-projects/HexChess/target/hexchess-1.0.jar&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.43970895&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\src\gui\assets" />
@@ -199,7 +96,7 @@
       <recent name="java" />
     </key>
   </component>
-  <component name="RunManager" selected="JAR Application.HexChess.jar">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="other.Debug" />
       <module name="HexChess" />
@@ -255,8 +152,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JAR Application.HexChess.jar" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="JAR Application.HexChess.jar" />
         <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
         <item itemvalue="Application.TerminalGUI" />
         <item itemvalue="Application.Debug" />
@@ -271,14 +168,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779682179881</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Excluded positions under threat from king legal moves">
-      <option name="closed" value="true" />
-      <created>1781057460239</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1781057460239</updated>
     </task>
     <task id="LOCAL-00015" summary="completed update to account for checks when calculating legal moves and detect when king is in check">
       <option name="closed" value="true" />
@@ -664,7 +553,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782888246410</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="reorganised repo and integrated maven into project">
+      <option name="closed" value="true" />
+      <created>1783660643318</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1783660643318</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -680,7 +577,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="promotion concept" />
     <MESSAGE value="Finished game v1.0 (added pawn promotion)" />
     <MESSAGE value="small changes to avoid promotion menu sticking around after game restart" />
     <MESSAGE value="Change README.md" />
@@ -705,7 +601,8 @@
     <MESSAGE value="added logic to disable a player's pieces if they lose" />
     <MESSAGE value="added checks for if player eliminated to main" />
     <MESSAGE value="improved piece initialisation code to work flexibly with board dimensions" />
-    <option name="LAST_COMMIT_MESSAGE" value="improved piece initialisation code to work flexibly with board dimensions" />
+    <MESSAGE value="reorganised repo and integrated maven into project" />
+    <option name="LAST_COMMIT_MESSAGE" value="reorganised repo and integrated maven into project" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
