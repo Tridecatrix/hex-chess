@@ -8,8 +8,8 @@ pawn movements for 50 moves.
 ## How to run
 
 Prerequisites: 
-JDK 17 or above. See https://openjdk.org/install/.
+JDK 23 or above. See https://openjdk.org/install/.
 Maven.
 
-Run Maven package, then run the resulting JAR file with `./run.sh`.
+Run `maven package`, then run the resulting JAR file with `./run.sh`.
 

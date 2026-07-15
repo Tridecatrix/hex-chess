@@ -108,11 +108,19 @@ public class Board {
             Position bishop1Pos = cornerPos;
             Position bishop2Pos = directions.get(Pawn.Direction.FORWARD).apply(bishop1Pos, boardDiameter);
             Position bishop3Pos = directions.get(Pawn.Direction.FORWARD).apply(bishop2Pos, boardDiameter);
-            Position queenPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(bishop1Pos, boardDiameter);
-            Position lknightPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(queenPos, boardDiameter);
+            Position queenPos, kingPos, lknightPos, rknightPos;
+            if (color == Piece.Color.WHITE || color == Piece.Color.RED || color == Piece.Color.BLUE) {
+                queenPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(bishop1Pos, boardDiameter);
+                kingPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(bishop1Pos, boardDiameter);
+                lknightPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(queenPos, boardDiameter);
+                rknightPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(kingPos, boardDiameter);
+            } else {
+                queenPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(bishop1Pos, boardDiameter);
+                kingPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(bishop1Pos, boardDiameter);
+                lknightPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(kingPos, boardDiameter);
+                rknightPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(queenPos, boardDiameter);
+            }
             Position lrookPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(lknightPos, boardDiameter);
-            Position kingPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(bishop1Pos, boardDiameter);
-            Position rknightPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(kingPos, boardDiameter);
             Position rrookPos = directions.get(Pawn.Direction.FORWARD_RIGHT).apply(rknightPos, boardDiameter);
 
             Position extraLKnightPos = directions.get(Pawn.Direction.FORWARD_LEFT).apply(bishop3Pos, boardDiameter);

@@ -10,112 +10,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe412aec-ea1b-4e5f-9646-d460531914bf" name="Changes" comment="reorganised repo and integrated maven into project">
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-console-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-console-l1-2-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-datetime-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-debug-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-errorhandling-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-file-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-file-l1-2-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-file-l2-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-handle-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-heap-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-interlocked-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-libraryloader-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-localization-l1-2-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-memory-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-namedpipe-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-processenvironment-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-processthreads-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-processthreads-l1-1-1.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-profile-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-rtlsupport-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-string-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-synch-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-synch-l1-2-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-sysinfo-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-timezone-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-core-util-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-conio-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-convert-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-environment-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-filesystem-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-heap-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-locale-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-math-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-multibyte-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-private-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-process-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-runtime-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-stdio-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-string-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-time-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/api-ms-win-crt-utility-l1-1-0.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/decora_sse.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/fxplugins.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/glass.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/glib-lite.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/gstreamer-lite.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/javafx_font.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/javafx_iio.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/jfxmedia.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/jfxwebkit.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/msvcp140.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/msvcp140_1.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/msvcp140_2.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/prism_common.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/prism_d3d.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/prism_sw.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/ucrtbase.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/vcruntime140.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/bin/vcruntime140_1.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.base/COPYRIGHT" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.base/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.controls/COPYRIGHT" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.controls/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.fxml/COPYRIGHT" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.fxml/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.graphics/COPYRIGHT" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.graphics/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.graphics/jpeg_fx.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.graphics/mesa3d.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.graphics/pipewire.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.media/COPYRIGHT" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.media/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.media/directshow.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.media/glib.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.media/gstreamer.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.media/libffi.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.swing/COPYRIGHT" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.swing/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.web/COPYRIGHT" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.web/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.web/icu_web.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.web/libxml2.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.web/libxslt.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/javafx.web/webkit.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/jdk.jsobject/COPYRIGHT" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/jdk.jsobject/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/jfx.incubator.input/COPYRIGHT" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/jfx.incubator.input/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/jfx.incubator.richtext/COPYRIGHT" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/jfx.incubator.richtext/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/legal/jfx.incubator.richtext/unicode-fx.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/javafx-swt.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/javafx.base.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/javafx.controls.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/javafx.fxml.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/javafx.graphics.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/javafx.media.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/javafx.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/javafx.swing.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/javafx.web.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/jdk.jsobject.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/jfx.incubator.input.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/lib/jfx.incubator.richtext.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/javafx-sdk-25.0.3/src.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/apiguardian-api-1.1.2.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/error_prone_annotations-2.47.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/failureaccess-1.0.3.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/guava-33.6.0-jre.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/j2objc-annotations-3.1.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/jspecify-1.0.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/junit-jupiter-6.1.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/junit-jupiter-api-6.1.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/junit-jupiter-engine-6.1.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/junit-jupiter-params-6.1.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/junit-platform-commons-6.1.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/junit-platform-engine-6.1.0.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/opentest4j-1.3.0.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/install-javafx-dependencies.sh" beforeDir="false" afterPath="$PROJECT_DIR$/install-javafx-dependencies.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Game.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,43 +62,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Application.Debug.executor&quot;: &quot;Run&quot;,
-    &quot;Application.HelloFX.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TerminalGUI.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Viewer.executor&quot;: &quot;Run&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
-    &quot;JAR Application.HexChess.jar.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ChecksAndCheckmate.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ChecksAndCheckmateTest and 1 more.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ChecksAndCheckmateTest and 2 more.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ChecksAndCheckmateTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.DrawTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.LegalMovesTest.executor&quot;: &quot;Debug&quot;,
-    &quot;JUnit.LegalMovesTest.pawnStartingBlack.executor&quot;: &quot;Debug&quot;,
-    &quot;JUnit.MyFirstJUnitJupiterTests.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.hexchess [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.hexchess [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.hexchess [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.hexchess [org.apache.maven.plugins:maven-jar-plugin:3.3.0:jar].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.hexchess [package].executor&quot;: &quot;Run&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/adnan/Desktop/Side-projects/HexChess/target/hexchess-1.0.jar&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.43970895&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Application.Debug.executor": "Run",
+    "Application.HelloFX.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.TerminalGUI.executor": "Run",
+    "Application.Viewer.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "true",
+    "JAR Application.HexChess.jar.executor": "Run",
+    "JUnit.ChecksAndCheckmate.executor": "Run",
+    "JUnit.ChecksAndCheckmateTest and 1 more.executor": "Run",
+    "JUnit.ChecksAndCheckmateTest and 2 more.executor": "Run",
+    "JUnit.ChecksAndCheckmateTest.executor": "Run",
+    "JUnit.DrawTest.executor": "Run",
+    "JUnit.LegalMovesTest.executor": "Debug",
+    "JUnit.LegalMovesTest.pawnStartingBlack.executor": "Debug",
+    "JUnit.MyFirstJUnitJupiterTests.executor": "Run",
+    "Maven.hexchess [clean].executor": "Run",
+    "Maven.hexchess [install].executor": "Run",
+    "Maven.hexchess [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
+    "Maven.hexchess [org.apache.maven.plugins:maven-jar-plugin:3.3.0:jar].executor": "Run",
+    "Maven.hexchess [package].executor": "Run",
+    "Maven.hexchess [test].executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/adnan/Desktop/Side-projects/HexChess",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.43970895",
+    "settings.editor.selected.configurable": "project.propCompiler"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\adnan\Desktop\Side-projects\HexChess\src\gui\assets" />
@@ -199,7 +113,7 @@
       <recent name="java" />
     </key>
   </component>
-  <component name="RunManager" selected="JAR Application.HexChess.jar">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Debug" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="other.Debug" />
       <module name="HexChess" />
@@ -255,8 +169,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JAR Application.HexChess.jar" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="JAR Application.HexChess.jar" />
         <item itemvalue="JUnit.ChecksAndCheckmateTest and 2 more" />
         <item itemvalue="Application.TerminalGUI" />
         <item itemvalue="Application.Debug" />
@@ -732,12 +646,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/model/Board.java</url>
-          <line>373</line>
+          <line>381</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/model/Board.java</url>
-          <line>508</line>
+          <line>516</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>

@@ -74,7 +74,7 @@ public class Pawn extends Piece {
         // - distanceFromFinalRank == 0                               (must be final rank)
         // - distanceFromFinalRank == distanceFromStartingPos - 6     (same distance as 2 player)
         //                         == boardDiameter - 5 - 6
-        return distanceFromFinalRank(pos, color, board) == 0;
+        return distanceFromFinalRank(pos, color, board) == board.getBoardDiameter() - 11;
     }
 
     public static boolean isStartingPawnMove(Move move,  Piece.Color playerColor, Board board) {

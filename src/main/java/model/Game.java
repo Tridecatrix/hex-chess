@@ -155,9 +155,7 @@ public class Game {
 
                 // detect loss due to flagging (running out of time)
                 if (gameTimer.isOutOfTime(previousPlayer)) {
-                    activeColors.remove(previousPlayer);
-                    eliminatedColors.put(previousPlayer, PlayerStatus.FLAGGED);
-                    if (activeColors.size() != 1) board.eliminatePlayer(previousPlayer);
+                    eliminatePlayer(PlayerStatus.FLAGGED, previousPlayer);
                 }
             }
 
@@ -188,28 +186,21 @@ public class Game {
         }
 
         // fall through means that the current player is eliminated
-        int index = activeColors.indexOf(currentPlayer);
-        boolean lastPlayerInSequence = index == activeColors.size()-1;
-        activeColors.remove(color);
-        eliminatedColors.put(color, result);
-        if (activeColors.size() != 1) board.eliminatePlayer(color);
-        if (color == currentPlayer) {
-            // change player to next player
-            currentPlayer = activeColors.get(lastPlayerInSequence ? 0 : index);
-        }
+        eliminatePlayer(result, currentPlayer);
 
         return result;
     }
 
-    public void eliminateCurrentPlayer(PlayerStatus result) {
-        int index = activeColors.indexOf(currentPlayer);
-        boolean lastPlayerInSequence = index == activeColors.size()-1;
-        activeColors.remove(currentPlayer);
-        eliminatedColors.put(currentPlayer, result);
-        if (activeColors.size() != 1) board.eliminatePlayer(currentPlayer);
-
-        // change player to next player
-        currentPlayer = activeColors.get(lastPlayerInSequence ? 0 : index);
+    public void eliminatePlayer(PlayerStatus result, Piece.Color player) {
+        int currentPlayerIndex = activeColors.indexOf(currentPlayer);
+        boolean lastPlayerInSequence = currentPlayerIndex == activeColors.size()-1;
+        activeColors.remove(player);
+        eliminatedColors.put(player, result);
+        if (activeColors.size() != 1) board.eliminatePlayer(player);
+        if (player == currentPlayer) {
+            // change player to next player
+            currentPlayer = activeColors.get(lastPlayerInSequence ? 0 : currentPlayerIndex);
+        }
     }
 
     // check if game end
@@ -258,7 +249,7 @@ public class Game {
 
             // detect loss due to flagging (running out of time)
             if (gameTimer.isOutOfTime(this.currentPlayer)) {
-                eliminateCurrentPlayer(PlayerStatus.FLAGGED);
+                eliminatePlayer(PlayerStatus.FLAGGED, currentPlayer);
                 return true;
             }
         }
@@ -289,7 +280,7 @@ public class Game {
     }
 
     public void resign() {
-        eliminateCurrentPlayer(PlayerStatus.RESIGNED);
+        eliminatePlayer(PlayerStatus.RESIGNED, currentPlayer);
     }
 
     // forced draws include:
