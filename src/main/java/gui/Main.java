@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import model.*;
+import javafx.stage.Screen;
 
 import model.piece.Pawn;
 import model.piece.Piece;
@@ -72,7 +73,7 @@ public class Main extends Application {
     // constants
     final double WINDOWWIDTH = 1920;
     final double WINDOWHEIGHT = 1080;
-    final double BOARD_SIZE = 800;
+    final double BOARD_SIZE = Screen.getPrimary().getBounds().getHeight() * 0.75;
 
     @Override
     public void start(Stage stage) {

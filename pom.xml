@@ -1,19 +1,28 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://apache.org"
+         xmlns:xsi="http://w3.org"
+         xsi:schemaLocation="http://apache.org
+         http://apache.org">
     <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.hexchess</groupId>
+    <artifactId>hexchess</artifactId>
+    <version>1.0</version>
+    <name>Hex Chess</name>
 
     <properties>
         <maven.compiler.release>23</maven.compiler.release>
+        <!-- Changed to a valid, existing version on Maven Central -->
+        <javafx.version>25.0.3</javafx.version> 
     </properties>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
                 <configuration>
-                    <target>23</target>
+                    <release>${maven.compiler.release}</release>
                 </configuration>
             </plugin>
 
@@ -27,61 +36,63 @@
                     </archive>
                 </configuration>
             </plugin>
+            
+            <!-- Essential plugin to run JavaFX seamlessly via Maven -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>com.hexchess.Main</mainClass> <!-- Update with your actual main class path -->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>javafx</id>
-            <url>file:///${project.basedir}/local-maven-repo</url>
-        </repository>
-    </repositories>
-
-    <groupId>com.hexchess</groupId>
-    <artifactId>hexchess</artifactId>
-    <version>1.0</version>
-    <name>Hex Chess</name>
     <dependencies>
+        <!-- Fixed JUnit LATEST wildcard to a concrete version -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>LATEST</version>
+            <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- JavaFX Modules -->
         <dependency>
-            <groupId>javafx.base</groupId>
-            <artifactId>javafx.base</artifactId>
-            <version>25.0.3</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
-            <groupId>javafx.controls</groupId>
-            <artifactId>javafx.controls</artifactId>
-            <version>25.0.3</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
-            <groupId>javafx.fxml</groupId>
-            <artifactId>javafx.fxml</artifactId>
-            <version>25.0.3</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
-            <groupId>javafx.graphics</groupId>
-            <artifactId>javafx.graphics</artifactId>
-            <version>25.0.3</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
-            <groupId>javafx.media</groupId>
-            <artifactId>javafx.media</artifactId>
-            <version>25.0.3</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
-            <groupId>javafx.swing</groupId>
-            <artifactId>javafx.swing</artifactId>
-            <version>25.0.3</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
-            <groupId>javafx.web</groupId>
-            <artifactId>javafx.web</artifactId>
-            <version>25.0.3</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
     </dependencies>
 </project>
