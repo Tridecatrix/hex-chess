@@ -11,5 +11,5 @@ Prerequisites:
 JDK 23 or above. See https://openjdk.org/install/.
 Maven.
 
-Run `maven package`, then run the resulting JAR file with `./run.sh`.
+Run `mvn package`, then run the resulting JAR file with `./run.sh`.
 

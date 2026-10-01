@@ -36,15 +36,51 @@
                     </archive>
                 </configuration>
             </plugin>
-            
-            <!-- Essential plugin to run JavaFX seamlessly via Maven -->
+
             <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-                <configuration>
-                    <mainClass>com.hexchess.Main</mainClass> <!-- Update with your actual main class path -->
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <!-- Point to your separate AppLauncher class -->
+                                    <mainClass>gui.Launcher</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>create-installer</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>jpackage</goal>
+                        </goals>
+                        <configuration>
+                            <type>APP_IMAGE</type>
+                            <name>HexChess</name>
+                            <appVersion>1.0.0</appVersion>
+                            <input>target</input>
+                            <mainJar>hexchess-1.0.jar</mainJar>
+                            <mainClass>gui.Launcher</mainClass>
+                            <destination>target/dist</destination>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

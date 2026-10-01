@@ -1,1 +1,1 @@
-java --module-path lib/javafx-sdk-25.0.3/lib --add-modules javafx.controls,javafx.fxml -jar target/hexchess-1.0.jar
+java -jar target/original-hexchess-1.0.jar

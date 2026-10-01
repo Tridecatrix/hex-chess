@@ -4,6 +4,7 @@ import javafx.scene.image.ImageView;
 import model.PieceType;
 import model.Position;
 import model.piece.Piece;
+import java.net.URL;
 
 import java.io.File;
 
@@ -13,7 +14,7 @@ public class PieceView extends ImageView {
     PieceType type;
 
     public PieceView(PieceType type, Piece.Color color, int xBoard, int yBoard) {
-        this("src/main/java/gui/assets/Chess_" + type.getChar() + switch (color) {
+        this("/assets/Chess_" + type.getChar() + switch (color) {
             case WHITE -> 'l';
             case BLACK -> 'd';
             case RED -> 'r';
@@ -31,8 +32,16 @@ public class PieceView extends ImageView {
     }
 
     public PieceView(String path, int xBoard, int yBoard) {
-        super((new File(path)).toURI().toString());
+        super(getImageUrl(path));
         this.xBoard = xBoard;
         this.yBoard = yBoard;
+    }
+
+    private static String getImageUrl(String path) {
+        URL resource = PieceView.class.getResource(path);
+        if (resource == null) {
+            throw new IllegalArgumentException("Resource not found at path: " + path);
+        }
+        return resource.toExternalForm();
     }
 }
